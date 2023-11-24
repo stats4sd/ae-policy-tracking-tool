@@ -1,0 +1,24 @@
+created:
+    - database/factories/RecommendationFactory.php
+    - database/factories/AePrincipleFactory.php
+    - database/factories/PriorityActionFactory.php
+    - database/factories/CountryFactory.php
+    - database/factories/AssessmentFactory.php
+    - database/migrations/2023_11_24_183020_create_recommendations_table.php
+    - database/migrations/2023_11_24_183021_create_ae_principles_table.php
+    - database/migrations/2023_11_24_183022_create_priority_actions_table.php
+    - database/migrations/2023_11_24_183023_create_countries_table.php
+    - database/migrations/2023_11_24_183024_create_assessments_table.php
+    - database/migrations/2023_11_24_183025_create_ae_principle_recommendation_table.php
+    - app/Models/Recommendation.php
+    - app/Models/AePrinciple.php
+    - app/Models/PriorityAction.php
+    - app/Models/Country.php
+    - app/Models/Assessment.php
+models:
+    User: { name: string, email: string, email_verified_at: 'datetime nullable', password: string, remember_token: 'string:100 nullable' }
+    Recommendation: { name: 'string:400', relationships: { BelongsToMany: AePrinciple, HasMany: PriorityAction } }
+    AePrinciple: { name: 'string:400', relationships: { BelongsToMany: Recommendation } }
+    PriorityAction: { name: 'string:400', recommendation_id: 'id foriegn:recommendations' }
+    Country: { id: 'string:400 primary', name: 'string:400', relationships: { HasMany: Assessment } }
+    Assessment: { country_id: 'string:400 foreign:countries' }

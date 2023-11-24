@@ -1,5 +1,25 @@
 models:
-  # ...
+  
+  Recommendation:
+    name: string:400
+    relationships:
+      BelongsToMany: AePrinciple
+      HasMany: PriorityAction
 
-controllers:
-  # ...
+  AePrinciple:
+    name: string:400
+    relationships:
+      BelongsToMany: Recommendation
+
+  PriorityAction:
+    name: string:400
+    recommendation_id: id foriegn:recommendations
+
+  Country:
+    id: string:400 primary
+    name: string:400
+    relationships:
+      HasMany: Assessment
+
+  Assessment:
+    country_id: string:400 foreign:countries
