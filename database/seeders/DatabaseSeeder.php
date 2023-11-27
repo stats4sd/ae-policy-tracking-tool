@@ -18,5 +18,10 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+        $this->call(AePrinciplesTableSeeder::class);
+        $this->call(RecommendationsTableSeeder::class);
+        $this->call(AePrincipleRecommendationTableSeeder::class);
+        $this->call(PriorityActionsTableSeeder::class);
+        $this->call(CountriesTableSeeder::class);
     }
 }
