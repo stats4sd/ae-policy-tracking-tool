@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('priority_actions', function (Blueprint $table) {
-            $table->id();
+            $table->string('id', 400)->primary();
             $table->string('name', 400);
             $table->foreignId('recommendation_id');
             $table->timestamps();
