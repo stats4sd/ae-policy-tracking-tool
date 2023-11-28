@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Assessment extends Model
 {
@@ -33,8 +34,8 @@ class Assessment extends Model
         return $this->belongsTo(Country::class);
     }
 
-    public function priorityActions(): BelongsToMany
+    public function assessmentPriorityActions(): HasMany
     {
-        return $this->belongsToMany(PriorityAction::class);
+        return $this->HasMany(AssessmentPriorityAction::class);
     }
 }

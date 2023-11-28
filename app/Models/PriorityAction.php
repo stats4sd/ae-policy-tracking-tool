@@ -28,6 +28,7 @@ class PriorityAction extends Model
      * @var array
      */
     protected $casts = [
+        'id' => 'string',
         'recommendation_id' => 'integer',
     ];
 
