@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CountryResource\Pages;
-use App\Filament\Resources\CountryResource\RelationManagers;
-use App\Models\Country;
+use App\Filament\Resources\EvidenceResource\Pages;
+use App\Filament\Resources\EvidenceResource\RelationManagers;
+use App\Models\Evidence;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,9 +13,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class CountryResource extends Resource
+class EvidenceResource extends Resource
 {
-    protected static ?string $model = Country::class;
+    protected static ?string $model = Evidence::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -31,8 +31,7 @@ class CountryResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id'),
-                Tables\Columns\TextColumn::make('name'),
+                //
             ])
             ->filters([
                 //
@@ -60,9 +59,9 @@ class CountryResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCountries::route('/'),
-            'create' => Pages\CreateCountry::route('/create'),
-            'edit' => Pages\EditCountry::route('/{record}/edit'),
+            'index' => Pages\ListEvidence::route('/'),
+            'create' => Pages\CreateEvidence::route('/create'),
+            'edit' => Pages\EditEvidence::route('/{record}/edit'),
         ];
     }    
 }
