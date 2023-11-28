@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\AePrincipleResource\Pages;
-use App\Filament\Resources\AePrincipleResource\RelationManagers;
-use App\Models\AePrinciple;
+use App\Filament\Resources\TypeResource\Pages;
+use App\Filament\Resources\TypeResource\RelationManagers;
+use App\Models\Type;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,9 +13,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class AePrincipleResource extends Resource
+class TypeResource extends Resource
 {
-    protected static ?string $model = AePrinciple::class;
+    protected static ?string $model = Type::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -31,7 +31,7 @@ class AePrincipleResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('name')->wrap(),
             ])
             ->filters([
                 //
@@ -59,9 +59,9 @@ class AePrincipleResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListAePrinciples::route('/'),
-            // 'create' => Pages\CreateAePrinciple::route('/create'),
-            'edit' => Pages\EditAePrinciple::route('/{record}/edit'),
+            'index' => Pages\ListTypes::route('/'),
+            // 'create' => Pages\CreateType::route('/create'),
+            'edit' => Pages\EditType::route('/{record}/edit'),
         ];
     }    
 }

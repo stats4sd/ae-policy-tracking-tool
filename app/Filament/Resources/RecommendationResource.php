@@ -61,7 +61,7 @@ class RecommendationResource extends Resource
     {
         return [
             'index' => Pages\ListRecommendations::route('/'),
-            'create' => Pages\CreateRecommendation::route('/create'),
+            // 'create' => Pages\CreateRecommendation::route('/create'),
             'edit' => Pages\EditRecommendation::route('/{record}/edit'),
         ];
     }    

@@ -31,7 +31,9 @@ class PriorityActionResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('id'),
+                Tables\Columns\TextColumn::make('recommendation.name')->wrap(),
+                Tables\Columns\TextColumn::make('name')->wrap(),
             ])
             ->filters([
                 //
@@ -60,7 +62,7 @@ class PriorityActionResource extends Resource
     {
         return [
             'index' => Pages\ListPriorityActions::route('/'),
-            'create' => Pages\CreatePriorityAction::route('/create'),
+            // 'create' => Pages\CreatePriorityAction::route('/create'),
             'edit' => Pages\EditPriorityAction::route('/{record}/edit'),
         ];
     }    
