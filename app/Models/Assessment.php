@@ -32,4 +32,9 @@ class Assessment extends Model
     {
         return $this->belongsTo(Country::class);
     }
+
+    public function priorityActions(): BelongsToMany
+    {
+        return $this->belongsToMany(PriorityAction::class);
+    }
 }

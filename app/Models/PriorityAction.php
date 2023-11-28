@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class PriorityAction extends Model
 {
@@ -26,12 +28,16 @@ class PriorityAction extends Model
      * @var array
      */
     protected $casts = [
-        'id' => 'integer',
         'recommendation_id' => 'integer',
     ];
 
     public function recommendation(): BelongsTo
     {
         return $this->belongsTo(Recommendation::class);
+    }
+
+    public function assessmentPriorityActions(): HasMany
+    {
+        return $this->hasToMany(AssessmentPriorityAction::class);
     }
 }

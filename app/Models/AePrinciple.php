@@ -32,4 +32,9 @@ class AePrinciple extends Model
     {
         return $this->belongsToMany(Recommendation::class);
     }
+
+    public function statements(): HasMany
+    {
+        return $this->hasMany(Statement::class);
+    }
 }
