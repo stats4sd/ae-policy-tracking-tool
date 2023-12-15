@@ -38,4 +38,19 @@ class Assessment extends Model
     {
         return $this->HasMany(AssessmentPriorityAction::class);
     }
+
+    protected static function booted()
+    {
+        static::creating(function ($query) {
+            $query->status = 'In Progress';
+        });
+
+        static::created(function (self $assessment) {
+
+            foreach (PriorityAction::all() as $priority_action) {
+                AssessmentPriorityAction::create(['assessment_id' => $assessment->id, 'priority_action_id' => $priority_action->id]);
+            }
+
+        });
+    }
 }

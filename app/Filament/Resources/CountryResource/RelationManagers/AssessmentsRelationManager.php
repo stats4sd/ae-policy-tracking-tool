@@ -18,9 +18,7 @@ class AssessmentsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('created_at')
-                    ->required()
-                    ->maxLength(255),
+                // 
             ]);
     }
 
@@ -29,8 +27,8 @@ class AssessmentsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('created_at')
             ->columns([
-                Tables\Columns\TextColumn::make('created_at'),
-                Tables\Columns\TextColumn::make('staus'),
+                Tables\Columns\TextColumn::make('created_at')->sortable(),
+                Tables\Columns\TextColumn::make('status'),
                 Tables\Columns\TextColumn::make('finalised_at'),
             ])
             ->filters([
@@ -40,7 +38,7 @@ class AssessmentsRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
