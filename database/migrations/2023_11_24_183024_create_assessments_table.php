@@ -15,9 +15,9 @@ return new class extends Migration
 
         Schema::create('assessments', function (Blueprint $table) {
             $table->id();
-            $table->string('country_id', 400);
-            $table->foreign('country_id')->references('id')->on('countries');
+            $table->foreignId('country_id');
             $table->string('status', 400);
+            $table->timestamp('finalised_at')->nullable();
             $table->timestamps();
         });
 
