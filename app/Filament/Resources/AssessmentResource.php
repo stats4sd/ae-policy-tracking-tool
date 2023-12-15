@@ -52,7 +52,7 @@ class AssessmentResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\AssessmentPriorityActionsRelationManager::class,
         ];
     }
     
