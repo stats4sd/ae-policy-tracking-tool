@@ -2,16 +2,15 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PriorityActionResource\Pages;
-use App\Filament\Resources\PriorityActionResource\RelationManagers;
-use App\Models\PriorityAction;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\PriorityAction;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\PriorityActionResource\Pages;
 
 class PriorityActionResource extends Resource
 {

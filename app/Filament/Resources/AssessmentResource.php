@@ -2,16 +2,16 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\AssessmentResource\Pages;
-use App\Filament\Resources\AssessmentResource\RelationManagers;
-use App\Models\Assessment;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
+use App\Models\Assessment;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\AssessmentResource\Pages;
+use App\Filament\Resources\AssessmentResource\RelationManagers;
 
 class AssessmentResource extends Resource
 {
@@ -31,7 +31,10 @@ class AssessmentResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('country.name')->sortable(),
+                Tables\Columns\TextColumn::make('created_at')->sortable(),
+                Tables\Columns\TextColumn::make('status'),
+                Tables\Columns\TextColumn::make('finalised_at'),
             ])
             ->filters([
                 //

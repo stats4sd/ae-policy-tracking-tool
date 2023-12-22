@@ -69,8 +69,8 @@ class AdminPanelProvider extends PanelProvider
                 return $builder
                     ->item(...CountryResource::getNavigationItems())
                     // ->item(...AssessmentResource::getNavigationItems())
-                    // ->item(...StatementResource::getNavigationItems())
-                    // ->item(...EvidenceResource::getNavigationItems())
+                    ->item(...StatementResource::getNavigationItems())
+                    ->item(...EvidenceResource::getNavigationItems())
                     ->groups([
                         NavigationGroup::make('Lookup Lists')
                             ->items([

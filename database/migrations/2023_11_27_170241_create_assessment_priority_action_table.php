@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('assessment_priority_action', function (Blueprint $table) {
             $table->id();
             $table->foreignId('assessment_id');
-            $table->foreignId('priority_action_id');
+            $table->string('priority_action_id')->constrained('priority_actions');
             $table->timestamps();
         });
     }

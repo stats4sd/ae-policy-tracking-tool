@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\EvidenceResource\Pages;
-use App\Filament\Resources\EvidenceResource\RelationManagers;
-use App\Models\Evidence;
+use App\Filament\Resources\AssessmentPriorityActionResource\Pages;
+use App\Filament\Resources\AssessmentPriorityActionResource\RelationManagers;
+use App\Models\AssessmentPriorityAction;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,9 +13,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class EvidenceResource extends Resource
+class AssessmentPriorityActionResource extends Resource
 {
-    protected static ?string $model = Evidence::class;
+    protected static ?string $model = AssessmentPriorityAction::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -23,9 +23,7 @@ class EvidenceResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('evidence')->required(),
-                Forms\Components\TextInput::make('files'),
-                Forms\Components\TextInput::make('official_source'),
+                //
             ]);
     }
 
@@ -33,7 +31,8 @@ class EvidenceResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('assessment_id'),
+                Tables\Columns\TextColumn::make('priority_action_id'),
             ])
             ->filters([
                 //
@@ -61,9 +60,9 @@ class EvidenceResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListEvidence::route('/'),
-            'create' => Pages\CreateEvidence::route('/create'),
-            'edit' => Pages\EditEvidence::route('/{record}/edit'),
+            'index' => Pages\ListAssessmentPriorityActions::route('/'),
+            'create' => Pages\CreateAssessmentPriorityAction::route('/create'),
+            'edit' => Pages\EditAssessmentPriorityAction::route('/{record}/edit'),
         ];
     }    
 }

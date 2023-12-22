@@ -3,12 +3,14 @@
 namespace App\Filament\Resources\CountryResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Forms\Form;
+use App\Models\Assessment;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\AssessmentResource;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Resources\RelationManagers\RelationManager;
 
 class AssessmentsRelationManager extends RelationManager
 {
@@ -48,6 +50,8 @@ class AssessmentsRelationManager extends RelationManager
             ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
-            ]);
+            ])
+            -> recordUrl(fn(Assessment $record) => AssessmentResource::getUrl('edit', ['record' => $record])
+            );
     }
 }
