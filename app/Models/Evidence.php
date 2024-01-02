@@ -10,6 +10,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Evidence extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'evidence',
+        'statement_id',
+        'official_source' => 'boolean',
+    ];
     
     public function statement(): BelongsTo
     {

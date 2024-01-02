@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\AssessmentPriorityActionResource\Pages;
-use App\Filament\Resources\AssessmentPriorityActionResource\RelationManagers;
-use App\Models\AssessmentPriorityAction;
+use App\Filament\Resources\AssessmentPriorityActionTypeResource\Pages;
+use App\Filament\Resources\AssessmentPriorityActionTypeResource\RelationManagers;
+use App\Models\AssessmentPriorityActionType;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,9 +13,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class AssessmentPriorityActionResource extends Resource
+class AssessmentPriorityActionTypeResource extends Resource
 {
-    protected static ?string $model = AssessmentPriorityAction::class;
+    protected static ?string $model = AssessmentPriorityActionType::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -31,8 +31,8 @@ class AssessmentPriorityActionResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('assessment_id'),
-                Tables\Columns\TextColumn::make('priority_action_id'),
+                Tables\Columns\TextColumn::make('assessment_priority_action_id'),
+                Tables\Columns\TextColumn::make('type.name'),
             ])
             ->filters([
                 //
@@ -53,16 +53,16 @@ class AssessmentPriorityActionResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\AssessmentPriorityActionTypesRelationManager::class,
+            RelationManagers\StatementsRelationManager::class,
         ];
     }
     
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListAssessmentPriorityActions::route('/'),
-            'create' => Pages\CreateAssessmentPriorityAction::route('/create'),
-            'edit' => Pages\EditAssessmentPriorityAction::route('/{record}/edit'),
+            'index' => Pages\ListAssessmentPriorityActionTypes::route('/'),
+            'create' => Pages\CreateAssessmentPriorityActionType::route('/create'),
+            'edit' => Pages\EditAssessmentPriorityActionType::route('/{record}/edit'),
         ];
     }    
 }

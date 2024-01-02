@@ -9,4 +9,5 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateEvidence extends CreateRecord
 {
     protected static string $resource = EvidenceResource::class;
+    protected static bool $canCreateAnother = false;
 }

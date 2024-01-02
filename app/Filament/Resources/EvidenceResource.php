@@ -23,17 +23,25 @@ class EvidenceResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Select::make('statement_id')
+                                    ->placeholder('Select the statement')
+                                    ->relationship('statement', 'name')
+                                    ->required(),
                 Forms\Components\TextInput::make('evidence')->required(),
-                Forms\Components\TextInput::make('files'),
-                Forms\Components\TextInput::make('official_source'),
-            ]);
+                Forms\Components\FileUpload::make('files')->multiple(),
+                Forms\Components\Checkbox::make('official_source'),
+            ])
+            ->columns(1);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('evidence'),
+                Tables\Columns\IconColumn::make('official_source')
+                                ->boolean()
+                                ->sortable()
             ])
             ->filters([
                 //

@@ -31,6 +31,7 @@ class StatementResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('assessment_priority_action_type_id'),
                 Tables\Columns\TextColumn::make('name')->wrap(),
             ])
             ->filters([
@@ -52,7 +53,7 @@ class StatementResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\EvidenceRelationManager::class,
         ];
     }
     

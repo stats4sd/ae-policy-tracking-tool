@@ -28,6 +28,7 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use App\Filament\Resources\AssessmentPriorityActionTypeResource;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -69,8 +70,9 @@ class AdminPanelProvider extends PanelProvider
                 return $builder
                     ->item(...CountryResource::getNavigationItems())
                     // ->item(...AssessmentResource::getNavigationItems())
+                    ->item(...AssessmentPriorityActionTypeResource::getNavigationItems())
                     ->item(...StatementResource::getNavigationItems())
-                    ->item(...EvidenceResource::getNavigationItems())
+                    // ->item(...EvidenceResource::getNavigationItems())
                     ->groups([
                         NavigationGroup::make('Lookup Lists')
                             ->items([

@@ -1,26 +1,24 @@
 <?php
 
-namespace App\Filament\Resources\AssessmentResource\RelationManagers;
+namespace App\Filament\Resources\AssessmentPriorityActionResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Tables;
 use Filament\Forms\Form;
+use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Tables;
 use Filament\Tables\Table;
-use App\Models\AssessmentPriorityAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Resources\RelationManagers\RelationManager;
-use App\Filament\Resources\AssessmentPriorityActionResource;
 
-class AssessmentPriorityActionsRelationManager extends RelationManager
+class AssessmentPriorityActionTypesRelationManager extends RelationManager
 {
-    protected static string $relationship = 'assessmentPriorityActions';
+    protected static string $relationship = 'assessmentPriorityActionTypes';
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('priority_action_id')
+                Forms\Components\TextInput::make('assessment_priority_action_id')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -29,11 +27,9 @@ class AssessmentPriorityActionsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('priority_action_id')
+            ->recordTitleAttribute('assessment_priority_action_id')
             ->columns([
-                // Tables\Columns\TextColumn::make('assessment_id'),
-                Tables\Columns\TextColumn::make('priority_action_id'),
-                Tables\Columns\TextColumn::make('priorityAction.name')
+                Tables\Columns\TextColumn::make('assessment_priority_action_id'),
             ])
             ->filters([
                 //
@@ -42,7 +38,7 @@ class AssessmentPriorityActionsRelationManager extends RelationManager
                 // Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                // Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
@@ -52,8 +48,6 @@ class AssessmentPriorityActionsRelationManager extends RelationManager
             ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
-            ])
-            -> recordUrl(fn(AssessmentPriorityAction $record) => AssessmentPriorityActionResource::getUrl('edit', ['record' => $record])
-        );
+            ]);
     }
 }

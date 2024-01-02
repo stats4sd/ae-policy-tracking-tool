@@ -12,7 +12,11 @@ class Statement extends Model
 {
     use HasFactory;
 
-    public function assessment_priority_action_type(): BelongsTo
+    protected $fillable = [
+        'name',
+    ];
+
+    public function assessmentPriorityActionType(): BelongsTo
     {
         return $this->belongsTo(AssessmentPriorityActionType::class);
     }
