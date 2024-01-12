@@ -6,6 +6,7 @@ use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 use App\Models\AssessmentPriorityAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -31,9 +32,16 @@ class AssessmentPriorityActionsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('priority_action_id')
             ->columns([
-                // Tables\Columns\TextColumn::make('assessment_id'),
-                Tables\Columns\TextColumn::make('priority_action_id'),
-                Tables\Columns\TextColumn::make('priorityAction.name')
+                // Tables\Columns\TextColumn::make('priority_action_id')->sortable(),
+                // Tables\Columns\TextColumn::make('priorityAction.name')->wrap(),
+                Tables\Columns\TextColumn::make('priority_action_id')
+                                ->label('Priority Action')
+                                ->description(fn (AssessmentPriorityAction $record): string => $record->priorityAction->name)
+                                ->sortable(),
+                Tables\Columns\TextColumn::make('statements_count')
+                                    ->counts('statements')
+                                    ->sortable()
+                                    ->label('# Statements'),
             ])
             ->filters([
                 //
@@ -43,11 +51,11 @@ class AssessmentPriorityActionsRelationManager extends RelationManager
             ])
             ->actions([
                 // Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                // Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    // Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
             ->emptyStateActions([

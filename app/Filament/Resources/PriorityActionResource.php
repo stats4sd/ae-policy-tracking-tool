@@ -22,7 +22,8 @@ class PriorityActionResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\Textarea::make('name')
+                                ->rows(4)
             ]);
     }
 
@@ -30,8 +31,7 @@ class PriorityActionResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id'),
-                Tables\Columns\TextColumn::make('recommendation.name')->wrap(),
+                Tables\Columns\TextColumn::make('id')->sortable(),
                 Tables\Columns\TextColumn::make('name')->wrap(),
             ])
             ->filters([

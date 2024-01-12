@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\CountryResource\RelationManagers;
 
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
@@ -29,9 +30,19 @@ class AssessmentsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('created_at')
             ->columns([
-                Tables\Columns\TextColumn::make('created_at')->sortable(),
-                Tables\Columns\TextColumn::make('status'),
-                Tables\Columns\TextColumn::make('finalised_at'),
+                Tables\Columns\TextColumn::make('created_at')
+                                    ->sortable()
+                                    ->dateTime(),
+                Tables\Columns\TextColumn::make('status')
+                                    ->sortable()
+                                    ->badge()
+                                    ->color(fn (string $state): string => match ($state) {
+                                        'In Progress' => 'warning',
+                                        'Finalised' => 'success'
+                                    }),
+                Tables\Columns\TextColumn::make('finalised_at')
+                                    ->sortable()
+                                    ->dateTime(),
             ])
             ->filters([
                 //
@@ -41,11 +52,22 @@ class AssessmentsRelationManager extends RelationManager
             ])
             ->actions([
                 // Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\Action::make('finalise')
+                                ->icon(fn(Assessment $record): string => $record->finalised_at ? '' : 'heroicon-o-check')
+                                ->label(fn(Assessment $record): string => $record->finalised_at ? '' : 'Mark as finalised')
+                                ->color('success')
+                                ->action(function (Assessment $record) {
+                                    if($record->status==='In Progress') {
+                                        $record->status = 'Finalised';
+                                        $record->finalised_at = Carbon::now();
+                                        $record->save();
+                                    }
+                                }),
+                // Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    // Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
             ->emptyStateActions([

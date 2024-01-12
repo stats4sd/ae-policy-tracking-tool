@@ -3,12 +3,14 @@
 namespace App\Filament\Resources\StatementResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use App\Models\Evidence;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\EvidenceResource;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Resources\RelationManagers\RelationManager;
 
 class EvidenceRelationManager extends RelationManager
 {
@@ -21,8 +23,9 @@ class EvidenceRelationManager extends RelationManager
                 Forms\Components\TextInput::make('evidence')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\Checkbox::make('official_source')
+                                    ->label('Does this evidence come from an official source?'),
                 Forms\Components\FileUpload::make('files')->multiple(),
-                Forms\Components\Checkbox::make('official_source'),
             ])
             ->columns(1);
     }
@@ -44,16 +47,17 @@ class EvidenceRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                // Tables\Actions\EditAction::make(),
+                // Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    // Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
-            ]);
+            ])
+            -> recordUrl(fn(Evidence $record) => EvidenceResource::getUrl('edit', ['record' => $record]));
     }
 }

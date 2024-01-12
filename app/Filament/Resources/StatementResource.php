@@ -2,16 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\StatementResource\Pages;
-use App\Filament\Resources\StatementResource\RelationManagers;
-use App\Models\Statement;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use App\Models\Type;
 use Filament\Tables;
+use Filament\Forms\Form;
+use App\Models\Statement;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\StatementResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\StatementResource\RelationManagers;
 
 class StatementResource extends Resource
 {
@@ -23,16 +24,39 @@ class StatementResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')->required(),
-            ]);
+                Forms\Components\Select::make('type_id')
+                                ->label('Type')
+                                ->options(Type::all()->pluck('name','id')->toArray())
+                                ->required(),  
+                Forms\Components\Textarea::make('name')
+                                ->rows(4)
+                                ->label('Statement')
+                                ->required(),
+            ])->columns(1);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('assessment_priority_action_type_id'),
-                Tables\Columns\TextColumn::make('name')->wrap(),
+                Tables\Columns\TextColumn::make('assessmentPriorityAction.assessment.country.name')
+                                ->sortable(),
+                Tables\Columns\TextColumn::make('assessmentPriorityAction.assessment_id')
+                                ->label('Assessment id')
+                                ->sortable(),
+                Tables\Columns\TextColumn::make('assessmentPriorityAction.priority_action_id')
+                                ->label('Priority action id')
+                                ->sortable(),
+                Tables\Columns\TextColumn::make('type.name')
+                                ->sortable()
+                                ->wrap(),
+                Tables\Columns\TextColumn::make('name')
+                                ->wrap()
+                                ->label('Statement'),
+                Tables\Columns\TextColumn::make('evidence_count')
+                                ->counts('evidence')
+                                ->sortable()
+                                ->label('# Evidence'),
             ])
             ->filters([
                 //

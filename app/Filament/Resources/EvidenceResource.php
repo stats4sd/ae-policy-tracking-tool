@@ -28,8 +28,9 @@ class EvidenceResource extends Resource
                                     ->relationship('statement', 'name')
                                     ->required(),
                 Forms\Components\TextInput::make('evidence')->required(),
+                Forms\Components\Checkbox::make('official_source')
+                                    ->label('Does this evidence come from an official source?'),
                 Forms\Components\FileUpload::make('files')->multiple(),
-                Forms\Components\Checkbox::make('official_source'),
             ])
             ->columns(1);
     }

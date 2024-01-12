@@ -39,6 +39,6 @@ class PriorityAction extends Model
 
     public function assessmentPriorityActions(): HasMany
     {
-        return $this->hasToMany(AssessmentPriorityAction::class);
+        return $this->hasMany(AssessmentPriorityAction::class);
     }
 }

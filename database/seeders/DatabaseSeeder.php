@@ -23,5 +23,6 @@ class DatabaseSeeder extends Seeder
         $this->call(AePrincipleRecommendationTableSeeder::class);
         $this->call(PriorityActionsTableSeeder::class);
         $this->call(TypesTableSeeder::class);
+        $this->call(TestSeeder::class);
     }
 }

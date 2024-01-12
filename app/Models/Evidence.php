@@ -14,9 +14,13 @@ class Evidence extends Model
     protected $fillable = [
         'evidence',
         'statement_id',
-        'official_source' => 'boolean',
+        'official_source',
     ];
     
+    protected $casts = [
+        'official_source' => 'boolean',
+    ];
+
     public function statement(): BelongsTo
     {
         return $this->belongsTo(Statement::class);

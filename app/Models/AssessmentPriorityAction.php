@@ -20,12 +20,12 @@ class AssessmentPriorityAction extends Pivot
 
     public function priorityAction(): BelongsTo
     {
-        return $this->belongsTo(PriorityAction::class);
+        return $this->belongsTo(PriorityAction::class, 'priority_action_id');
     }
 
-    public function assessmentPriorityActionTypes(): HasMany
+    public function statements(): HasMany
     {
-        return $this->HasMany(AssessmentPriorityActionType::class);
+        return $this->HasMany(Statement::class, 'assessment_priority_action_id');
     }
 
 }

@@ -19,9 +19,9 @@ class Type extends Model
         'name',
     ];
 
-    public function assessmentPriorityActionType(): HasMany
+    public function statements(): HasMany
     {
-        return $this->hasMany(AssessmentPriorityActionType::class);
+        return $this->hasMany(Statement::class);
     }
 
 }

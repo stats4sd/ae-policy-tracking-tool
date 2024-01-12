@@ -2,16 +2,17 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Forms;
+use Filament\Tables;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use App\Models\AssessmentPriorityAction;
+use Illuminate\Database\Eloquent\Builder;
+use RelationManagers\StatementsRelationManager;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\AssessmentPriorityActionResource\Pages;
 use App\Filament\Resources\AssessmentPriorityActionResource\RelationManagers;
-use App\Models\AssessmentPriorityAction;
-use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class AssessmentPriorityActionResource extends Resource
 {
@@ -23,16 +24,21 @@ class AssessmentPriorityActionResource extends Resource
     {
         return $form
             ->schema([
-                //
-            ]);
+                Forms\Components\TextInput::make('priority_action_id')->disabledOn('edit'),
+            ])->columns(1);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('assessment_id'),
-                Tables\Columns\TextColumn::make('priority_action_id'),
+                Tables\Columns\TextColumn::make('assessment.country.name')->sortable(),
+                Tables\Columns\TextColumn::make('assessment_id')->sortable(),
+                Tables\Columns\TextColumn::make('priority_action_id')->sortable(),
+                Tables\Columns\TextColumn::make('statements_count')
+                                ->counts('statements')
+                                ->sortable()
+                                ->label('# Statements'),
             ])
             ->filters([
                 //
@@ -42,7 +48,7 @@ class AssessmentPriorityActionResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    // Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
             ->emptyStateActions([
@@ -53,7 +59,7 @@ class AssessmentPriorityActionResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\AssessmentPriorityActionTypesRelationManager::class,
+            RelationManagers\StatementsRelationManager::class,
         ];
     }
     

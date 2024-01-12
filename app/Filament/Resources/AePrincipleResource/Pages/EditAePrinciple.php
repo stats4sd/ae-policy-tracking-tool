@@ -10,6 +10,11 @@ class EditAePrinciple extends EditRecord
 {
     protected static string $resource = AePrincipleResource::class;
 
+    protected function getRedirectUrl(): string 
+    {
+        return $this->getResource()::getUrl('index');
+    }
+    
     protected function getHeaderActions(): array
     {
         return [

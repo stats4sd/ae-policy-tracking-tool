@@ -8,6 +8,7 @@ use Filament\Forms\Form;
 use App\Models\Assessment;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\AssessmentResource\Pages;
@@ -23,8 +24,10 @@ class AssessmentResource extends Resource
     {
         return $form
             ->schema([
-                //
-            ]);
+                Forms\Components\DateTimePicker::make('created_at')->disabledOn('edit'),
+                Forms\Components\TextInput::make('status')->disabledOn('edit'),
+                Forms\Components\DateTimePicker::make('finalised_at')->disabledOn('edit'),
+            ])->columns(1);
     }
 
     public static function table(Table $table): Table
@@ -32,9 +35,19 @@ class AssessmentResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('country.name')->sortable(),
-                Tables\Columns\TextColumn::make('created_at')->sortable(),
-                Tables\Columns\TextColumn::make('status'),
-                Tables\Columns\TextColumn::make('finalised_at'),
+                Tables\Columns\TextColumn::make('created_at')
+                                    ->sortable()
+                                    ->dateTime(),
+                Tables\Columns\TextColumn::make('status')
+                                    ->sortable()
+                                    ->badge()
+                                    ->color(fn (string $state): string => match ($state) {
+                                        'In Progress' => 'warning',
+                                        'Finalised' => 'success'
+                                    }),
+                Tables\Columns\TextColumn::make('finalised_at')
+                                    ->sortable()
+                                    ->dateTime(),
             ])
             ->filters([
                 //

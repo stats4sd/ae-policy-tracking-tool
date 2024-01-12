@@ -23,7 +23,8 @@ class RecommendationResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\Textarea::make('name')
+                                ->rows(4)
             ]);
     }
 

@@ -14,11 +14,17 @@ class Statement extends Model
 
     protected $fillable = [
         'name',
+        'type_id'
     ];
 
-    public function assessmentPriorityActionType(): BelongsTo
+    public function assessmentPriorityAction(): BelongsTo
     {
-        return $this->belongsTo(AssessmentPriorityActionType::class);
+        return $this->belongsTo(AssessmentPriorityAction::class);
+    }
+
+    public function type(): BelongsTo
+    {
+        return $this->belongsTo(Type::class);
     }
 
     public function aePrinciples(): BelongsToMany
