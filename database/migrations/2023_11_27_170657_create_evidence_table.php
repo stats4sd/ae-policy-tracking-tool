@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('statement_id');
             $table->text('evidence');
-            $table->text('files')->nullable();
             $table->boolean('official_source');
             $table->timestamps();
         });

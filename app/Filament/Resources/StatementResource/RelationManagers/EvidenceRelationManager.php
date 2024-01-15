@@ -25,7 +25,11 @@ class EvidenceRelationManager extends RelationManager
                     ->maxLength(255),
                 Forms\Components\Checkbox::make('official_source')
                                     ->label('Does this evidence come from an official source?'),
-                Forms\Components\FileUpload::make('files')->multiple(),
+                Forms\Components\SpatieMediaLibraryFileUpload::make('files')
+                    ->multiple()
+                    ->reorderable()
+                    ->preserveFilenames()
+                    ->collection('evidence-files'),
             ])
             ->columns(1);
     }

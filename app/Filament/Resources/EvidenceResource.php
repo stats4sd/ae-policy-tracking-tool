@@ -30,7 +30,11 @@ class EvidenceResource extends Resource
                 Forms\Components\TextInput::make('evidence')->required(),
                 Forms\Components\Checkbox::make('official_source')
                                     ->label('Does this evidence come from an official source?'),
-                Forms\Components\FileUpload::make('files')->multiple(),
+                Forms\Components\SpatieMediaLibraryFileUpload::make('files')
+                                    ->multiple()
+                                    ->reorderable()
+                                    ->preserveFilenames()
+                                    ->collection('evidence-files'),
             ])
             ->columns(1);
     }
