@@ -32,12 +32,10 @@ class AssessmentPriorityActionsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('priority_action_id')
             ->columns([
-                // Tables\Columns\TextColumn::make('priority_action_id')->sortable(),
-                // Tables\Columns\TextColumn::make('priorityAction.name')->wrap(),
-                Tables\Columns\TextColumn::make('priority_action_id')
-                                ->label('Priority Action')
-                                ->description(fn (AssessmentPriorityAction $record): string => $record->priorityAction->name)
-                                ->sortable(),
+                Tables\Columns\TextColumn::make('priority_action_id')->sortable(),
+                Tables\Columns\TextColumn::make('priorityAction')
+                                        ->formatStateUsing(fn ($state): string => $state->name)
+                                        ->wrap(),
                 Tables\Columns\TextColumn::make('statements_count')
                                     ->counts('statements')
                                     ->sortable()
