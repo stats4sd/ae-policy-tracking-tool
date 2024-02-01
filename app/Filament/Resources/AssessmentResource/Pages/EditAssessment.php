@@ -27,6 +27,8 @@ class EditAssessment extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('preview output')
+            ->url(AssessmentResource::getUrl('preview', ['record' => $this->getRecord()])),
             Actions\DeleteAction::make(),
         ];
     }

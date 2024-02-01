@@ -64,20 +64,21 @@ class AssessmentResource extends Resource
                 Tables\Actions\CreateAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             RelationManagers\AssessmentPriorityActionsRelationManager::class,
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListAssessments::route('/'),
             'create' => Pages\CreateAssessment::route('/create'),
             'edit' => Pages\EditAssessment::route('/{record}/edit'),
+            'preview' => Pages\AssessmentOutput::route('/{record}/preview'),
         ];
-    }    
+    }
 }
