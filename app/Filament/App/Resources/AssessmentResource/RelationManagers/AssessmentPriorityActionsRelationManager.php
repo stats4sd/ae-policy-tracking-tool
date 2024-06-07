@@ -17,6 +17,11 @@ class AssessmentPriorityActionsRelationManager extends RelationManager
 {
     protected static string $relationship = 'assessmentPriorityActions';
 
+    public function isReadOnly(): bool
+    {
+        return false;
+    }
+
     public function form(Form $form): Form
     {
         return $form
@@ -36,30 +41,30 @@ class AssessmentPriorityActionsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('priorityAction')
                                         ->formatStateUsing(fn ($state): string => $state->name)
                                         ->wrap(),
+                Tables\Columns\TextColumn::make('policies.name')
+                                        ->listWithLineBreaks()
+                                        ->badge(),
                 Tables\Columns\TextColumn::make('statements_count')
-                                    ->counts('statements')
-                                    ->sortable()
-                                    ->label('# Statements'),
+                                        ->counts('statements')
+                                        ->sortable()
+                                        ->label('# Statements'),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
-                // Tables\Actions\CreateAction::make(),
+                //
             ])
             ->actions([
-                // Tables\Actions\EditAction::make(),
-                // Tables\Actions\DeleteAction::make(),
+                //
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    // Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                //
             ])
             ->emptyStateActions([
-                Tables\Actions\CreateAction::make(),
+                //
             ])
-            -> recordUrl(fn(AssessmentPriorityAction $record) => AssessmentPriorityActionResource::getUrl('edit', ['record' => $record])
+            -> recordUrl(fn(AssessmentPriorityAction $record) => AssessmentPriorityActionResource::getUrl('view', ['record' => $record])
         );
     }
 }

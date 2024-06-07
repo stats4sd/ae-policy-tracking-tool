@@ -18,6 +18,11 @@ class StatementsRelationManager extends RelationManager
     protected static string $relationship = 'statements';
     protected static ?string $inverseRelationship = 'assessmentPriorityAction';
 
+    public function isReadOnly(): bool
+    {
+        return false;
+    }
+
     public function form(Form $form): Form
     {
         return $form
@@ -26,13 +31,36 @@ class StatementsRelationManager extends RelationManager
                     ->label('Type')
                     ->inlineLabel()
                     ->options(Type::all()->pluck('name','id')->toArray())
-                    ->required(),  
+                    ->required(),
                 Forms\Components\Textarea::make('name')
                     ->label('Statement')
                     ->required()
                     ->rows(4)
                     ->inlineLabel()
                     ->required(),
+                Forms\Components\Repeater::make('evidence_repeater')
+                    ->schema([
+                        Forms\Components\Textarea::make('evidence')
+                            ->required()
+                            ->label('Evidence description')
+                            ->maxLength(400)
+                            ->rows(7),
+                        Forms\Components\SpatieMediaLibraryFileUpload::make('files')
+                            ->multiple()
+                            ->reorderable()
+                            ->preserveFilenames()
+                            ->collection('evidence-files'),
+                        Forms\Components\Toggle::make('official_source')
+                            ->inline(false)
+                            ->offIcon('heroicon-m-x-mark')
+                            ->onIcon('heroicon-m-check')
+                    ])
+                    ->defaultItems(0)
+                    ->addActionLabel('Add new evidence to support this statement')
+                    ->columns(3)
+//                    ->label('')
+                    ->reorderable(false)
+                    ->relationship('evidence')
             ])->columns(1);
     }
 
@@ -59,14 +87,11 @@ class StatementsRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                // Tables\Actions\EditAction::make(),
-                // Tables\Actions\Action::make('add_evidence')->icon('heroicon-m-plus'),
-                // Tables\Actions\DeleteAction::make(),
+//                 Tables\Actions\EditAction::make(),
+//                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    // Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                //
             ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),

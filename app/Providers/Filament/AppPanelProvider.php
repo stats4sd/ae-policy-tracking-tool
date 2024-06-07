@@ -11,9 +11,9 @@ use Filament\Navigation\NavigationItem;
 use Filament\Navigation\NavigationGroup;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Navigation\NavigationBuilder;
-use App\Filament\App\Resources\CountryResource;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
+use App\Filament\App\Resources\AssessmentResource;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
@@ -29,6 +29,7 @@ class AppPanelProvider extends PanelProvider
         return $panel
             ->id('app')
             ->path('')
+            ->login()
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -57,11 +58,11 @@ class AppPanelProvider extends PanelProvider
             ])
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 return $builder
-                    ->item(...CountryResource::getNavigationItems())
+                    ->item(...AssessmentResource::getNavigationItems())
                     ->groups([
                         NavigationGroup::make('')
-                        ->items([NavigationItem::make('Tool Details')
-                                ->url('/admin')
+                        ->items([NavigationItem::make('Review Tool Details')
+                                ->url('/admin/recommendations')
                                 ->icon('heroicon-o-arrow-long-right')
                         ])
                     ]);

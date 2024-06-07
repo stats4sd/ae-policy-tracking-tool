@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use App\Models\Policy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Assessment extends Model
 {
@@ -38,6 +40,11 @@ class Assessment extends Model
     public function assessmentPriorityActions(): HasMany
     {
         return $this->HasMany(AssessmentPriorityAction::class);
+    }
+    
+    public function policies(): HasMany
+    {
+        return $this->hasMany(Policy::class);
     }
 
     protected static function booted()

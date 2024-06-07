@@ -7,11 +7,13 @@ use Filament\Panel;
 use Filament\Widgets;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Navigation\NavigationItem;
 use App\Filament\Resources\TypeResource;
 use App\Filament\Resources\UserResource;
 use Filament\Navigation\NavigationGroup;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Navigation\NavigationBuilder;
+use App\Filament\Resources\CountryResource;
 use App\Filament\Resources\EvidenceResource;
 use App\Filament\Resources\StatementResource;
 use App\Filament\Resources\AssessmentResource;
@@ -27,7 +29,6 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Filament\Navigation\NavigationItem;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -67,7 +68,7 @@ class AdminPanelProvider extends PanelProvider
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 return $builder
                 ->item(NavigationItem::make('Return to Tool')
-                ->url(url('/'))
+                ->url(url('/assessments'))
                 ->icon('heroicon-o-arrow-left'))
                     ->groups([
                         NavigationGroup::make('Lookup Lists')
@@ -76,6 +77,7 @@ class AdminPanelProvider extends PanelProvider
                                 ...RecommendationResource::getNavigationItems(),
                                 ...PriorityActionResource::getNavigationItems(),
                                 ...TypeResource::getNavigationItems(),
+                                ...CountryResource::getNavigationItems(),
                             ]),
                         NavigationGroup::make('User Management')
                             ->items([

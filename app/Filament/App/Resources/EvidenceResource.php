@@ -63,20 +63,19 @@ class EvidenceResource extends Resource
                 Tables\Actions\CreateAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListEvidence::route('/'),
             'create' => Pages\CreateEvidence::route('/create'),
             'edit' => Pages\EditEvidence::route('/{record}/edit'),
         ];
-    }    
+    }
 }

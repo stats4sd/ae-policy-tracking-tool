@@ -19,6 +19,8 @@ class TypeResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationLabel = 'Statement Types';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -48,20 +50,20 @@ class TypeResource extends Resource
                 Tables\Actions\CreateAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListTypes::route('/'),
-            // 'create' => Pages\CreateType::route('/create'),
+            'create' => Pages\CreateType::route('/create'),
             'edit' => Pages\EditType::route('/{record}/edit'),
         ];
-    }    
+    }
 }

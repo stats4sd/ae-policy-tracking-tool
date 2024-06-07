@@ -10,10 +10,8 @@ class ListAePrinciples extends ListRecords
 {
     protected static string $resource = AePrincipleResource::class;
 
-    protected function getHeaderActions(): array
+    public function getBreadcrumbs(): array
     {
-        return [
-            // Actions\CreateAction::make(),
-        ];
+        return [];
     }
 }

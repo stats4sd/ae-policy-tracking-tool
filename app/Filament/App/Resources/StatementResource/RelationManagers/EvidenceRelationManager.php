@@ -20,18 +20,22 @@ class EvidenceRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('evidence')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Checkbox::make('official_source')
-                                    ->label('Does this evidence come from an official source?'),
-                Forms\Components\SpatieMediaLibraryFileUpload::make('files')
-                    ->multiple()
-                    ->reorderable()
-                    ->preserveFilenames()
-                    ->collection('evidence-files'),
+            Forms\Components\Textarea::make('evidence')
+                            ->required()
+                            ->label('Evidence description')
+                            ->maxLength(400)
+                            ->rows(7),
+                        Forms\Components\SpatieMediaLibraryFileUpload::make('files')
+                            ->multiple()
+                            ->reorderable()
+                            ->preserveFilenames()
+                            ->collection('evidence-files'),
+                        Forms\Components\Toggle::make('official_source')
+                            ->inline(false)
+                            ->offIcon('heroicon-m-x-mark')
+                            ->onIcon('heroicon-m-check')
             ])
-            ->columns(1);
+            ->columns(3);
     }
 
     public function table(Table $table): Table
@@ -42,7 +46,8 @@ class EvidenceRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('evidence'),
                 Tables\Columns\IconColumn::make('official_source')
                                 ->boolean()
-                                ->sortable()
+                                ->sortable(),
+                Tables\Columns\TextColumn::make('files'),
             ])
             ->filters([
                 //
@@ -51,17 +56,14 @@ class EvidenceRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                // Tables\Actions\EditAction::make(),
-                // Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make(),
+                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    // Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                //
             ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
-            ])
-            -> recordUrl(fn(Evidence $record) => EvidenceResource::getUrl('edit', ['record' => $record]));
+            ]);
     }
 }

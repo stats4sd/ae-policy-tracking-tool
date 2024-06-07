@@ -18,11 +18,11 @@ class EditEvidence extends EditRecord
     {
         $breadcrumbs = [];
 
+        $breadcrumbs['/assessments'] = 'Assessments';
+
         $evidence = $this->getRecord();
 
-        $breadcrumbs[CountryResource::getUrl('edit', ['record' => $evidence->statement->assessmentPriorityAction->assessment->country])] = $evidence->statement->assessmentPriorityAction->assessment->country->name;
-
-        $breadcrumbs[AssessmentResource::getUrl('edit', ['record' => $evidence->statement->assessmentPriorityAction->assessment])] = 'Assessment ' . substr($evidence->statement->assessmentPriorityAction->assessment->created_at,0,stripos($evidence->statement->assessmentPriorityAction->assessment->created_at," "));
+        $breadcrumbs[AssessmentResource::getUrl('edit', ['record' => $evidence->statement->assessmentPriorityAction->assessment])] = $evidence->statement->assessmentPriorityAction->assessment->country->name . ' ' . substr($evidence->statement->assessmentPriorityAction->assessment->created_at,0,stripos($evidence->statement->assessmentPriorityAction->assessment->created_at," "));
 
         $breadcrumbs[AssessmentPriorityActionResource::getUrl('edit', ['record' => $evidence->statement->assessmentPriorityAction])] = 'Priority Action ' . $evidence->statement->assessmentPriorityAction->priority_action_id;
 
@@ -32,12 +32,12 @@ class EditEvidence extends EditRecord
 
         return $breadcrumbs;
     }
-    
-    protected function getRedirectUrl(): string 
+
+    protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
     }
-    
+
     protected function getHeaderActions(): array
     {
         return [

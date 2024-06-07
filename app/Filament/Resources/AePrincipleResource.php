@@ -19,6 +19,8 @@ class AePrincipleResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationLabel = 'Agroecology Principles';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -48,14 +50,14 @@ class AePrincipleResource extends Resource
                 Tables\Actions\CreateAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -63,5 +65,5 @@ class AePrincipleResource extends Resource
             // 'create' => Pages\CreateAePrinciple::route('/create'),
             'edit' => Pages\EditAePrinciple::route('/{record}/edit'),
         ];
-    }    
+    }
 }

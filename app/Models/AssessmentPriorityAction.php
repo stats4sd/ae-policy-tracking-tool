@@ -28,4 +28,9 @@ class AssessmentPriorityAction extends Pivot
         return $this->HasMany(Statement::class, 'assessment_priority_action_id');
     }
 
+    public function policies()
+    {
+        return $this->belongsToMany(Policy::class, 'assessment_priority_action_policy', 'assessment_priority_action_id', 'policy_id')
+            ->using(self::class);
+    }
 }

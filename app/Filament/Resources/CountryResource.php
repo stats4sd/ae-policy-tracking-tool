@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Filament\App\Resources;
+namespace App\Filament\Resources;
 
-use App\Filament\App\Resources\CountryResource\Pages;
-use App\Filament\App\Resources\CountryResource\RelationManagers;
+use App\Filament\Resources\CountryResource\Pages;
 use App\Models\Country;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -17,7 +16,7 @@ class CountryResource extends Resource
 {
     protected static ?string $model = Country::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
+    protected static ?string $navigationIcon = 'heroicon-o-globe-alt';
 
     public static function form(Form $form): Form
     {
@@ -41,9 +40,7 @@ class CountryResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    // Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                //
             ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
@@ -53,7 +50,7 @@ class CountryResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\AssessmentsRelationManager::class,
+            //
         ];
     }
     

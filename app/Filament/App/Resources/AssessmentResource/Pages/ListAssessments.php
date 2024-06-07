@@ -10,10 +10,17 @@ class ListAssessments extends ListRecords
 {
     protected static string $resource = AssessmentResource::class;
 
+    protected static ?string $title = 'Assessments';
+
     protected function getHeaderActions(): array
     {
         return [
             Actions\CreateAction::make(),
         ];
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return [];
     }
 }
