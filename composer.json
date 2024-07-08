@@ -16,6 +16,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "orangehill/iseed": "^3.0",
+        "sentry/sentry-laravel": "^4.6",
         "spatie/laravel-permission": "^6.1"
     },
     "require-dev": {
