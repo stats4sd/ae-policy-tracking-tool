@@ -2,33 +2,33 @@
 
 namespace App\Providers\Filament;
 
-use Filament\Pages;
-use Filament\Panel;
-use Filament\Widgets;
-use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
-use Filament\Navigation\NavigationItem;
-use App\Filament\Resources\TypeResource;
-use App\Filament\Resources\UserResource;
-use Filament\Navigation\NavigationGroup;
-use Filament\Http\Middleware\Authenticate;
-use Filament\Navigation\NavigationBuilder;
-use App\Filament\Resources\CountryResource;
+use App\Filament\Admin\Resources\AePrincipleResource;
+use App\Filament\Admin\Resources\CountryResource;
+use App\Filament\Admin\Resources\PriorityActionResource;
+use App\Filament\Admin\Resources\RecommendationResource;
+use App\Filament\Admin\Resources\TypeResource;
+use App\Filament\Admin\Resources\UserResource;
+use App\Filament\Resources\AssessmentResource;
 use App\Filament\Resources\EvidenceResource;
 use App\Filament\Resources\StatementResource;
-use App\Filament\Resources\AssessmentResource;
-use App\Filament\Resources\AePrincipleResource;
-use Illuminate\Session\Middleware\StartSession;
-use Illuminate\Cookie\Middleware\EncryptCookies;
-use App\Filament\Resources\PriorityActionResource;
-use App\Filament\Resources\RecommendationResource;
-use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Session\Middleware\AuthenticateSession;
-use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Filament\Navigation\NavigationBuilder;
+use Filament\Navigation\NavigationGroup;
+use Filament\Navigation\NavigationItem;
+use Filament\Pages;
+use Filament\Panel;
+use Filament\PanelProvider;
+use Filament\Support\Colors\Color;
+use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Session\Middleware\AuthenticateSession;
+use Illuminate\Session\Middleware\StartSession;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -87,6 +87,3 @@ class AdminPanelProvider extends PanelProvider
             });
     }
 }
-
-
-
