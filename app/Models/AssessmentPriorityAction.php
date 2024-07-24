@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class AssessmentPriorityAction extends Pivot
 {
-    use HasFactory;
 
     public function assessment(): BelongsTo
     {
@@ -28,7 +27,7 @@ class AssessmentPriorityAction extends Pivot
         return $this->HasMany(Statement::class, 'assessment_priority_action_id');
     }
 
-    public function policies()
+    public function policies(): BelongsToMany
     {
         return $this->belongsToMany(Policy::class, 'assessment_priority_action_policy', 'assessment_priority_action_id', 'policy_id')
             ->using(self::class);

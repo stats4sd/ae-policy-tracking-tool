@@ -8,17 +8,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Country extends Model
 {
-    use HasFactory;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name',
-    ];
-
     public function assessments(): HasMany
     {
         return $this->hasMany(Assessment::class);
