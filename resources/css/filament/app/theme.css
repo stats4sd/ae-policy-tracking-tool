@@ -1,0 +1,12 @@
+@import '/vendor/filament/filament/resources/css/theme.css';
+
+@config 'tailwind.config.js';
+
+
+.fi-body {
+    background-color: white !important;
+}
+
+.fi-simple-main {
+    @apply border-gray-100 shadow-lg;
+}

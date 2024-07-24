@@ -38,9 +38,9 @@ class User extends Authenticatable implements FilamentUser, HasTenants
         return $this->isAdmin() || $this->assessments->whereKey($tenant)->exists();
     }
 
-    public function getTenants(Panel $panel): array|Collection
+    public function getTenants(Panel $panel): Collection
     {
-        $this->assessments;
+        return $this->assessments;
     }
 
     public function assessments(): BelongsToMany
