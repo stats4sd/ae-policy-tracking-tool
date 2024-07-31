@@ -1,11 +1,49 @@
 <x-filament-panels::page>
 
-    <livewire:block-tabs :tabs='$tabs' active-tab="0"/>
+    <div>
+        <livewire:block-tabs :tabs='$tabs' active-tab="0" class="text-gray-50"/>
 
-    @if($activeTab === 'tab1')
+        @switch($activeTab)
+            @case(0)
+                <x-block-title :number="1">
+                    Lay or strengthen, as appropriate, the policy foundations for agroecological approaches to contribute to sustainable agriculture and food systems that enhance food security and nutrition.
+                </x-block-title>
 
-        <h3 class="text-xl font-bold text-center">1. Lay or strengthen, as appropriate, the policy foundations for agroecological approaches to contribute to sustainable agriculture and food systems that enhance food security and nutrition.</h3>
-        <hr/>
+                @break
+
+            @case(1)
+                <x-block-title :number="2">
+                    Develop and implement coherent public policies that promote agroecological approaches to sustainable agriculture and food systems that enhance food security and nutrition.
+                </x-block-title>
+
+                @break
+
+            @case(2)
+
+                <x-block-title :number="3">
+                    Foster the transition to resilient and diversified sustainable agriculture and food systems through agroecological approaches
+                </x-block-title>
+                @break
+
+            @case(3)
+
+                <x-block-title :number="4">
+                    Strengthen research, innovation, training, and education and foster knowledge co-creation, knowledge sharing, and colearning, on agroecological approaches.
+                </x-block-title>
+
+                @break
+
+            @case(4)
+
+                <x-block-title :number="5">
+                    Strengthen institutions or stakeholder engagement, create an enabling environment for empowering people at risk of food insecurity and malnutrition and people in vulnerable situations, and address power inequalities in agriculture and food systems.
+                </x-block-title>
+
+                @break
+
+        @endswitch
+
+
         <div>
             <div class="grid grid-cols-12 space-x-8">
                 <div class="col-span-12 lg:col-span-3 border-r border-r-gray-500 p-4 place-content-center text-center font-bold text-xl">
@@ -61,6 +99,5 @@
                 </div>
             </div>
         </div>
-    @endif
-
+    </div>
 </x-filament-panels::page>

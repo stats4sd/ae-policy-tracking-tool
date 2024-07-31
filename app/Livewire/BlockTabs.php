@@ -7,7 +7,7 @@ use Livewire\Component;
 class BlockTabs extends Component
 {
     public array $tabs;
-    public int $activeTab = 1;
+    public int $activeTab = 0;
 
     public function render()
     {
@@ -17,6 +17,7 @@ class BlockTabs extends Component
     public function setActiveTab(int $index)
     {
         $this->activeTab = $index;
+        $this->dispatch('tabChanged', $index);
     }
 
 

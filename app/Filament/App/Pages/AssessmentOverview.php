@@ -22,6 +22,7 @@ use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
+use Livewire\Attributes\On;
 
 class AssessmentOverview extends Page
 {
@@ -32,7 +33,7 @@ class AssessmentOverview extends Page
 
     public ?Assessment $assessment;
     public ?Collection $assessmentPriorityActions;
-    public string $activeTab = 'tab1';
+    public int $activeTab = 0;
 
     public array $tabs = [
         "1. Policy Foundations",
@@ -41,8 +42,6 @@ class AssessmentOverview extends Page
         "4. Co-creation + Co-learning",
         "5. Empowering People"
     ];
-
-
 
     public function __construct()
     {
@@ -80,6 +79,12 @@ class AssessmentOverview extends Page
     public function getSubheading(): ?string
     {
         return (new Carbon($this->assessment->created_at))->format('Y-m-d') . "    | " . $this->assessment->status;
+    }
+
+    #[On('tabChanged')]
+    public function setActiveTab(int $index)
+    {
+        $this->activeTab = $index;
     }
 
 }
