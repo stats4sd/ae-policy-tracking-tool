@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Assessment;
+use App\Models\Country;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -13,9 +15,24 @@ class TestSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
+        $user = User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        // Temp
+        $country = Country::create([
+            'name' => 'Ghana',
+        ]);
+
+        $assessment = Assessment::create([
+            'country_id' => $country->id,
+            'status' => 'In Progress',
+            'finalised_at' => null,
+        ]);
+
+        $assessment->users()->sync([$user->id]);
+
+
     }
 }

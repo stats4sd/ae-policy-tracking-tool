@@ -2,8 +2,6 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Filament\Resources\AePrincipleResource\Pages;
-use App\Filament\Resources\AePrincipleResource\RelationManagers;
 use App\Models\AePrinciple;
 use Filament\Forms;
 use Filament\Forms\Form;

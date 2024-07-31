@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // unguarded all models across the app
-        \Illuminate\Database\Eloquent\Model::unguard();
+        \Eloquent::unguard();
 
         // footer on some pages
         FilamentView::registerRenderHook(PanelsRenderHook::BODY_END, fn() => view('filament.app.pages.register-assessment-footer'),

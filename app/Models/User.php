@@ -28,6 +28,12 @@ class User extends Authenticatable implements FilamentUser, HasTenants
         'password' => 'hashed',
     ];
 
+    public function isAdmin(): bool
+    {
+        // temporary!!
+        return true;
+    }
+
     public function canAccessPanel(Panel $panel): bool
     {
         return true;

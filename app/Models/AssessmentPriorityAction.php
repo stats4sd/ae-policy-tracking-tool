@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -24,8 +25,30 @@ class AssessmentPriorityAction extends Pivot
 
     public function statements(): HasMany
     {
-        return $this->HasMany(Statement::class, 'assessment_priority_action_id');
+        return $this->hasMany(Statement::class, 'assessment_priority_action_id');
     }
+
+    // specific types of statement TODO: generalise
+    public function statusStatements(): HasMany
+    {
+        return $this->hasMany(Statement::class, 'assessment_priority_action_id')->where('type_id', 1);
+    }
+
+    public function perverseStatements(): HasMany
+    {
+        return $this->hasMany(Statement::class, 'assessment_priority_action_id')->where('type_id', 2);
+    }
+
+    public function beyondStatements(): HasMany
+    {
+        return $this->hasMany(Statement::class, 'assessment_priority_action_id')->where('type_id', 3);
+    }
+
+    public function civilStatements(): HasMany
+    {
+        return $this->hasMany(Statement::class, 'assessment_priority_action_id')->where('type_id', 4);
+    }
+
 
     public function policies(): BelongsToMany
     {

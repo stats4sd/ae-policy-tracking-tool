@@ -12,6 +12,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class PriorityAction extends Model
 {
 
+    protected $keyType = 'string';
+    public $incrementing = false;
+
     public function recommendation(): BelongsTo
     {
         return $this->belongsTo(Recommendation::class);

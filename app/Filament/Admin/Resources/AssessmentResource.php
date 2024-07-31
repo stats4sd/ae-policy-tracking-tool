@@ -2,10 +2,6 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Filament\App\Pages\Report;
-use App\Filament\App\Resources\AssessmentResource\Pages;
-use App\Filament\App\Resources\AssessmentResource\RelationManagers;
-use App\Filament\App\Resources\Carbon;
 use App\Models\Assessment;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -13,7 +9,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use RelationManagers\PoliciesRelationManager;
 
 class AssessmentResource extends Resource
 {
