@@ -1,9 +1,10 @@
 <div class="mb-0 w-full flex">
-    @foreach($tabs as $index => $tab)
+    @foreach($tabs as $tab)
         <x-block-tab
-                :active="$index === $activeTab"
+                :active="$loop->index === $activeTab"
                 :title="$tab"
                 :index="$loop->index"
+                wire:click="$set('activeTab', {{ $loop->index }})"
             />
     @endforeach
 </div>

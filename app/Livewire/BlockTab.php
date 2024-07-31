@@ -1,15 +1,15 @@
 <?php
 
-namespace App\View\Components;
+namespace App\Livewire;
 
 use Illuminate\View\Component;
 
 class BlockTab extends Component
 {
 
-    public function __construct(public bool $active, public string $title, public int $index)
-    {
-    }
+    public bool $active;
+    public string $title;
+    public int $index;
 
     public function render()
     {

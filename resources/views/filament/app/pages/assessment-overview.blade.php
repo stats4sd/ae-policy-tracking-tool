@@ -1,6 +1,6 @@
 <x-filament-panels::page>
 
-    <x-block-tabs :tabs='$tabs' active-tab="0"/>
+    <livewire:block-tabs :tabs='$tabs' active-tab="0"/>
 
     @if($activeTab === 'tab1')
 
