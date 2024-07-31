@@ -1,44 +1,6 @@
 <x-filament-panels::page>
 
-    <div class="flex mx-10 gap-x-10 justify-between" style="max-width: 1000px">
-        <x-progress-header-circles :percent="65" :step-name="'Country Status'" :status="'In Progress'"/>
-        <x-progress-header-circles :percent="0" :step-name="'Review'" status="-"/>
-        <x-progress-header-circles :percent="0" :step-name="'Stakeholder Engagement'" status="-"/>
-        <x-progress-header-circles :percent="0" :step-name="'Ongoing Monitoring'" status="-"/>
-    </div>
-
-    <x-filament::tabs label="CFS Policy Recommendations" class="mt-8">
-        <x-filament::tabs.item
-                :active="$activeTab === 'tab1'"
-                wire:click="$set('activeTab', 'tab1')"
-        >
-            1. Policy Foundations
-        </x-filament::tabs.item>
-        <x-filament::tabs.item
-                :active="$activeTab === 'tab2'"
-                wire:click="$set('activeTab', 'tab2')"
-        >
-            2. Measuring Progress
-        </x-filament::tabs.item>
-        <x-filament::tabs.item
-                :active="$activeTab === 'tab3'"
-                wire:click="$set('activeTab', 'tab3')"
-        >
-            3. Fostering Transitions
-        </x-filament::tabs.item>
-        <x-filament::tabs.item
-                :active="$activeTab === 'tab4'"
-                wire:click="$set('activeTab', 'tab4')"
-        >
-            4. Co-creation + Co-learning
-        </x-filament::tabs.item>
-        <x-filament::tabs.item
-                :active="$activeTab === 'tab5'"
-                wire:click="$set('activeTab', 'tab5')"
-        >
-            5. Empowering People
-        </x-filament::tabs.item>
-    </x-filament::tabs>
+    <x-block-tabs :tabs='$tabs' active-tab="0"/>
 
     @if($activeTab === 'tab1')
 

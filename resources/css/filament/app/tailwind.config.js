@@ -7,4 +7,10 @@ export default {
         './resources/views/**/*.blade.php',
         './vendor/filament/**/*.blade.php',
     ],
+    theme: {
+        colors: {
+            'bright-title-block': '#6AC4D3',
+            'light-title-block': '#AADCE5',
+        }
+    }
 }

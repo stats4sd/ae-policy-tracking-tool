@@ -3,7 +3,10 @@
 namespace App\Providers\Filament;
 
 use App\Filament\App\Pages\AssessmentOverview;
+use App\Filament\App\Pages\OngoingMonitoring;
 use App\Filament\App\Pages\RegisterAssessment;
+use App\Filament\App\Pages\Review;
+use App\Filament\App\Pages\StakeholderEngagement;
 use App\Models\Assessment;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -67,16 +70,11 @@ class AppPanelProvider extends PanelProvider
             ])
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 return $builder
-                    ->item(NavigationItem::make('Overview')
-                        ->icon('heroicon-o-home')
-                        ->url(AssessmentOverview::getUrl()))
-                    ->groups([
-
-                        NavigationGroup::make('')
-                            ->items([NavigationItem::make('Review Tool Details')
-                                ->url('/admin/recommendations')
-                                ->icon('heroicon-o-arrow-long-right'),
-                            ]),
+                    ->items([
+                        ...AssessmentOverview::getNavigationItems(),
+                        ...Review::getNavigationItems(),
+                        ...StakeholderEngagement::getNavigationItems(),
+                        ...OngoingMonitoring::getNavigationItems(),
                     ]);
             })
             ->viteTheme('resources/css/filament/app/theme.css');

@@ -28,9 +28,21 @@ class AssessmentOverview extends Page
 
     protected static string $view = 'filament.app.pages.assessment-overview';
 
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+
     public ?Assessment $assessment;
     public ?Collection $assessmentPriorityActions;
     public string $activeTab = 'tab1';
+
+    public array $tabs = [
+        "1. Policy Foundations",
+        "2. Measuring Progress",
+        "3. Fostering Transitions",
+        "4. Co-creation + Co-learning",
+        "5. Empowering People"
+    ];
+
+
 
     public function __construct()
     {
