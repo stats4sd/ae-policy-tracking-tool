@@ -41,7 +41,7 @@ class AssessmentOverview extends Page
     public function __construct()
     {
         $this->assessment = HelperService::getCurrentTenant();
-        $this->assessmentPriorityActions = $this->assessment?->assessmentPriorityActions;
+        $this->assessmentPriorityActions = $this->assessment?->assessmentPriorityActions->load('statements');
 
         $this->recommendations = Recommendation::all();
     }
@@ -52,7 +52,8 @@ class AssessmentOverview extends Page
         return [
             Action::make('ready-for-review')
                 ->label('Mark as Ready For Review')
-                ->color('success')
+                ->color('info')
+                ->outlined()
                 ->visible(Filament::getTenant()->status === 'In Progress')
                 ->action(function () {
 

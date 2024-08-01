@@ -12,26 +12,23 @@
 
         <div class="space-y-4 mt-4">
             @foreach($assessmentPriorityActions->filter(fn(\App\Models\AssessmentPriorityAction $action) => $action->priorityAction->recommendation_id === $activeTab) as $action)
-                <x-filament::section class="header-dark"
+                <x-filament::section
+                    wire:key="{{ $action->id }}"
+                    class="header-dark"
                                      heading="PRIORITY ACTION {{ $action->priorityAction->id }}"
                                      description="{{ $action->priorityAction->name }}"
                                      :collapsible="true"
                                      :collapsed="!$loop->first"
                 >
                     <div class="space-y-8">
-                        @foreach($action->statementsByType as $type => $statements)
-
-                            <div class="grid grid-cols-12 space-x-8 {{ $loop->first ? '' : 'mt-8 border-t border-t-gray-500 pt-8' }}">
-                                <div class="col-span-12 lg:col-span-3 border-r border-r-gray-500 p-4 place-content-center text-right font-bold text-lg">
-                                    <p>{{ \Illuminate\Support\Str::upper($type) }}</p>
-                                </div>
-                                <div class="col-span-12 lg:col-span-7 space-y-3 text-sm">
-                                    <p>{!! $statements->pluck('name')->join('</p><hr/><p>') !!}</p>
-                                </div>
-                                <div class="col-span-12 lg:col-span-2 place-content-center">
-                                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Edit</button>
-                                </div>
-                            </div>
+                        @foreach(\App\Models\Type::all() as $type)
+                            <livewire:statement-editor
+                                :statements="$action->statements->where('type_id', $type->id)"
+                                :assessmentPriorityAction="$action"
+                                :type="$type"
+                                :wire:key='"{$action->id}_{$type->id}"'
+                                :first="$loop->first"
+                            />
                         @endforeach
                     </div>
                 </x-filament::section>
