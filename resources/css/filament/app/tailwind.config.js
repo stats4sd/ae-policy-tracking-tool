@@ -9,6 +9,7 @@ export default {
     ],
     theme: {
         colors: {
+            'dark-title-block': '#3A7898',
             'bright-title-block': '#6AC4D3',
             'light-title-block': '#AADCE5',
         }

@@ -10,3 +10,17 @@
 .fi-simple-main {
     @apply border-gray-100 shadow-lg;
 }
+
+.fi-section {
+    @apply rounded-none;
+}
+
+.header-dark .fi-section-header {
+    @apply bg-dark-title-block;
+}
+
+.header-dark .fi-section-header h3,
+.header-dark .fi-section-header p,
+.header-dark .fi-section-header button {
+    @apply text-gray-50;
+}

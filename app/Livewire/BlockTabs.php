@@ -14,10 +14,10 @@ class BlockTabs extends Component
         return view('components.block-tabs');
     }
 
-    public function setActiveTab(int $index)
+    public function setActiveTab(int $id)
     {
-        $this->activeTab = $index;
-        $this->dispatch('tabChanged', $index);
+        $this->activeTab = $id;
+        $this->dispatch('tabChanged', $id);
     }
 
 

@@ -1,103 +1,42 @@
 <x-filament-panels::page>
 
     <div>
-        <livewire:block-tabs :tabs='$tabs' active-tab="0" class="text-gray-50"/>
+        <livewire:block-tabs
+            :tabs='$recommendations->pluck("short_title", "id")->toArray()'
+            :active-tab="$activeTab"
+            class="text-gray-50"/>
 
-        @switch($activeTab)
-            @case(0)
-                <x-block-title :number="1">
-                    Lay or strengthen, as appropriate, the policy foundations for agroecological approaches to contribute to sustainable agriculture and food systems that enhance food security and nutrition.
-                </x-block-title>
+        <x-block-title :number="$activeTab">
+            {{ $recommendations->find($activeTab)->name }}
+        </x-block-title>
 
-                @break
+        <div class="space-y-4 mt-4">
+            @foreach($assessmentPriorityActions->filter(fn(\App\Models\AssessmentPriorityAction $action) => $action->priorityAction->recommendation_id === $activeTab) as $action)
+                <x-filament::section class="header-dark"
+                                     heading="PRIORITY ACTION {{ $action->priorityAction->id }}"
+                                     description="{{ $action->priorityAction->name }}"
+                                     :collapsible="true"
+                                     :collapsed="!$loop->first"
+                >
+                    <div class="space-y-8">
+                        @foreach($action->statementsByType as $type => $statements)
 
-            @case(1)
-                <x-block-title :number="2">
-                    Develop and implement coherent public policies that promote agroecological approaches to sustainable agriculture and food systems that enhance food security and nutrition.
-                </x-block-title>
-
-                @break
-
-            @case(2)
-
-                <x-block-title :number="3">
-                    Foster the transition to resilient and diversified sustainable agriculture and food systems through agroecological approaches
-                </x-block-title>
-                @break
-
-            @case(3)
-
-                <x-block-title :number="4">
-                    Strengthen research, innovation, training, and education and foster knowledge co-creation, knowledge sharing, and colearning, on agroecological approaches.
-                </x-block-title>
-
-                @break
-
-            @case(4)
-
-                <x-block-title :number="5">
-                    Strengthen institutions or stakeholder engagement, create an enabling environment for empowering people at risk of food insecurity and malnutrition and people in vulnerable situations, and address power inequalities in agriculture and food systems.
-                </x-block-title>
-
-                @break
-
-        @endswitch
-
-
-        <div>
-            <div class="grid grid-cols-12 space-x-8">
-                <div class="col-span-12 lg:col-span-3 border-r border-r-gray-500 p-4 place-content-center text-center font-bold text-xl">
-                    <p>STATUS</p>
-                </div>
-                <div class="col-span-12 lg:col-span-7 space-y-3">
-                    <p>Sit sint pariatur do quis sit nulla deserunt ut qui ea culpa est sint velit exercitation. Dolore esse ipsum velit exercitation aliqua cupidatat nostrud incididunt proident enim eu dolor deserunt ex nisi. Adipisicing do nostrud dolor veniam.</p>
-                    <hr/>
-                    <p>Eu minim ex pariatur labore eiusmod do adipisicing ea eiusmod exercitation Lorem. Tempor esse nostrud aute laboris aliqua ex quis sint anim nulla excepteur. Sit excepteur enim minim minim consectetur laboris consequat irure duis cillum velit quis.</p>
-                </div>
-                <div class="col-span-12 lg:col-span-2 place-content-center">
-                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Edit</button>
-                </div>
-            </div>
-            <div class="grid grid-cols-12 space-x-8 mt-8 border-t border-t-gray-500 pt-8">
-                <div class="col-span-12 lg:col-span-3 border-r border-r-gray-500 p-4 place-content-center text-center font-bold text-xl">
-                    <p>MEASURES CREATING PERVERSE INCENTIVES</p>
-                </div>
-                <div class="col-span-12 lg:col-span-7 space-y-3">
-                    <p>Sit sint pariatur do quis sit nulla deserunt ut qui ea culpa est sint velit exercitation. Dolore esse ipsum velit exercitation aliqua cupidatat nostrud incididunt proident enim eu dolor deserunt ex nisi. Adipisicing do nostrud dolor veniam.</p>
-                    <hr/>
-                    <p>Eu minim ex pariatur labore eiusmod do adipisicing ea eiusmod exercitation Lorem. Tempor esse nostrud aute laboris aliqua ex quis sint anim nulla excepteur. Sit excepteur enim minim minim consectetur laboris consequat irure duis cillum velit quis.</p>
-                    <hr/>
-                    <p>Eu minim ex pariatur labore eiusmod do adipisicing ea eiusmod exercitation Lorem. Tempor esse nostrud aute laboris aliqua ex quis sint anim nulla excepteur. Sit excepteur enim minim minim consectetur laboris consequat irure duis cillum velit quis.</p>
-                </div>
-                <div class="col-span-12 lg:col-span-2 place-content-center">
-                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Edit</button>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-12 space-x-8 mt-8 border-t border-t-gray-500 pt-8">
-                <div class="col-span-12 lg:col-span-3 border-r border-r-gray-500 p-4 place-content-center text-center font-bold text-xl">
-                    <p>MEASURES THAT GO BEYOND POLICY RECOMMENDATION</p>
-                </div>
-                <div class="col-span-12 lg:col-span-7 space-y-3">
-                    <p>Sit sint pariatur do quis sit nulla deserunt ut qui ea culpa est sint velit exercitation. Dolore esse ipsum velit exercitation aliqua cupidatat nostrud incididunt proident enim eu dolor deserunt ex nisi. Adipisicing do nostrud dolor veniam. Eu minim ex pariatur labore eiusmod do adipisicing ea eiusmod exercitation Lorem. Tempor esse nostrud aute laboris aliqua ex quis sint anim nulla excepteur. Sit excepteur enim minim minim consectetur laboris consequat irure duis cillum velit quis.</p>
-                </div>
-                <div class="col-span-12 lg:col-span-2 place-content-center">
-                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Edit</button>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-12 space-x-8 mt-8 border-t border-t-gray-500 pt-8">
-                <div class="col-span-12 lg:col-span-3 border-r border-r-gray-500 p-4 place-content-center text-center font-bold text-xl">
-                    <p>CIVIL SOCIETY PERSPECTIVE</p>
-                </div>
-                <div class="col-span-12 lg:col-span-7 space-y-3">
-                    <p>Sit sint pariatur do quis sit nulla deserunt ut qui ea culpa est sint velit exercitation. Dolore esse ipsum velit exercitation aliqua cupidatat nostrud incididunt proident enim eu dolor deserunt ex nisi. Adipisicing do nostrud dolor veniam.</p>
-
-                </div>
-                <div class="col-span-12 lg:col-span-2 place-content-center">
-                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Edit</button>
-                </div>
-            </div>
+                            <div class="grid grid-cols-12 space-x-8 {{ $loop->first ? '' : 'mt-8 border-t border-t-gray-500 pt-8' }}">
+                                <div class="col-span-12 lg:col-span-3 border-r border-r-gray-500 p-4 place-content-center text-right font-bold text-lg">
+                                    <p>{{ \Illuminate\Support\Str::upper($type) }}</p>
+                                </div>
+                                <div class="col-span-12 lg:col-span-7 space-y-3 text-sm">
+                                    <p>{!! $statements->pluck('name')->join('</p><hr/><p>') !!}</p>
+                                </div>
+                                <div class="col-span-12 lg:col-span-2 place-content-center">
+                                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Edit</button>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </x-filament::section>
+            @endforeach
         </div>
     </div>
+
 </x-filament-panels::page>

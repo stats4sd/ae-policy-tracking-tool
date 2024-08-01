@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 
 ## Assessments are used as the tenant: users can join specific assessments, and the entire front-end is scoped to a specific assessment. Admin users should be able to access all assessments; other users may have access to one or multiple based on specific assignments.
@@ -37,7 +38,7 @@ class Assessment extends Model implements HasName
 
     public function assessmentPriorityActions(): HasMany
     {
-        return $this->HasMany(AssessmentPriorityAction::class);
+        return $this->hasMany(AssessmentPriorityAction::class);
     }
 
     public function policies(): HasMany

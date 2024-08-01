@@ -28,6 +28,13 @@ class AssessmentPriorityAction extends Pivot
         return $this->hasMany(Statement::class, 'assessment_priority_action_id');
     }
 
+    public function statementsByType(): Attribute
+    {
+        return new Attribute(
+            get: fn () => $this->statements->load('type')->groupBy('type.name'),
+        );
+    }
+
     // specific types of statement TODO: generalise
     public function statusStatements(): HasMany
     {

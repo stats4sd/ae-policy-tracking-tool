@@ -77,6 +77,7 @@ class AppPanelProvider extends PanelProvider
                         ...OngoingMonitoring::getNavigationItems(),
                     ]);
             })
+            ->topNavigation(true)
             ->viteTheme('resources/css/filament/app/theme.css');
     }
 }

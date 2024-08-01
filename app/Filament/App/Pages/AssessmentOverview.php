@@ -4,6 +4,7 @@ namespace App\Filament\App\Pages;
 
 use App\Models\Assessment;
 use App\Models\AssessmentPriorityAction;
+use App\Models\Recommendation;
 use App\Services\HelperService;
 use Carbon\Carbon;
 use Filament\Actions\Action;
@@ -33,28 +34,24 @@ class AssessmentOverview extends Page
 
     public ?Assessment $assessment;
     public ?Collection $assessmentPriorityActions;
-    public int $activeTab = 0;
-
-    public array $tabs = [
-        "1. Policy Foundations",
-        "2. Measuring Progress",
-        "3. Fostering Transitions",
-        "4. Co-creation + Co-learning",
-        "5. Empowering People"
-    ];
+    public ?Collection $statementsByType;
+    public ?Collection $recommendations;
+    public int $activeTab = 1;
 
     public function __construct()
     {
         $this->assessment = HelperService::getCurrentTenant();
         $this->assessmentPriorityActions = $this->assessment?->assessmentPriorityActions;
+
+        $this->recommendations = Recommendation::all();
     }
 
 
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('finalise')
-                ->label('Mark as finalised')
+            Action::make('ready-for-review')
+                ->label('Mark as Ready For Review')
                 ->color('success')
                 ->visible(Filament::getTenant()->status === 'In Progress')
                 ->action(function () {
@@ -62,11 +59,30 @@ class AssessmentOverview extends Page
                     $record = Filament::getTenant();
 
                     if ($record->status === 'In Progress') {
-                        $record->status = 'Finalised';
+                        $record->status = 'Review';
                         $record->finalised_at = Carbon::now();
                         $record->save();
+
+                        $this->js('window.location.reload()');
+
                     }
                 }),
+            Action::make('not-ready')
+            ->label('Mark as Not Ready')
+            ->color('info')
+            ->visible(Filament::getTenant()->status === 'Review')
+            ->action(function () {
+
+                $record = Filament::getTenant();
+
+                if ($record->status === 'Review') {
+                    $record->status = 'In Progress';
+                    $record->finalised_at = null;
+                    $record->save();
+
+                    $this->js('window.location.reload()');
+                }
+            }),
         ];
     }
 
