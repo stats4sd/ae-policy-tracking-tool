@@ -5,7 +5,9 @@ namespace App\Livewire;
 use App\Filament\Shared\Forms\Components\SimpleVisualRepeater;
 use App\Models\AssessmentPriorityAction;
 use App\Models\Type;
+use Filament\Forms\Components\Actions\Action as FormComponentAction;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -64,7 +66,22 @@ class StatementEditor extends Component implements HasForms
                             ->required()
                             ->hiddenLabel(),
                     )
-                    ->addActionLabel('Add Statement'),
+                    ->addActionLabel('Add Statement')
+                    ->deleteAction(fn(FormComponentAction $action) => $action->tooltip('Delete Statement'))
+                    ->extraItemActions([
+                        FormComponentAction::make('test')
+                            ->icon('heroicon-o-book-open')
+                            ->tooltip('+ Link to Evidence')
+                            ->form(function (Form $form) {
+                                $form->schema([
+                                    Select::make('policies')
+                                ]);
+                            })
+                            ->action(function (array $arguments, Repeater $component): void {
+
+                                dd($arguments);
+                            }),
+                    ]),
             ])
             ->statePath('data')
             ->model($this->assessmentPriorityAction);
@@ -101,8 +118,6 @@ class StatementEditor extends Component implements HasForms
         $this->editing = false;
         $this->assessmentPriorityAction->refresh();
         $this->form->fill($this->assessmentPriorityAction->toArray());
-
-
 
 
     }

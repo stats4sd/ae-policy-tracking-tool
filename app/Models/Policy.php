@@ -27,4 +27,9 @@ class Policy extends Model implements HasMedia
             ->using(AssessmentPriorityAction::class);
     }
 
+    public function ()
+    {
+        
+    }
+
 }

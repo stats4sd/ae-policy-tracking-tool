@@ -25,8 +25,8 @@ class Statement extends Model
         return $this->belongsToMany(AePrinciple::class);
     }
 
-    public function evidence(): HasMany
+    public function policies(): BelongsToMany
     {
-        return $this->HasMany(Evidence::class);
+        return $this->belongsToMany(Policy::class);
     }
 }
