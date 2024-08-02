@@ -44,7 +44,7 @@ class AppPanelProvider extends PanelProvider
                 'warning' => "#FFB822",
                 'danger' => "#FF5B5B",
                 'info' => "#3490DC",
-                'grey' => '#6B7280',
+                'gray' => '#6B7280',
             ])
             ->darkMode(false)
             ->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\\Filament\\App\\Resources')

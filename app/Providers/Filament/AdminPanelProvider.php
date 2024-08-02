@@ -37,7 +37,12 @@ class AdminPanelProvider extends PanelProvider
             ->path('/admin')
             ->login()
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => "#119E83",
+                'success' => "#17B978",
+                'warning' => "#FFB822",
+                'danger' => "#FF5B5B",
+                'info' => "#3490DC",
+                'gray' => '#6B7280',
             ])
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\\Filament\\Admin\\Resources')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\\Filament\\Admin\\Pages')
@@ -81,6 +86,7 @@ class AdminPanelProvider extends PanelProvider
                                 ...UserResource::getNavigationItems(),
                             ]),
                     ]);
-            });
+            })
+            ->viteTheme('resources/css/filament/admin/theme.css');
     }
 }

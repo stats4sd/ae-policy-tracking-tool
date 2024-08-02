@@ -7,25 +7,31 @@
         @if(!$editing)
             @foreach($assessmentPriorityAction->statements->where('type_id', $this->type->id) as $statement)
                 <p>{{ $statement->name }}</p>
-                @foreach($statement->policies as $policy)
-                    <span class="badge badge-primary">{{ $policy->name }}</span>
-                @endforeach
+                <div class="flex flex-wrap gap-2">
+                    @foreach($statement->policies as $policy)
+                        <x-filament::badge :href="\App\Filament\App\Resources\PolicyResource::getUrl('index')" tag="a">
+                            {{ $policy->name }}
+                        </x-filament::badge>
+                    @endforeach
+                </div>
 
-                @if(!$loop->last)
-                    <hr/>
-                @endif
-            @endforeach
+                    @if(!$loop->last)
+                        <hr/>
+                    @endif
+                    @endforeach
 
-        @else
-            {{ $this->form }}
-        @endif
+                    @else
+                        {{ $this->form }}
+                    @endif
+                </div>
+                <div class="col-span-12 lg:col-span-2 place-content-center">
+                    @if(!$editing)
+                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" wire:click="$set('editing', true)">Edit</button>
+                    @else
+                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" wire:click="update()">Save</button>
+                    @endif
+
+                </div>
+
+                <x-filament-actions::modals/>
     </div>
-    <div class="col-span-12 lg:col-span-2 place-content-center">
-        @if(!$editing)
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" wire:click="$set('editing', true)">Edit</button>
-        @else
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" wire:click="update()">Save</button>
-        @endif
-
-    </div>
-</div>

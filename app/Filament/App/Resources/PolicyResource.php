@@ -24,32 +24,44 @@ class PolicyResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Information')
-                    ->columnSpan(1)
-                    ->schema([
-                        Forms\Components\TextInput::make('name')
-                            ->required()
-                            ->maxLength(400),
-                        Forms\Components\Textarea::make('comments')
-                        ->rows(5),
+                Forms\Components\Actions::make([
+                    Forms\Components\Actions\Action::make('test')
+                        ->form([
+                            Forms\Components\TextInput::make('name')
+                                ->required()
+                                ->maxLength(255)
+                                ->label('Policy Name'),
+                        ])
+                        ->action(function (array $data): void {
+                             dd($data);
+                        }),
                     ]),
-                Forms\Components\Section::make('Documents')
-                    ->columnSpan(1)
-                    ->schema([
-                        Forms\Components\SpatieMediaLibraryFileUpload::make('documents')
-                            ->label('Upload Policy Document(s)')
-                            ->hint('If you have the policy document(s), please upload them here.')
-                            ->multiple()
-                            ->reorderable()
-                            ->preserveFilenames()
-                            ->collection('policy-documents'),
-                        Forms\Components\TextInput::make('url')
-                            ->label('URL to Policy Document(s)')
-                            ->hint('If you do not have the policy document(s), please provide the URL to the document(s) online'),
-                    ]),
+                    Forms\Components\Section::make('Information')
+                        ->columnSpan(1)
+                        ->schema([
+                            Forms\Components\TextInput::make('name')
+                                ->required()
+                                ->maxLength(400),
+                            Forms\Components\Textarea::make('comments')
+                                ->rows(5),
+                        ]),
+                    Forms\Components\Section::make('Documents')
+                        ->columnSpan(1)
+                        ->schema([
+                            Forms\Components\SpatieMediaLibraryFileUpload::make('documents')
+                                ->label('Upload Policy Document(s)')
+                                ->hint('If you have the policy document(s), please upload them here.')
+                                ->multiple()
+                                ->reorderable()
+                                ->preserveFilenames()
+                                ->collection('policy-documents'),
+                            Forms\Components\TextInput::make('url')
+                                ->label('URL to Policy Document(s)')
+                                ->hint('If you do not have the policy document(s), please provide the URL to the document(s) online'),
+                        ]),
 
-            ])
-            ->columns(2);
+                ])
+                    ->columns(2);
     }
 
     public static function table(Table $table): Table
@@ -59,7 +71,7 @@ class PolicyResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('url')
-            ->url(fn(Policy $record) => $record->url)
+                    ->url(fn(Policy $record) => $record->url)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('comments')
                     ->limit(200)

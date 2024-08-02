@@ -4,7 +4,12 @@ namespace App\Livewire;
 
 use App\Filament\Shared\Forms\Components\SimpleVisualRepeater;
 use App\Models\AssessmentPriorityAction;
+use App\Models\Policy;
+use App\Models\Statement;
 use App\Models\Type;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action as FormComponentAction;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -28,9 +33,10 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
 
-class StatementEditor extends Component implements HasForms
+class StatementEditor extends Component implements HasForms, HasActions
 {
     use InteractsWithForms;
+    use InteractsWithActions;
 
     public Type $type;
     public Collection $statements;
@@ -67,19 +73,46 @@ class StatementEditor extends Component implements HasForms
                             ->hiddenLabel(),
                     )
                     ->addActionLabel('Add Statement')
-                    ->deleteAction(fn(FormComponentAction $action) => $action->tooltip('Delete Statement'))
+                    ->deleteAction(fn(FormComponentAction $action) => $action->tooltip('Delete Statement')->requiresConfirmation())
                     ->extraItemActions([
-                        FormComponentAction::make('test')
+                        FormComponentAction::make('link-to-policies')
                             ->icon('heroicon-o-book-open')
-                            ->tooltip('+ Link to Evidence')
-                            ->form(function (Form $form) {
-                                $form->schema([
-                                    Select::make('policies')
-                                ]);
-                            })
-                            ->action(function (array $arguments, Repeater $component): void {
+                            ->tooltip('+ Link to Policy Document(s)')
+                            ->fillForm(function (array $arguments) {
+                                $statement_id = explode('-', $arguments['item'])[1];
+                                $statement = Statement::find($statement_id);
 
-                                dd($arguments);
+                                ray($statement->policies->pluck('id')->toArray());
+
+                                return [
+                                    'policies' => $statement->policies->pluck( 'id')->toArray(),
+                                ];
+
+                            })
+                            ->form([
+                                Select::make('policies')
+                                    ->multiple()
+                                    ->options(Policy::where('assessment_id', $this->assessmentPriorityAction->assessment->id)->get()->pluck('name', 'id')->toArray())
+                                    ->required(),
+                            ])
+                            ->action(function (array $arguments, array $data): void {
+
+
+                                // check the statement exists (argument should be in the format record-354)
+                                $statement_id = explode('-', $arguments['item'])[1];
+                                $statement = Statement::find($statement_id);
+
+                                if(!$statement) {
+                                    // create the statement so we can link it to the policy
+                                    $statement = Statement::create([
+                                        'assessment_priority_action_id' => $this->assessmentPriorityAction->id,
+                                        'type_id' => $this->type->id,
+                                        'name' => $this->data['statements'][$statement_id]['name'],
+                                    ]);
+                                }
+
+                                $statement->policies()->sync($data['policies']);
+
                             }),
                     ]),
             ])
