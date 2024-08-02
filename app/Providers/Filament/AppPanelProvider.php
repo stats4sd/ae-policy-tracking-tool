@@ -76,8 +76,6 @@ class AppPanelProvider extends PanelProvider
                         ...AssessmentOverview::getNavigationItems(),
                         ...PolicyResource::getNavigationItems(),
                         ...Review::getNavigationItems(),
-                        ...StakeholderEngagement::getNavigationItems(),
-                        ...OngoingMonitoring::getNavigationItems(),
                     ]);
             })
             ->topNavigation(true)
