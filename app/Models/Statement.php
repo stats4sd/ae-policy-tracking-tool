@@ -10,13 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Statement extends Model
 {
-    use HasFactory;
-
-    protected $fillable = [
-        'name',
-        'type_id'
-    ];
-
     public function assessmentPriorityAction(): BelongsTo
     {
         return $this->belongsTo(AssessmentPriorityAction::class);

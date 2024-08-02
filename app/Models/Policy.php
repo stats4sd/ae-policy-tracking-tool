@@ -14,14 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Policy extends Model implements HasMedia
 {
-    use HasFactory;
     use InteractsWithMedia;
-
-    protected $fillable = [
-        'name',
-        'assessment_id',
-        'comments',
-    ];
 
     public function assessment(): BelongsTo
     {

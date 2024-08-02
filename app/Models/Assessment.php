@@ -4,49 +4,17 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use App\Models\Policy;
+use Filament\Models\Contracts\HasName;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
-class Assessment extends Model
+
+## Assessments are used as the tenant: users can join specific assessments, and the entire front-end is scoped to a specific assessment. Admin users should be able to access all assessments; other users may have access to one or multiple based on specific assignments.
+class Assessment extends Model implements HasName
 {
-    use HasFactory;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'country_id',
-    ];
-
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'id' => 'integer',
-    ];
-
-    public function country(): BelongsTo
-    {
-        return $this->belongsTo(Country::class);
-    }
-
-    public function assessmentPriorityActions(): HasMany
-    {
-        return $this->HasMany(AssessmentPriorityAction::class);
-    }
-    
-    public function policies(): HasMany
-    {
-        return $this->hasMany(Policy::class);
-    }
-
     protected static function booted()
     {
         static::creating(function ($query) {
@@ -60,5 +28,31 @@ class Assessment extends Model
             }
 
         });
+    }
+
+
+    public function country(): BelongsTo
+    {
+        return $this->belongsTo(Country::class);
+    }
+
+    public function assessmentPriorityActions(): HasMany
+    {
+        return $this->hasMany(AssessmentPriorityAction::class);
+    }
+
+    public function policies(): HasMany
+    {
+        return $this->hasMany(Policy::class);
+    }
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class);
+    }
+
+    public function getFilamentName(): string
+    {
+        return $this->country->name;
     }
 }

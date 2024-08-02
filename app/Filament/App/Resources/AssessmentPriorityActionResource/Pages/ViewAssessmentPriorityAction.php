@@ -2,9 +2,8 @@
 
 namespace App\Filament\App\Resources\AssessmentPriorityActionResource\Pages;
 
+use App\Filament\Admin\Resources\AssessmentResource;
 use App\Filament\App\Resources\AssessmentPriorityActionResource;
-use App\Filament\App\Resources\AssessmentResource;
-use Filament\Actions;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewAssessmentPriorityAction extends ViewRecord
