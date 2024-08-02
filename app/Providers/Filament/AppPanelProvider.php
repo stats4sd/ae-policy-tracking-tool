@@ -7,7 +7,9 @@ use App\Filament\App\Pages\OngoingMonitoring;
 use App\Filament\App\Pages\RegisterAssessment;
 use App\Filament\App\Pages\Review;
 use App\Filament\App\Pages\StakeholderEngagement;
+use App\Filament\App\Resources\PolicyResource;
 use App\Models\Assessment;
+use App\Models\Policy;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -72,6 +74,7 @@ class AppPanelProvider extends PanelProvider
                 return $builder
                     ->items([
                         ...AssessmentOverview::getNavigationItems(),
+                        ...PolicyResource::getNavigationItems(),
                         ...Review::getNavigationItems(),
                         ...StakeholderEngagement::getNavigationItems(),
                         ...OngoingMonitoring::getNavigationItems(),

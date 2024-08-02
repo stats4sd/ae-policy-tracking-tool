@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('evidence', function (Blueprint $table) {
+        Schema::create('policy_statement', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('statement_id');
-            $table->text('evidence');
-            $table->boolean('official_source');
+            $table->foreignId('policy_id')->constrained();
+            $table->foreignId('statement_id')->constrained();
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('evidence');
+        Schema::dropIfExists('policy_statement');
     }
 };

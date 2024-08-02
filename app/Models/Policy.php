@@ -21,15 +21,9 @@ class Policy extends Model implements HasMedia
         return $this->belongsTo(Assessment::class);
     }
 
-    public function assessmentPriorityActions(): BelongsToMany
+    public function statements(): BelongsToMany
     {
-        return $this->belongsToMany(AssessmentPriorityAction::class, 'assessment_priority_action_policy', 'policy_id', 'assessment_priority_action_id')
-            ->using(AssessmentPriorityAction::class);
-    }
-
-    public function ()
-    {
-        
+        return $this->belongsToMany(Statement::class);
     }
 
 }

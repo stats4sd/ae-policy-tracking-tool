@@ -31,6 +31,7 @@ class AssessmentOverview extends Page
     protected static string $view = 'filament.app.pages.assessment-overview';
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationLabel = 'Country Status';
 
     public ?Assessment $assessment;
     public ?Collection $assessmentPriorityActions;

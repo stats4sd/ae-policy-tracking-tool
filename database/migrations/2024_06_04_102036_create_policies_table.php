@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('assessment_id');
             $table->string('name', 400);
-            $table->string('comments', 400)->nullable();
+            $table->string('url')->nullable();
+            $table->text('comments')->nullable();
             $table->timestamps();
         });
     }
