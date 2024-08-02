@@ -5,7 +5,17 @@
     <div class="col-span-12 lg:col-span-7 space-y-3 text-sm">
 
         @if(!$editing)
-            <p>{!! $assessmentPriorityAction->statements->where('type_id', $this->type->id)->pluck('name')->join('</p><hr/><p>') !!}</p>
+            @foreach($assessmentPriorityAction->statements->where('type_id', $this->type->id) as $statement)
+                <p>{{ $statement->name }}</p>
+                @foreach($statement->policies as $policy)
+                    <span class="badge badge-primary">{{ $policy->name }}</span>
+                @endforeach
+
+                @if(!$loop->last)
+                    <hr/>
+                @endif
+            @endforeach
+
         @else
             {{ $this->form }}
         @endif
