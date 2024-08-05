@@ -2,6 +2,9 @@
 
 namespace App\Providers\Filament;
 
+use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
+use Althinect\FilamentSpatieRolesPermissions\Resources\PermissionResource;
+use Althinect\FilamentSpatieRolesPermissions\Resources\RoleResource;
 use App\Filament\Admin\Resources\AePrincipleResource;
 use App\Filament\Admin\Resources\CountryResource;
 use App\Filament\Admin\Resources\PriorityActionResource;
@@ -84,9 +87,14 @@ class AdminPanelProvider extends PanelProvider
                         NavigationGroup::make('User Management')
                             ->items([
                                 ...UserResource::getNavigationItems(),
+                                ...RoleResource::getNavigationItems(),
+                                ...PermissionResource::getNavigationItems(),
                             ]),
                     ]);
             })
+            ->plugins([
+                FilamentSpatieRolesPermissionsPlugin::make(),
+            ])
             ->viteTheme('resources/css/filament/admin/theme.css');
     }
 }

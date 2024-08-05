@@ -16,4 +16,17 @@ class EditUser extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        if(!$data['password']) {
+            unset($data['password']);
+        }
+        return $data;
+    }
 }

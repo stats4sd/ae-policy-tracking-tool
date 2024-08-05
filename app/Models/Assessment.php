@@ -19,6 +19,7 @@ class Assessment extends Model implements HasName
     {
         static::creating(function ($query) {
             $query->status = 'In Progress';
+            $query->title = $query->country->name . ' ' . Carbon::now()->year;
         });
 
         static::created(function (self $assessment) {

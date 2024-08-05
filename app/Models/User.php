@@ -13,10 +13,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements FilamentUser, HasTenants
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     protected $hidden = [
         'password',
@@ -30,18 +31,21 @@ class User extends Authenticatable implements FilamentUser, HasTenants
 
     public function isAdmin(): bool
     {
-        // temporary!!
-        return true;
+        return $this->hasRole('admin');
     }
 
     public function canAccessPanel(Panel $panel): bool
     {
+//        if($panel->getId() === 'admin')  {
+//            return $this->isAdmin();
+//        };
+
         return true;
     }
 
     public function canAccessTenant(Model $tenant): bool
     {
-        return $this->isAdmin() || $this->assessments->whereKey($tenant)->exists();
+        return $this->isAdmin() || $this->assessments->contains($tenant);
     }
 
     public function getTenants(Panel $panel): Collection

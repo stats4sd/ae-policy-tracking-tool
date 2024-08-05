@@ -2,13 +2,16 @@
 
 namespace App\Filament\App\Pages;
 
+use App\Models\Assessment;
 use App\Models\Country;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Filament\Pages\Tenancy\RegisterTenant;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Model;
 use PHPUnit\Framework\Constraint\Count;
 
 class RegisterAssessment extends RegisterTenant
@@ -44,5 +47,15 @@ class RegisterAssessment extends RegisterTenant
                         return $country->id;
                     }),
             ]);
+    }
+
+
+    protected function handleRegistration(array $data): Model
+    {
+        $assessment = Assessment::create($data);
+
+        $assessment->users()->sync(auth()->user());
+
+        return $assessment;
     }
 }

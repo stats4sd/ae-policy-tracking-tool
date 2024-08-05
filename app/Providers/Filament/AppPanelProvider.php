@@ -38,6 +38,8 @@ class AppPanelProvider extends PanelProvider
             ->tenant(Assessment::class)
             ->tenantRegistration(RegisterAssessment::class)
             ->login()
+            ->passwordReset()
+            ->registration(false)
             ->colors([
                 'primary' => "#119E83",
                 'success' => "#17B978",
@@ -76,6 +78,12 @@ class AppPanelProvider extends PanelProvider
                         ...AssessmentOverview::getNavigationItems(),
                         ...PolicyResource::getNavigationItems(),
                         ...Review::getNavigationItems(),
+                        NavigationItem::make('Admin Panel')
+                        ->icon('heroicon-o-shield-check')
+                        ->url('/admin')
+                        ->visible(function () {
+                            return auth()->user()->isAdmin();
+                        }),
                     ]);
             })
             ->topNavigation(true)
