@@ -30,8 +30,6 @@ class Review extends Page
                 'aePrinciples',
             ]);
 
-        ray($this->recommendations->first()->priorityActions->first()->assessmentPriorityActions->first());
-
     }
 
     protected function getHeaderActions(): array

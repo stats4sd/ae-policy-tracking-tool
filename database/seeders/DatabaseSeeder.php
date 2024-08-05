@@ -23,6 +23,9 @@ class DatabaseSeeder extends Seeder
         $this->call(AePrincipleRecommendationTableSeeder::class);
         $this->call(PriorityActionsTableSeeder::class);
         $this->call(TypesTableSeeder::class);
-        $this->call(TestSeeder::class);
+
+        if(env('APP_ENV') === 'local') {
+            $this->call(TestSeeder::class);
+        }
     }
 }
