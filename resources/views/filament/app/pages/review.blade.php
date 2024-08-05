@@ -81,7 +81,7 @@
                             <div class="col-span-12 lg:col-span-9 space-y-6 text-sm">
                                 @foreach(\App\Models\Type::all() as $type)
                                     <div class="grid grid-cols-12">
-                                        <div class="col-span-6 lg:col-span-9">
+                                        <div class="col-span-6 lg:col-span-9 space-y-2">
                                             <h4
                                                 @class([
                                                     'text-lg font-bold mb-2',
@@ -94,11 +94,11 @@
                                                 <p>{{ $statement->name }}</p>
                                             @endforeach
                                         </div>
-                                        <div class=" col-span-4 lg:col-span-2 col-start-11 lg:col-start-11">
+                                        <div class=" col-span-4 lg:col-span-2 col-start-11 lg:col-start-11 space-y-2">
                                             @if($priorityAction->assessmentPriorityActions->where('assessment_id', $assessment->id)->first()?->statements->where('type_id', $type->id)->pluck('policies')->flatten()->count() > 0)
                                                 <h4 class="text-sm font-bold">References:</h4>
-                                                @foreach($priorityAction->assessmentPriorityActions->where('assessment_id', $assessment->id)->first()?->statements->where('type_id', $type->id)->pluck('policies')->flatten()->pluck('name', 'id')->unique() ?? [] as $policy)
-                                                    <p>{{ $policy }}</p>
+                                                @foreach($priorityAction->assessmentPriorityActions->where('assessment_id', $assessment->id)->first()?->statements->where('type_id', $type->id)->pluck('policies')->flatten()->pluck('name', 'id')->unique() ?? [] as $policyId => $policy)
+                                                    <a href="{{ \App\Filament\App\Resources\PolicyResource::getUrl('index') }}" class="underline text-blue-800 block">{{ $policy }};</a>
                                                 @endforeach
                                             @endif
                                         </div>

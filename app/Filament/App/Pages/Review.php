@@ -38,7 +38,9 @@ class Review extends Page
     {
         return [
             Action::make('print')
-                ->url(route('assessment.print-review', ['assessment' => $this->assessment->id])),
+                ->modalHeading('Not Yet Available')
+                ->modalDescription('This feature is not yet available.')
+                ->modalSubmitAction(false),
         ];
     }
 
