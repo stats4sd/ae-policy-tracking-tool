@@ -74,32 +74,31 @@ class StatementEditor extends Component implements HasForms, HasActions
                             ->autosize()
                             ->required()
                             ->hiddenLabel()
-                        ->tags(function(TextAreaWithTags $component): array {
+                            ->tags(function (TextAreaWithTags $component): array {
 
-                            // extract statement ID from state-path
-                            // statepath looks like data.statements.record-{id}.name
-                            $statement_id = collect(explode('.', $component->getStatePath()))
-                            ->filter(fn($part) => str_starts_with($part, 'record-'))
-                            ->first();
+                                // extract statement ID from state-path
+                                // statepath looks like data.statements.record-{id}.name
+                                $statement_id = collect(explode('.', $component->getStatePath()))
+                                    ->filter(fn($part) => str_starts_with($part, 'record-'))
+                                    ->first();
 
-                            $statement_id = Str::replace('record-', '', $statement_id);
-                            $statement = Statement::find($statement_id);
+                                $statement_id = Str::replace('record-', '', $statement_id);
+                                $statement = Statement::find($statement_id);
 
-                            if($statement)  {
-                                return $statement->policies->pluck('name')->toArray();
-                            }
+                                if ($statement) {
+                                    return $statement->policies->pluck('name')->toArray();
+                                }
 
-                            return [];
+                                return [];
 
-                        }),
+                            }),
                     )
                     ->addActionLabel('Add Statement')
-                    ->deleteAction(fn(FormComponentAction $action) =>
-                        $action
-                            ->tooltip('Delete Statement')
-                            ->requiresConfirmation()
-                            ->size('xs')
-                            ->view(FormComponentAction::LINK_VIEW)
+                    ->deleteAction(fn(FormComponentAction $action) => $action
+                        ->tooltip('Delete Statement')
+                        ->requiresConfirmation()
+                        ->size('xs')
+                        ->view(FormComponentAction::LINK_VIEW)
 
                     )
                     ->extraItemActions([
@@ -111,15 +110,18 @@ class StatementEditor extends Component implements HasForms, HasActions
                             ->label('Policy Documents')
                             ->icon('heroicon-o-link')
                             ->tooltip('+ Link to Policy Document(s)')
-                            ->fillForm(function (array $arguments) {
+                            ->fillForm(function (array $arguments): array {
                                 $statement_id = explode('-', $arguments['item'])[1];
                                 $statement = Statement::find($statement_id);
 
-                                ray($statement->policies->pluck('id')->toArray());
+                                if ($statement) {
+                                    return [
+                                        'policies' => $statement->policies->pluck('id')->toArray(),
+                                    ];
+                                }
 
-                                return [
-                                    'policies' => $statement->policies->pluck( 'id')->toArray(),
-                                ];
+                                return [];
+
 
                             })
                             ->form([
@@ -135,7 +137,7 @@ class StatementEditor extends Component implements HasForms, HasActions
                                 $statement_id = explode('-', $arguments['item'])[1];
                                 $statement = Statement::find($statement_id);
 
-                                if(!$statement) {
+                                if (!$statement) {
                                     // create the statement so we can link it to the policy
                                     $statement = Statement::create([
                                         'assessment_priority_action_id' => $this->assessmentPriorityAction->id,

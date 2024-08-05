@@ -24,18 +24,6 @@ class PolicyResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Actions::make([
-                    Forms\Components\Actions\Action::make('test')
-                        ->form([
-                            Forms\Components\TextInput::make('name')
-                                ->required()
-                                ->maxLength(255)
-                                ->label('Policy Name'),
-                        ])
-                        ->action(function (array $data): void {
-                             dd($data);
-                        }),
-                    ]),
                     Forms\Components\Section::make('Information')
                         ->columnSpan(1)
                         ->schema([
