@@ -9,7 +9,7 @@ export default defineConfig({
                 ...refreshPaths,
                 'app/',
                 'packages/',
-
+                'resources/views/'
             ],
         }),
     ],

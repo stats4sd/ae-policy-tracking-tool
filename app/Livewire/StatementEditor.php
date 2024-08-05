@@ -2,7 +2,9 @@
 
 namespace App\Livewire;
 
+use App\Filament\Shared\Forms\Components\SimpleRepeaterWithTags;
 use App\Filament\Shared\Forms\Components\SimpleVisualRepeater;
+use App\Filament\Shared\Forms\Components\TextAreaWithTags;
 use App\Models\AssessmentPriorityAction;
 use App\Models\Policy;
 use App\Models\Statement;
@@ -31,6 +33,7 @@ use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class StatementEditor extends Component implements HasForms, HasActions
@@ -45,7 +48,7 @@ class StatementEditor extends Component implements HasForms, HasActions
 
     ## Editing Stuff
     public ?array $data = [];
-    public bool $editing = false;
+    public bool $editing = true;
 
     public function mount(): void
     {
@@ -61,22 +64,52 @@ class StatementEditor extends Component implements HasForms, HasActions
     {
         return $form
             ->schema([
-                SimpleVisualRepeater::make('statements')
+                SimpleRepeaterWithTags::make('statements')
                     ->relationship(modifyQueryUsing: function (Builder $query) {
                         $query->where('type_id', $this->type->id);
                     })
                     ->hiddenLabel()
                     ->simple(
-                        Textarea::make('name')
+                        TextareaWithTags::make('name')
                             ->autosize()
                             ->required()
-                            ->hiddenLabel(),
+                            ->hiddenLabel()
+                        ->tags(function(TextAreaWithTags $component): array {
+
+                            // extract statement ID from state-path
+                            // statepath looks like data.statements.record-{id}.name
+                            $statement_id = collect(explode('.', $component->getStatePath()))
+                            ->filter(fn($part) => str_starts_with($part, 'record-'))
+                            ->first();
+
+                            $statement_id = Str::replace('record-', '', $statement_id);
+                            $statement = Statement::find($statement_id);
+
+                            if($statement)  {
+                                return $statement->policies->pluck('name')->toArray();
+                            }
+
+                            return [];
+
+                        }),
                     )
                     ->addActionLabel('Add Statement')
-                    ->deleteAction(fn(FormComponentAction $action) => $action->tooltip('Delete Statement')->requiresConfirmation())
+                    ->deleteAction(fn(FormComponentAction $action) =>
+                        $action
+                            ->tooltip('Delete Statement')
+                            ->requiresConfirmation()
+                            ->size('xs')
+                            ->view(FormComponentAction::LINK_VIEW)
+
+                    )
                     ->extraItemActions([
                         FormComponentAction::make('link-to-policies')
-                            ->icon('heroicon-o-book-open')
+
+//                            ->hiddenLabel(false)
+                            ->view(FormComponentAction::LINK_VIEW)
+                            ->size('xs')
+                            ->label('Policy Documents')
+                            ->icon('heroicon-o-link')
                             ->tooltip('+ Link to Policy Document(s)')
                             ->fillForm(function (array $arguments) {
                                 $statement_id = explode('-', $arguments['item'])[1];
