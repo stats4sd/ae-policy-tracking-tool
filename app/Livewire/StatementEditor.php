@@ -48,7 +48,7 @@ class StatementEditor extends Component implements HasForms, HasActions
 
     ## Editing Stuff
     public ?array $data = [];
-    public bool $editing = true;
+    public bool $editing = false;
 
     public function mount(): void
     {
