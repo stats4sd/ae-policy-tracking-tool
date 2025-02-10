@@ -6,6 +6,7 @@ use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugi
 use Althinect\FilamentSpatieRolesPermissions\Resources\PermissionResource;
 use Althinect\FilamentSpatieRolesPermissions\Resources\RoleResource;
 use App\Filament\Admin\Resources\AePrincipleResource;
+use App\Filament\Admin\Resources\AssessmentResource;
 use App\Filament\Admin\Resources\CountryResource;
 use App\Filament\Admin\Resources\PriorityActionResource;
 use App\Filament\Admin\Resources\RecommendationResource;
@@ -38,7 +39,6 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('/admin')
-            ->login()
             ->colors([
                 'primary' => "#119E83",
                 'success' => "#17B978",
@@ -86,6 +86,7 @@ class AdminPanelProvider extends PanelProvider
                             ]),
                         NavigationGroup::make('User Management')
                             ->items([
+                                ...AssessmentResource::getNavigationItems(),
                                 ...UserResource::getNavigationItems(),
                                 ...RoleResource::getNavigationItems(),
                                 ...PermissionResource::getNavigationItems(),

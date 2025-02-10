@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources;
 
+use App\Filament\Admin\Resources\AssessmentResource\RelationManagers\UsersRelationManager;
 use App\Models\Assessment;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -85,8 +86,7 @@ class AssessmentResource extends Resource
     public static function getRelations(): array
     {
         return [
-            \App\Filament\Admin\Resources\AssessmentResource\RelationManagers\PoliciesRelationManager::class,
-            \App\Filament\Admin\Resources\AssessmentResource\RelationManagers\AssessmentPriorityActionsRelationManager::class,
+            UsersRelationManager::class,
         ];
     }
 

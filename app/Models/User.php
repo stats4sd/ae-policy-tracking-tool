@@ -3,21 +3,21 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Filament\Models\Contracts\FilamentUser;
-use Filament\Models\Contracts\HasTenants;
+use App\Mail\InviteUserToAssessment;
+use Filament\Notifications\Notification;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasRoles;
+use Stats4sd\FilamentTeamManagement\Models\TeamInvite;
 
-class User extends Authenticatable implements FilamentUser, HasTenants
+class User extends \Stats4sd\FilamentTeamManagement\Models\User
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory;
 
     protected $hidden = [
         'password',
@@ -36,16 +36,16 @@ class User extends Authenticatable implements FilamentUser, HasTenants
 
     public function canAccessPanel(Panel $panel): bool
     {
-//        if($panel->getId() === 'admin')  {
-//            return $this->isAdmin();
-//        };
+        if ($panel->getId() === 'admin') {
+            return $this->isAdmin();
+        }
 
         return true;
     }
 
     public function canAccessTenant(Model $tenant): bool
     {
-        return $this->isAdmin() || $this->assessments->contains($tenant);
+        return $this->isAdmin() || $this->assessments->contains($tenant->id);
     }
 
     public function getTenants(Panel $panel): Collection
@@ -53,8 +53,14 @@ class User extends Authenticatable implements FilamentUser, HasTenants
         return $this->assessments;
     }
 
+    /** @return BelongsToMany<Assessment, $this> */
     public function assessments(): BelongsToMany
     {
         return $this->belongsToMany(Assessment::class);
+    }
+
+    public function teams(): BelongsToMany
+    {
+        return $this->belongsToMany(Assessment::class, 'assessment_user', 'user_id', 'assessment_id');
     }
 }

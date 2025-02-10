@@ -2,20 +2,23 @@
 
 namespace App\Filament\Admin\Resources;
 
+use App\Filament\Admin\Resources\UserResource\Pages;
+use App\Filament\Admin\Resources\UserResource\RelationManagers;
 use App\Models\User;
+use Filament\Forms;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class UserResource extends Resource
+class UserResource extends \Stats4sd\FilamentTeamManagement\Filament\Admin\Resources\UserResource
 {
     protected static ?string $model = User::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-user';
 
     public static function form(Form $form): Form
     {
@@ -24,25 +27,51 @@ class UserResource extends Resource
                 TextInput::make('name')
                     ->required()
                     ->maxLength(255),
+
                 TextInput::make('email')
-                    ->required()
-                    ->maxLength(255),
-                TextInput::make('password')
-                    ->password(),
-                Select::make('roles')->multiple()->relationship('roles', 'name')->preload(),
-                Select::make('assessments')->multiple()->relationship('assessments', 'title')
-                    ->label('Non Admin users must be assigned to one or more assessments')->preload(),
+                    ->label('Email')
+                    ->placeholder('Email')
+                    ->email()
+                    ->required(),
+
+                Select::make('assessment')
+                    ->label('Which assessment(s) should the user be a member of?')
+                    ->exists('assessments', 'id')
+                    ->relationship('teams', titleAttribute: 'title')
+                    ->live()
+                    ->preload()
+                    ->multiple(),
+
+                // invite to role
+                CheckboxList::make('roles')
+                    ->relationship('roles', titleAttribute: 'name')
+                    ->label('Select the user role(s) to assign')
+                    ->exists('roles', 'id')
+                    ->live(),
             ]);
+
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('name'),
-                TextColumn::make('email'),
-                TextColumn::make('created_at'),
-                TextColumn::make('roles.name'),
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('email')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('programs.name')
+                    ->searchable()
+                    ->badge()
+                    ->color('success')
+                    ->visible(config('filament-team-management.use_programs')),
+                Tables\Columns\TextColumn::make('assessments.title')
+                    ->searchable()
+                    ->badge()
+                    ->color('success'),
+                Tables\Columns\TextColumn::make('roles.name')
+                    ->badge()
+                    ->searchable(),
             ])
             ->filters([
                 //
@@ -54,9 +83,6 @@ class UserResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ])
-            ->emptyStateActions([
-                Tables\Actions\CreateAction::make(),
             ]);
     }
 
@@ -70,9 +96,7 @@ class UserResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => \App\Filament\Admin\Resources\UserResource\Pages\ListUsers::route('/'),
-            'create' => \App\Filament\Admin\Resources\UserResource\Pages\CreateUser::route('/create'),
-            'edit' => \App\Filament\Admin\Resources\UserResource\Pages\EditUser::route('/{record}/edit'),
+            'index' => Pages\ListUsers::route('/'),
         ];
     }
 }
