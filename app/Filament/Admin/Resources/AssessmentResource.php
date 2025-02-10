@@ -10,6 +10,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Stats4sd\FilamentTeamManagement\Filament\Admin\Resources\TeamResource\RelationManagers\InvitesRelationManager;
 
 class AssessmentResource extends Resource
 {
@@ -58,22 +59,22 @@ class AssessmentResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\Action::make('finalise')
-                                ->icon(fn(Assessment $record): string => $record->finalised_at ? '' : 'heroicon-o-check')
-                                ->label(fn(Assessment $record): string => $record->finalised_at ? '' : 'Mark as finalised')
-                                ->color('success')
-                                ->action(function (Assessment $record) {
-                                    if($record->status==='In Progress') {
-                                        $record->status = 'Finalised';
-                                        $record->finalised_at = Carbon::now();
-                                        $record->save();
-                                    }
-                                }),
-                Tables\Actions\Action::make('viewReport')
-                                ->label('View Report')
-                                ->url('/report')
-                                ->icon('heroicon-o-chart-bar-square')
-                                ->openUrlInNewTab(),
+//                Tables\Actions\Action::make('finalise')
+//                                ->icon(fn(Assessment $record): string => $record->finalised_at ? '' : 'heroicon-o-check')
+//                                ->label(fn(Assessment $record): string => $record->finalised_at ? '' : 'Mark as finalised')
+//                                ->color('success')
+//                                ->action(function (Assessment $record) {
+//                                    if($record->status==='In Progress') {
+//                                        $record->status = 'Finalised';
+//                                        $record->finalised_at = Carbon::now();
+//                                        $record->save();
+//                                    }
+//                                }),
+//                Tables\Actions\Action::make('viewReport')
+//                                ->label('View Report')
+//                                ->url('/report')
+//                                ->icon('heroicon-o-chart-bar-square')
+//                                ->openUrlInNewTab(),
             ])
             ->bulkActions([
                 //
@@ -87,6 +88,7 @@ class AssessmentResource extends Resource
     {
         return [
             UsersRelationManager::class,
+            InvitesRelationManager::class,
         ];
     }
 
