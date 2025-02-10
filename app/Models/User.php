@@ -50,6 +50,10 @@ class User extends \Stats4sd\FilamentTeamManagement\Models\User
 
     public function getTenants(Panel $panel): Collection
     {
+        if($this->isAdmin()) {
+            return Assessment::all();
+        }
+
         return $this->assessments;
     }
 
