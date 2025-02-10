@@ -6,6 +6,7 @@ use App\Filament\App\Pages\AssessmentOverview;
 use App\Filament\App\Pages\RegisterAssessment;
 use App\Filament\App\Pages\Review;
 use App\Filament\App\Resources\PolicyResource;
+use App\Filament\App\Resources\UserResource;
 use App\Models\Assessment;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
