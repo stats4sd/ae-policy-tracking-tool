@@ -21,6 +21,7 @@
         "sentry/sentry-laravel": "^4.6",
         "spatie/laravel-permission": "^6.1",
         "spatie/laravel-ray": "^1.37",
+        "stats4sd/filament-team-management": "^1.04",
         "symfony/http-client": "^7.1",
         "symfony/mailgun-mailer": "^7.1"
     },

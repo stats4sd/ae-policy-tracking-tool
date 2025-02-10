@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b9178284aa3e27783e1238dc02eb3b5d",
+    "content-hash": "966fba09f32d1bbbb27ff143f50e294f",
     "packages": [
         {
             "name": "althinect/filament-spatie-roles-permissions",
@@ -134,6 +134,77 @@
                 "source": "https://github.com/AnourValar/eloquent-serialize/tree/1.2.23"
             },
             "time": "2024-07-12T10:52:26+00:00"
+        },
+        {
+            "name": "awcodes/shout",
+            "version": "v2.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/awcodes/shout.git",
+                "reference": "c9893a7defd362b7502f3e60d5ca1ef604ef8f07"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/awcodes/shout/zipball/c9893a7defd362b7502f3e60d5ca1ef604ef8f07",
+                "reference": "c9893a7defd362b7502f3e60d5ca1ef604ef8f07",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^3.0",
+                "php": "^8.1",
+                "spatie/laravel-package-tools": "^1.15"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "nunomaduro/collision": "^7.9|^8.1",
+                "orchestra/testbench": "^8.0|^9.0",
+                "pestphp/pest": "^2.1",
+                "pestphp/pest-plugin-laravel": "^2.0",
+                "pestphp/pest-plugin-livewire": "^2.1",
+                "spatie/laravel-ray": "^1.26"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Awcodes\\Shout\\ShoutServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Awcodes\\Shout\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Adam Weston",
+                    "email": "awcodes1@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A simple inline contextual notice for Filament forms, basically just a fancy placeholder.",
+            "homepage": "https://github.com/awcodes/shout",
+            "keywords": [
+                "awcodes",
+                "filament",
+                "shout"
+            ],
+            "support": {
+                "issues": "https://github.com/awcodes/shout/issues",
+                "source": "https://github.com/awcodes/shout"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/awcodes",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-08-25T15:29:24+00:00"
         },
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -6753,6 +6824,88 @@
             "time": "2023-12-25T11:46:58+00:00"
         },
         {
+            "name": "stats4sd/filament-team-management",
+            "version": "v1.04",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stats4sd/filament-team-management.git",
+                "reference": "1c0d24994931df50611cde5be65299d0783902ff"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/stats4sd/filament-team-management/zipball/1c0d24994931df50611cde5be65299d0783902ff",
+                "reference": "1c0d24994931df50611cde5be65299d0783902ff",
+                "shasum": ""
+            },
+            "require": {
+                "althinect/filament-spatie-roles-permissions": "^2.2",
+                "awcodes/shout": "^2.0",
+                "filament/filament": "^3.0",
+                "php": "^8.1",
+                "spatie/laravel-package-tools": "^1.15.0"
+            },
+            "require-dev": {
+                "larastan/larastan": "^2.0.1",
+                "laravel/pint": "^1.0",
+                "nunomaduro/collision": "^7.9",
+                "orchestra/testbench": "^8.0",
+                "pestphp/pest": "^2.1",
+                "pestphp/pest-plugin-arch": "^2.0",
+                "pestphp/pest-plugin-laravel": "^2.0",
+                "phpstan/extension-installer": "^1.1",
+                "phpstan/phpstan-deprecation-rules": "^1.0",
+                "phpstan/phpstan-phpunit": "^1.0",
+                "spatie/laravel-ray": "^1.26"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "FilamentTeamManagement": "Stats4sd\\FilamentTeamManagement\\Facades\\FilamentTeamManagement"
+                    },
+                    "providers": [
+                        "Stats4sd\\FilamentTeamManagement\\FilamentTeamManagementServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Stats4sd\\FilamentTeamManagement\\": "src/",
+                    "Stats4sd\\FilamentTeamManagement\\Database\\Seeders\\": "database/seeders/",
+                    "Stats4sd\\FilamentTeamManagement\\Database\\Factories\\": "database/factories/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Stats4SD",
+                    "email": "support@stats4sd.org",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Package for an opinionated 'teams' setup, including invites and integration with Laravel Filament + Spatie User Roles",
+            "homepage": "https://github.com/stats4sd/filament-team-management",
+            "keywords": [
+                "filament-team-management",
+                "laravel",
+                "stats4sd"
+            ],
+            "support": {
+                "issues": "https://github.com/stats4sd/filament-team-management/issues",
+                "source": "https://github.com/stats4sd/filament-team-management"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/stats4sd",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-12-17T16:53:51+00:00"
+        },
+        {
             "name": "symfony/clock",
             "version": "v7.1.1",
             "source": {
@@ -12684,12 +12837,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.2"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }
