@@ -3,17 +3,17 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Filament\Models\Contracts\FilamentUser;
-use Filament\Models\Contracts\HasTenants;
+use App\Mail\InviteUserToAssessment;
+use Filament\Notifications\Notification;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasRoles;
+use Stats4sd\FilamentTeamManagement\Models\TeamInvite;
 
 class User extends \Stats4sd\FilamentTeamManagement\Models\User
 {
@@ -38,14 +38,14 @@ class User extends \Stats4sd\FilamentTeamManagement\Models\User
     {
         if ($panel->getId() === 'admin') {
             return $this->isAdmin();
-        };
+        }
 
         return true;
     }
 
     public function canAccessTenant(Model $tenant): bool
     {
-        return $this->isAdmin() || $this->assessments->contains($tenant, 'id');
+        return $this->isAdmin() || $this->assessments->contains($tenant->id);
     }
 
     public function getTenants(Panel $panel): Collection
@@ -57,5 +57,10 @@ class User extends \Stats4sd\FilamentTeamManagement\Models\User
     public function assessments(): BelongsToMany
     {
         return $this->belongsToMany(Assessment::class);
+    }
+
+    public function teams(): BelongsToMany
+    {
+        return $this->belongsToMany(Assessment::class, 'assessment_user', 'user_id', 'assessment_id');
     }
 }

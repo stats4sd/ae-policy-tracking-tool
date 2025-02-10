@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c6331085e4c117f484bd5061dde0d8d2",
+    "content-hash": "b69bc64d77089104c6c3b2c18e194f67",
     "packages": [
         {
             "name": "althinect/filament-spatie-roles-permissions",
@@ -6119,16 +6119,10 @@
         {
             "name": "stats4sd/filament-team-management",
             "version": "dev-apni-fixes",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/stats4sd/filament-team-management.git",
-                "reference": "aec33b2509a74f96a79589d3b6926f90cfa282fb"
-            },
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/stats4sd/filament-team-management/zipball/aec33b2509a74f96a79589d3b6926f90cfa282fb",
-                "reference": "aec33b2509a74f96a79589d3b6926f90cfa282fb",
-                "shasum": ""
+                "type": "path",
+                "url": "./packages/filament-team-management",
+                "reference": "0a591141d83f049d433f4c6db231442360a7d618"
             },
             "require": {
                 "althinect/filament-spatie-roles-permissions": "^2.2",
@@ -6153,22 +6147,43 @@
             "type": "library",
             "extra": {
                 "laravel": {
-                    "aliases": {
-                        "FilamentTeamManagement": "Stats4sd\\FilamentTeamManagement\\Facades\\FilamentTeamManagement"
-                    },
                     "providers": [
                         "Stats4sd\\FilamentTeamManagement\\FilamentTeamManagementServiceProvider"
-                    ]
+                    ],
+                    "aliases": {
+                        "FilamentTeamManagement": "Stats4sd\\FilamentTeamManagement\\Facades\\FilamentTeamManagement"
+                    }
                 }
             },
             "autoload": {
                 "psr-4": {
                     "Stats4sd\\FilamentTeamManagement\\": "src/",
-                    "Stats4sd\\FilamentTeamManagement\\Database\\Seeders\\": "database/seeders/",
-                    "Stats4sd\\FilamentTeamManagement\\Database\\Factories\\": "database/factories/"
+                    "Stats4sd\\FilamentTeamManagement\\Database\\Factories\\": "database/factories/",
+                    "Stats4sd\\FilamentTeamManagement\\Database\\Seeders\\": "database/seeders/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "Stats4sd\\FilamentTeamManagement\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "post-autoload-dump": [
+                    "@php ./vendor/bin/testbench package:discover --ansi"
+                ],
+                "analyse": [
+                    "vendor/bin/phpstan analyse"
+                ],
+                "test": [
+                    "vendor/bin/pest"
+                ],
+                "test-coverage": [
+                    "vendor/bin/pest --coverage"
+                ],
+                "format": [
+                    "vendor/bin/pint"
+                ]
+            },
             "license": [
                 "MIT"
             ],
@@ -6190,13 +6205,9 @@
                 "issues": "https://github.com/stats4sd/filament-team-management/issues",
                 "source": "https://github.com/stats4sd/filament-team-management"
             },
-            "funding": [
-                {
-                    "url": "https://github.com/stats4sd",
-                    "type": "github"
-                }
-            ],
-            "time": "2025-02-10T14:34:01+00:00"
+            "transport-options": {
+                "relative": true
+            }
         },
         {
             "name": "symfony/clock",

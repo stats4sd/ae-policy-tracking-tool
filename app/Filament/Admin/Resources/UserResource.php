@@ -37,8 +37,9 @@ class UserResource extends \Stats4sd\FilamentTeamManagement\Filament\Admin\Resou
                 Select::make('assessment')
                     ->label('Which assessment(s) should the user be a member of?')
                     ->exists('assessments', 'id')
-                    ->relationship('teams', titleAttribute: 'name')
+                    ->relationship('teams', titleAttribute: 'title')
                     ->live()
+                    ->preload()
                     ->multiple(),
 
                 // invite to role
@@ -49,6 +50,40 @@ class UserResource extends \Stats4sd\FilamentTeamManagement\Filament\Admin\Resou
                     ->live(),
             ]);
 
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('email')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('programs.name')
+                    ->searchable()
+                    ->badge()
+                    ->color('success')
+                    ->visible(config('filament-team-management.use_programs')),
+                Tables\Columns\TextColumn::make('assessments.title')
+                    ->searchable()
+                    ->badge()
+                    ->color('success'),
+                Tables\Columns\TextColumn::make('roles.name')
+                    ->badge()
+                    ->searchable(),
+            ])
+            ->filters([
+                //
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
     }
 
     public static function getRelations(): array

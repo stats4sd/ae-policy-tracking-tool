@@ -3,18 +3,14 @@
 namespace App\Providers\Filament;
 
 use App\Filament\App\Pages\AssessmentOverview;
-use App\Filament\App\Pages\OngoingMonitoring;
 use App\Filament\App\Pages\RegisterAssessment;
 use App\Filament\App\Pages\Review;
-use App\Filament\App\Pages\StakeholderEngagement;
 use App\Filament\App\Resources\PolicyResource;
 use App\Models\Assessment;
-use App\Models\Policy;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationBuilder;
-use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
 use Filament\Pages;
 use Filament\Panel;
@@ -33,24 +29,26 @@ class AppPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
+            ->default()
             ->id('app')
-            ->path('')
+            ->path('app')
             ->tenant(Assessment::class)
             ->tenantRegistration(RegisterAssessment::class)
             ->login()
             ->passwordReset()
-            ->registration(false)
             ->colors([
-                'primary' => "#119E83",
-                'success' => "#17B978",
-                'warning' => "#FFB822",
-                'danger' => "#FF5B5B",
-                'info' => "#3490DC",
+                'primary' => '#119E83',
+                'success' => '#17B978',
+                'warning' => '#FFB822',
+                'danger' => '#FF5B5B',
+                'info' => '#3490DC',
                 'gray' => '#6B7280',
             ])
             ->darkMode(false)
             ->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\\Filament\\App\\Resources')
             ->discoverPages(in: app_path('Filament/App/Pages'), for: 'App\\Filament\\App\\Pages')
+            // to include role register, program register, register filament pages from package stats4sd/filament-team-management
+            ->discoverPages(in: app_path('../vendor/stats4sd/filament-team-management/src/Filament/App/Pages'), for: 'Stats4sd\\FilamentTeamManagement\\Filament\\App\\Pages')
             ->pages([
                 Pages\Dashboard::class,
             ])
@@ -79,11 +77,11 @@ class AppPanelProvider extends PanelProvider
                         ...PolicyResource::getNavigationItems(),
                         ...Review::getNavigationItems(),
                         NavigationItem::make('Admin Panel')
-                        ->icon('heroicon-o-shield-check')
-                        ->url('/admin')
-                        ->visible(function () {
-                            return auth()->user()->isAdmin();
-                        }),
+                            ->icon('heroicon-o-shield-check')
+                            ->url('/admin')
+                            ->visible(function () {
+                                return auth()->user()->isAdmin();
+                            }),
                     ]);
             })
             ->topNavigation(true)
