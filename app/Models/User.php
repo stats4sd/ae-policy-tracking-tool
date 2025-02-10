@@ -15,9 +15,9 @@ use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements FilamentUser, HasTenants
+class User extends \Stats4sd\FilamentTeamManagement\Models\User
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory;
 
     protected $hidden = [
         'password',
@@ -36,16 +36,16 @@ class User extends Authenticatable implements FilamentUser, HasTenants
 
     public function canAccessPanel(Panel $panel): bool
     {
-//        if($panel->getId() === 'admin')  {
-//            return $this->isAdmin();
-//        };
+        if ($panel->getId() === 'admin') {
+            return $this->isAdmin();
+        };
 
         return true;
     }
 
     public function canAccessTenant(Model $tenant): bool
     {
-        return $this->isAdmin() || $this->assessments->contains($tenant);
+        return $this->isAdmin() || $this->assessments->contains($tenant, 'id');
     }
 
     public function getTenants(Panel $panel): Collection
@@ -53,6 +53,7 @@ class User extends Authenticatable implements FilamentUser, HasTenants
         return $this->assessments;
     }
 
+    /** @return BelongsToMany<Assessment, $this> */
     public function assessments(): BelongsToMany
     {
         return $this->belongsToMany(Assessment::class);

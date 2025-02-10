@@ -49,10 +49,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\\Filament\\Admin\\Resources')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\\Filament\\Admin\\Pages')
-            ->resources([
-                //  bring in users resource from filament-team-management package
-                \Stats4sd\FilamentTeamManagement\Filament\Admin\Resources\UserResource::class,
-            ])
             ->pages([
                 Pages\Dashboard::class,
             ])
@@ -90,7 +86,7 @@ class AdminPanelProvider extends PanelProvider
                             ]),
                         NavigationGroup::make('User Management')
                             ->items([
-                                ...\Stats4sd\FilamentTeamManagement\Filament\Admin\Resources\UserResource::getNavigationItems(),
+                                ...UserResource::getNavigationItems(),
                                 ...RoleResource::getNavigationItems(),
                                 ...PermissionResource::getNavigationItems(),
                             ]),
