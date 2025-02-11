@@ -83,6 +83,9 @@ class AppPanelProvider extends PanelProvider
                             ->visible(function () {
                                 return auth()->user()->isAdmin();
                             }),
+                        NavigationItem::make('Feedback Form')
+                        ->icon('heroicon-o-chat-bubble-oval-left-ellipsis')
+                        ->url('https://odk.stats4sd.org/-/single/tnBvd5N3wzFvqZigrV1gZ7CaLof0agi?st=laZ3QZZ5icr1DoKtm7KrKM0qUZCr52K81$1oXhEm5NjjKiaMVCrNeun9F2WBR1Kd'),
                     ]);
             })
             ->topNavigation(true)
