@@ -94,6 +94,6 @@ class Assessment extends Team implements HasName
 
     public function getFilamentName(): string
     {
-        return $this->country->name;
+        return $this->title ?? $this->country->name;
     }
 }
