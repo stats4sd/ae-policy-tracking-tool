@@ -45,6 +45,7 @@ class AssessmentResource extends Resource
                                         'In Progress' => 'warning',
                                         'Finalised' => 'success',
                                         'Review' => 'info',
+                                        default => 'primary',
                                     }),
                 Tables\Columns\TextColumn::make('finalised_at')
                                     ->sortable()
