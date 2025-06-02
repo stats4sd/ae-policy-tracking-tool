@@ -43,7 +43,8 @@ class AssessmentResource extends Resource
                                     ->badge()
                                     ->color(fn (string $state): string => match ($state) {
                                         'In Progress' => 'warning',
-                                        'Finalised' => 'success'
+                                        'Finalised' => 'success',
+                                        'Review' => 'info',
                                     }),
                 Tables\Columns\TextColumn::make('finalised_at')
                                     ->sortable()
@@ -54,6 +55,7 @@ class AssessmentResource extends Resource
                 SelectFilter::make('status')
                         ->options([
                             'In Progress' => 'In Progress',
+                            'Review' => 'Review',
                             'Finalised' => 'Finalised',
                         ])
             ])
