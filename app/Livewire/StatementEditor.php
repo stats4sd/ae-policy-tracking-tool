@@ -3,56 +3,46 @@
 namespace App\Livewire;
 
 use App\Filament\Shared\Forms\Components\SimpleRepeaterWithTags;
-use App\Filament\Shared\Forms\Components\SimpleVisualRepeater;
 use App\Filament\Shared\Forms\Components\TextAreaWithTags;
-use App\Models\AssessmentPriorityAction;
 use App\Models\Policy;
+use App\Models\PriorityAction;
 use App\Models\Statement;
 use App\Models\Type;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
-use Filament\Forms\Components\Actions;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\Actions\Action as FormComponentAction;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
-use Filament\Support\Contracts\TranslatableContentDriver;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\BulkAction;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Filters\Indicator;
-use Filament\Tables\Grouping\Group;
-use Filament\Tables\Table;
-use Illuminate\Contracts\Pagination\CursorPaginator;
-use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
-class StatementEditor extends Component implements HasForms, HasActions
+class StatementEditor extends Component implements HasActions, HasForms
 {
-    use InteractsWithForms;
     use InteractsWithActions;
+    use InteractsWithForms;
 
     public Type $type;
-    public Collection $statements;
-    public bool $first;
-    public AssessmentPriorityAction $assessmentPriorityAction;
 
-    ## Editing Stuff
+    public Collection $statements;
+
+    public PriorityAction $priorityAction;
+
+    public bool $first;
+
+    // # Editing Stuff
     public ?array $data = [];
+
     public bool $editing = false;
 
     public function mount(): void
     {
-        $this->form->fill($this->assessmentPriorityAction->toArray());
+        $this->form->fill($this->priorityAction->toArray());
     }
 
     public function render()
@@ -79,7 +69,7 @@ class StatementEditor extends Component implements HasForms, HasActions
                                 // extract statement ID from state-path
                                 // statepath looks like data.statements.record-{id}.name
                                 $statement_id = collect(explode('.', $component->getStatePath()))
-                                    ->filter(fn($part) => str_starts_with($part, 'record-'))
+                                    ->filter(fn ($part) => str_starts_with($part, 'record-'))
                                     ->first();
 
                                 $statement_id = Str::replace('record-', '', $statement_id);
@@ -94,7 +84,7 @@ class StatementEditor extends Component implements HasForms, HasActions
                             }),
                     )
                     ->addActionLabel('Add Statement')
-                    ->deleteAction(fn(FormComponentAction $action) => $action
+                    ->deleteAction(fn (FormComponentAction $action) => $action
                         ->tooltip('Delete Statement')
                         ->requiresConfirmation()
                         ->size('xs')
@@ -122,25 +112,24 @@ class StatementEditor extends Component implements HasForms, HasActions
 
                                 return [];
 
-
                             })
                             ->form([
                                 Select::make('policies')
                                     ->multiple()
-                                    ->options(Policy::where('assessment_id', $this->assessmentPriorityAction->assessment->id)->get()->pluck('name', 'id')->toArray())
+                                    ->options(Policy::where('assessment_id', Filament::getTenant()->id)->get()->pluck('name', 'id')->toArray())
                                     ->required(),
                             ])
                             ->action(function (array $arguments, array $data): void {
-
 
                                 // check the statement exists (argument should be in the format record-354)
                                 $statement_id = explode('-', $arguments['item'])[1];
                                 $statement = Statement::find($statement_id);
 
-                                if (!$statement) {
+                                if (! $statement) {
                                     // create the statement so we can link it to the policy
                                     $statement = Statement::create([
-                                        'assessment_priority_action_id' => $this->assessmentPriorityAction->id,
+                                        'assessment_id' => Filament::getTenant()->id,
+                                        'priority_action_id' => $this->priorityAction->id,
                                         'type_id' => $this->type->id,
                                         'name' => $this->data['statements'][$statement_id]['name'],
                                     ]);
@@ -152,7 +141,7 @@ class StatementEditor extends Component implements HasForms, HasActions
                     ]),
             ])
             ->statePath('data')
-            ->model($this->assessmentPriorityAction);
+            ->model($this->priorityAction);
     }
 
     public function update(): void
@@ -162,10 +151,11 @@ class StatementEditor extends Component implements HasForms, HasActions
         $statements = collect($this->data['statements'])->map(function ($statement) {
 
             // if the statement doesn't already exist; add the type_id and create the entry
-            if (!isset($statement['id'])) {
+            if (! isset($statement['id'])) {
                 $statement['type_id'] = $this->type->id;
+                $statement['assessment_id'] = Filament::getTenant()->id;
 
-                $this->assessmentPriorityAction->statements()->create($statement);
+                $this->priorityAction->statements()->create($statement);
 
                 // remove the statement from the relationship list.
                 return null;
@@ -173,9 +163,8 @@ class StatementEditor extends Component implements HasForms, HasActions
 
             return $statement;
         })
-            ->filter(fn($statement) => $statement !== null)
+            ->filter(fn ($statement) => $statement !== null)
             ->toArray();
-
 
         $this->data['statements'] = $statements;
 
@@ -184,10 +173,8 @@ class StatementEditor extends Component implements HasForms, HasActions
         // somehow the statements are saved just by me getting state.
 
         $this->editing = false;
-        $this->assessmentPriorityAction->refresh();
-        $this->form->fill($this->assessmentPriorityAction->toArray());
-
+        $this->priorityAction->refresh();
+        $this->form->fill($this->priorityAction->toArray());
 
     }
-
 }

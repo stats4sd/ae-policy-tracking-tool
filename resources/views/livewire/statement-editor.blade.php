@@ -10,7 +10,7 @@
     >
 
         @if(!$editing)
-            @foreach($assessmentPriorityAction->statements->where('type_id', $this->type->id) as $statement)
+            @foreach($priorityAction->statements->where('type_id', $this->type->id) as $statement)
                 <p>{{ $statement->name }}</p>
                 <div class="flex flex-wrap gap-2">
                     @foreach($statement->policies as $policy)

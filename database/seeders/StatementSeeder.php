@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Assessment;
 use App\Models\AssessmentPriorityAction;
+use App\Models\PriorityAction;
 use App\Models\Statement;
 use App\Models\Type;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -20,13 +22,8 @@ class StatementSeeder extends Seeder
 
         $types = Type::all();
 
-        $fakeStrings = file_get_contents('http://loripsum.net/api/20/short/plaintext');
-        $fakeArray = collect(explode("\n", $fakeStrings))->filter(function($string) {
-            return strlen($string) > 0;
-        })->values();
 
-
-        foreach(AssessmentPriorityAction::all() as $action) {
+        foreach(PriorityAction::all() as $action) {
 
             foreach($types as $type) {
                 $count = rand(1, 3);
@@ -34,7 +31,8 @@ class StatementSeeder extends Seeder
                 for($i = 0; $i < $count; $i++) {
                     $action->statements()->create([
                         'type_id' => $type->id,
-                        'name' => $fakeArray[rand(0, 19)],
+                        'assessment_id' => Assessment::first()->id,
+                        'name' => fake()->sentence(),
                     ]);
 
                 }

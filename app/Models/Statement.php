@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,9 +11,27 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Statement extends Model
 {
-    public function assessmentPriorityAction(): BelongsTo
+
+    protected static function booted()
     {
-        return $this->belongsTo(AssessmentPriorityAction::class);
+        // add global scope to only get statements from the current assessment
+
+        static::addGlobalScope('assessment', function ($query) {
+            if (Filament::hasTenancy() && Filament::getTenant()) {
+                $query->where('assessment_id', Filament::getTenant()->id);
+            }
+        });
+
+    }
+
+    public function priorityAction(): BelongsTo
+    {
+        return $this->belongsTo(PriorityAction::class);
+    }
+
+    public function assessment(): BelongsTo
+    {
+        return $this->belongsTo(Assessment::class);
     }
 
     public function type(): BelongsTo

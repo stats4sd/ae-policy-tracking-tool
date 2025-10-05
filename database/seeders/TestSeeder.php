@@ -20,6 +20,9 @@ class TestSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
+        $role = \Spatie\Permission\Models\Role::create(['name' => 'admin']);
+        $user->assignRole($role);
+
         // Temp
         $country = Country::create([
             'name' => 'Ghana',
@@ -30,6 +33,8 @@ class TestSeeder extends Seeder
             'status' => 'In Progress',
             'finalised_at' => null,
         ]);
+
+        $this->call(StatementSeeder::class);
 
         $assessment->users()->sync([$user->id]);
 
