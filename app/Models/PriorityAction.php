@@ -20,8 +20,8 @@ class PriorityAction extends Model
         return $this->belongsTo(Recommendation::class);
     }
 
-    public function assessmentPriorityActions(): HasMany
+    public function statements(): HasMany
     {
-        return $this->hasMany(AssessmentPriorityAction::class);
+        return $this->hasMany(Statement::class);
     }
 }

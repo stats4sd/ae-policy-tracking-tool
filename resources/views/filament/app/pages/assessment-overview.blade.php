@@ -11,12 +11,12 @@
         </x-block-title>
 
         <div class="space-y-4 mt-4">
-            @foreach($assessmentPriorityActions->filter(fn(\App\Models\AssessmentPriorityAction $action) => $action->priorityAction->recommendation_id === $activeTab) as $action)
+            @foreach($activeRecommendation->priorityActions as $action)
                 <x-filament::section
                     wire:key="{{ $action->id }}"
                     class="header-dark"
-                                     heading="PRIORITY ACTION {{ $action->priorityAction->id }}"
-                                     description="{{ $action->priorityAction->name }}"
+                                     heading="PRIORITY ACTION {{ $action->id }}"
+                                     description="{{ $action->name }}"
                                      :collapsible="true"
                                      :collapsed="!$loop->first"
                 >
@@ -24,7 +24,7 @@
                         @foreach(\App\Models\Type::all() as $type)
                             <livewire:statement-editor
                                 :statements="$action->statements->where('type_id', $type->id)"
-                                :assessmentPriorityAction="$action"
+                                :priority-action="$action"
                                 :type="$type"
                                 :wire:key='"{$action->id}_{$type->id}"'
                                 :first="$loop->first"

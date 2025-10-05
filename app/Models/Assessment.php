@@ -4,35 +4,23 @@ namespace App\Models;
 
 use App\Mail\InviteUserToAssessment;
 use Carbon\Carbon;
-use App\Models\Policy;
 use Filament\Models\Contracts\HasName;
 use Filament\Notifications\Notification;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Stats4sd\FilamentTeamManagement\Models\Team;
 
-
-## Assessments are used as the tenant: users can join specific assessments, and the entire front-end is scoped to a specific assessment. Admin users should be able to access all assessments; other users may have access to one or multiple based on specific assignments.
+// # Assessments are used as the tenant: users can join specific assessments, and the entire front-end is scoped to a specific assessment. Admin users should be able to access all assessments; other users may have access to one or multiple based on specific assignments.
 class Assessment extends Team implements HasName
 {
     protected static function booted()
     {
         static::creating(function ($query) {
             $query->status = 'In Progress';
-            $query->title = $query->country->name . ' ' . Carbon::now()->year;
-        });
-
-        static::created(function (self $assessment) {
-
-            foreach (PriorityAction::all() as $priority_action) {
-                AssessmentPriorityAction::create(['assessment_id' => $assessment->id, 'priority_action_id' => $priority_action->id]);
-            }
-
+            $query->title = $query->country->name.' '.Carbon::now()->year;
         });
     }
 
@@ -47,7 +35,6 @@ class Assessment extends Team implements HasName
             if ($email == null || $email == '') {
                 continue;
             }
-
 
             $invite = $this->invites()->create([
                 'email' => $email,
@@ -66,15 +53,14 @@ class Assessment extends Team implements HasName
         }
     }
 
-
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
     }
 
-    public function assessmentPriorityActions(): HasMany
+    public function statements(): HasMany
     {
-        return $this->hasMany(AssessmentPriorityAction::class);
+        return $this->hasMany(Statement::class);
     }
 
     public function policies(): HasMany

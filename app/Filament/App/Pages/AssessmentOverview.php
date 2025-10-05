@@ -4,6 +4,7 @@ namespace App\Filament\App\Pages;
 
 use App\Models\Assessment;
 use App\Models\AssessmentPriorityAction;
+use App\Models\PriorityAction;
 use App\Models\Recommendation;
 use App\Services\HelperService;
 use Carbon\Carbon;
@@ -34,17 +35,19 @@ class AssessmentOverview extends Page
     protected static ?string $navigationLabel = 'Country Status';
 
     public ?Assessment $assessment;
-    public ?Collection $assessmentPriorityActions;
     public ?Collection $statementsByType;
     public ?Collection $recommendations;
-    public int $activeTab = 1;
+
+    public int $activeTab;
+    public Recommendation $activeRecommendation;
 
     public function __construct()
     {
         $this->assessment = HelperService::getCurrentTenant();
-        $this->assessmentPriorityActions = $this->assessment?->assessmentPriorityActions->load('statements');
+        $this->recommendations = Recommendation::with('priorityActions.statements')->get();
 
-        $this->recommendations = Recommendation::all();
+        $this->activeTab = 1;
+        $this->updateActiveRecommendation();
     }
 
 
@@ -103,6 +106,12 @@ class AssessmentOverview extends Page
     public function setActiveTab(int $index)
     {
         $this->activeTab = $index;
+        $this->updateActiveRecommendation();
+    }
+
+    public function updateActiveRecommendation()
+    {
+        $this->activeRecommendation = $this->recommendations->firstWhere('id', $this->activeTab);
     }
 
 }
