@@ -7,6 +7,7 @@ use App\Models\Country;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use PHPUnit\Framework\Constraint\Count;
 
 class TestSeeder extends Seeder
 {
@@ -25,7 +26,11 @@ class TestSeeder extends Seeder
 
         // Temp
         $country = Country::create([
-            'name' => 'Ghana',
+            'name' => 'Uganda',
+        ]);
+
+        $country2 = Country::create([
+            'name' => 'Kenya',
         ]);
 
         $assessment = Assessment::create([
@@ -34,9 +39,15 @@ class TestSeeder extends Seeder
             'finalised_at' => null,
         ]);
 
+        $assessment2 = Assessment::create([
+            'country_id' => $country2->id,
+            'status' => 'In Progress',
+            'finalised_at' => null,
+        ]);
+
         $this->call(StatementSeeder::class);
 
-        $assessment->users()->sync([$user->id]);
+        $user->assessments()->sync([$assessment->id, $assessment2->id]);
 
 
     }
