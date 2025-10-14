@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PriorityAction extends Model
 {
-
     protected $keyType = 'string';
     public $incrementing = false;
 
@@ -23,5 +22,10 @@ class PriorityAction extends Model
     public function statements(): HasMany
     {
         return $this->hasMany(Statement::class);
+    }
+
+    public function highlights(): BelongsToMany
+    {
+        return $this->belongsToMany(Highlight::class);
     }
 }
