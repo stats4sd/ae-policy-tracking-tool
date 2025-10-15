@@ -63,9 +63,9 @@ class Assessment extends Team implements HasName
         return $this->hasMany(Statement::class);
     }
 
-    public function policies(): HasMany
+    public function policyDocuments(): HasMany
     {
-        return $this->hasMany(Policy::class);
+        return $this->hasMany(PolicyDocument::class);
     }
 
     public function users(): BelongsToMany

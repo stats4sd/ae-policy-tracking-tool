@@ -44,8 +44,8 @@ class Statement extends Model
         return $this->belongsToMany(AePrinciple::class);
     }
 
-    public function policies(): BelongsToMany
+    public function policyDocuments(): BelongsToMany
     {
-        return $this->belongsToMany(Policy::class);
+        return $this->belongsToMany(PolicyDocument::class, 'policy_statement', 'statement_id', 'policy_id');
     }
 }

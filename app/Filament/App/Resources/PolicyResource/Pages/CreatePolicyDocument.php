@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\App\Resources\PolicyResource\Pages;
+namespace App\Filament\App\Resources\PolicyDocumentResource\Pages;
 
-use App\Filament\App\Resources\PolicyResource;
+use App\Filament\App\Resources\PolicyDocumentResource;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
-class CreatePolicy extends CreateRecord
+class CreatePolicyDocument extends CreateRecord
 {
-    protected static string $resource = PolicyResource::class;
+    protected static string $resource = PolicyDocumentResource::class;
 
     protected ?string $heading = 'Upload / Link to Policy Document(s)';
     protected ?string $subheading = 'Please upload the policy document(s) or provide the URL to the document(s) that are part of the assessment.';

@@ -26,7 +26,7 @@ class Review extends Page
 
         $this->recommendations = Recommendation::all()
             ->load([
-                'priorityActions.statements.policies',
+                'priorityActions.statements.policyDocuments',
                 'aePrinciples',
             ]);
 

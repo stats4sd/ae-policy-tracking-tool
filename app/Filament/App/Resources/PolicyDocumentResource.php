@@ -2,9 +2,9 @@
 
 namespace App\Filament\App\Resources;
 
-use App\Filament\App\Resources\PolicyResource\Pages;
-use App\Filament\App\Resources\PolicyResource\RelationManagers;
-use App\Models\Policy;
+use App\Filament\App\Resources\PolicyDocumentResource\Pages;
+use App\Filament\App\Resources\PolicyDocumentResource\RelationManagers;
+use App\Models\PolicyDocument;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,9 +13,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class PolicyResource extends Resource
+class PolicyDocumentResource extends Resource
 {
-    protected static ?string $model = Policy::class;
+    protected static ?string $model = PolicyDocument::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationLabel = 'Policy Documents';
@@ -59,7 +59,7 @@ class PolicyResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('url')
-                    ->url(fn(Policy $record) => $record->url)
+                    ->url(fn(PolicyDocument $record) => $record->url)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('comments')
                     ->limit(200)
@@ -89,9 +89,9 @@ class PolicyResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPolicies::route('/'),
-            'create' => Pages\CreatePolicy::route('/create'),
-            'edit' => Pages\EditPolicy::route('/{record}/edit'),
+            'index' => Pages\ListPolicyDocuments::route('/'),
+            'create' => Pages\CreatePolicyDocument::route('/create'),
+            'edit' => Pages\EditPolicyDocument::route('/{record}/edit'),
         ];
     }
 }

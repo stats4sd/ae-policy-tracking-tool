@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Highlight extends Model
 {
-    public function policy(): BelongsTo
+    public function policyDocument(): BelongsTo
     {
-        return $this->belongs(Policy::class);
+        return $this->belongs(PolicyDocument::class);
     }
 
     public function priorityActions(): BelongsToMany

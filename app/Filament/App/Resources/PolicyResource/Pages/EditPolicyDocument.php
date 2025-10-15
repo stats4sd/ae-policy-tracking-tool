@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\App\Resources\PolicyResource\Pages;
+namespace App\Filament\App\Resources\PolicyDocumentResource\Pages;
 
-use App\Filament\App\Resources\PolicyResource;
+use App\Filament\App\Resources\PolicyDocumentResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditPolicy extends EditRecord
+class EditPolicyDocument extends EditRecord
 {
-    protected static string $resource = PolicyResource::class;
+    protected static string $resource = PolicyDocumentResource::class;
 
     protected function getHeaderActions(): array
     {
