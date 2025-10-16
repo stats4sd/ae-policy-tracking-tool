@@ -2,16 +2,18 @@
 
 namespace App\Filament\App\Resources;
 
-use App\Filament\App\Resources\PolicyDocumentResource\Pages;
-use App\Filament\App\Resources\PolicyDocumentResource\RelationManagers;
-use App\Models\PolicyDocument;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Get;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\PolicyDocument;
+use Filament\Resources\Resource;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\App\Resources\PolicyDocumentResource\Pages;
+use App\Filament\App\Resources\PolicyDocumentResource\RelationManagers;
 
 class PolicyDocumentResource extends Resource
 {
@@ -33,6 +35,9 @@ class PolicyDocumentResource extends Resource
                             Forms\Components\Textarea::make('comments')
                                 ->rows(5),
                         ]),
+
+                    // the origninal file upload component
+                    // it will be replaced by another two file upload components later
                     Forms\Components\Section::make('Documents')
                         ->columnSpan(1)
                         ->schema([
@@ -47,6 +52,50 @@ class PolicyDocumentResource extends Resource
                                 ->label('URL to Policy Document(s)')
                                 ->hint('If you do not have the policy document(s), please provide the URL to the document(s) online'),
                         ]),
+
+                    // file upload component to show files that can be deleted (files without any highlight)
+                    Forms\Components\Section::make('Editable Documents')
+                        ->columnSpan(1)
+                        ->schema([
+                            Forms\Components\SpatieMediaLibraryFileUpload::make('editable_documents')
+                                ->label('Upload Policy Document(s)')
+                                ->hint('If you have the policy document(s), please upload them here.')
+                                ->multiple()
+                                ->reorderable()
+                                ->preserveFilenames()
+                                // keep this file upload component enabled, so that user can delete the uploaded file
+                                // TODO: add condition to filter files that without any highlight                                
+                                ->filterMediaUsing(
+                                    fn (Collection $media, Get $get): Collection => $media->where(
+                                        'id',
+                                        112
+                                    ),
+                                )
+                                ->collection('policy-documents'),
+                        ]),
+
+                    // file upload component to show files that cannot be deleted (files with any highlight)
+                    Forms\Components\Section::make('Non Editedable Documents')
+                        ->columnSpan(1)
+                        ->schema([
+                            Forms\Components\SpatieMediaLibraryFileUpload::make('non_editable_documents')
+                                ->label('Uploaded Policy Document(s)')
+                                ->hint('There are highlights in these uploaded documents, therefore they cannot be deleted')
+                                ->multiple()
+                                ->reorderable()
+                                ->preserveFilenames()
+                                // keep this file upload component disabled, so that user cannot delete the uploaded file
+                                ->disabled()
+                                // TODO: add condition to filter files that with highlights                                
+                                ->filterMediaUsing(
+                                    fn (Collection $media, Get $get): Collection => $media->where(
+                                        'id',
+                                        113
+                                    ),
+                                )
+                                ->collection('policy-documents'),
+                        ]),
+
 
                 ])
                     ->columns(2);
