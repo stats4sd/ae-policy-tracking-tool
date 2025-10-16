@@ -6,6 +6,7 @@ use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Get;
 use Filament\Forms\Form;
+use App\Models\Highlight;
 use Filament\Tables\Table;
 use App\Models\PolicyDocument;
 use Filament\Resources\Resource;
@@ -38,6 +39,7 @@ class PolicyDocumentResource extends Resource
 
                     // the origninal file upload component
                     // it will be replaced by another two file upload components later
+                    // TODO: remove this file upload component when finish testing Editable Documents and Non Editable Documents file upload components
                     Forms\Components\Section::make('Documents')
                         ->columnSpan(1)
                         ->schema([
@@ -64,12 +66,16 @@ class PolicyDocumentResource extends Resource
                                 ->reorderable()
                                 ->preserveFilenames()
                                 // keep this file upload component enabled, so that user can delete the uploaded file
-                                // TODO: add condition to filter files that without any highlight                                
                                 ->filterMediaUsing(
-                                    fn (Collection $media, Get $get): Collection => $media->where(
-                                        'id',
-                                        112
-                                    ),
+                                    function (Collection $media, Get $get) {
+                                        // find distinct media id existed in highlights table
+                                        $mediaIds = Highlight::select('media_id')->distinct()->get()->pluck('media_id');
+
+                                        // add filter to include media without any highlight
+                                        $filteredMedia = $media->whereNotIn('id', $mediaIds);
+
+                                        return $filteredMedia;
+                                    }
                                 )
                                 ->collection('policy-documents'),
                         ]),
@@ -86,19 +92,23 @@ class PolicyDocumentResource extends Resource
                                 ->preserveFilenames()
                                 // keep this file upload component disabled, so that user cannot delete the uploaded file
                                 ->disabled()
-                                // TODO: add condition to filter files that with highlights                                
                                 ->filterMediaUsing(
-                                    fn (Collection $media, Get $get): Collection => $media->where(
-                                        'id',
-                                        113
-                                    ),
+                                    function (Collection $media, Get $get) {
+                                        // find distinct media id existed in highlights table
+                                        $mediaIds = Highlight::select('media_id')->distinct()->get()->pluck('media_id');
+
+                                        // add filter to include media with highlights
+                                        $filteredMedia = $media->whereIn('id', $mediaIds);
+
+                                        return $filteredMedia;
+                                    }
                                 )
                                 ->collection('policy-documents'),
                         ]),
 
 
                 ])
-                    ->columns(2);
+                ->columns(2);
     }
 
     public static function table(Table $table): Table
