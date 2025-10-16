@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('highlights', function (Blueprint $table) {
             $table->id();
             $table->foreignId('policy_id')->constrained()->onDelete('cascade');
+            $table->foreignId('media_id')->constrained()->onDelete('cascade');
             $table->integer('start_offset')->nullable();
             $table->integer('end_offset')->nullable();
             $table->text('snippet')->nullable();
