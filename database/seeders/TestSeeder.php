@@ -33,6 +33,14 @@ class TestSeeder extends Seeder
             'name' => 'Kenya',
         ]);
 
+        // Question: when running command "php artisan migrate:fresh --seed", 
+        // error occurred as below statement tries to insert record to teams table.
+        // 
+        // I did below checking:
+        // 1. check staging database, it does not have "teams" table
+        // 2. Assessment model does not specify table name explicitly
+        // 3. Assessment model extends Teams model, which has getTable() function to return a string as getModelNameLower() . 's'
+        // 4. Suppose new records should be insered into "assessments" table, why it still looks for "teams" table?
         $assessment = Assessment::create([
             'country_id' => $country->id,
             'status' => 'In Progress',

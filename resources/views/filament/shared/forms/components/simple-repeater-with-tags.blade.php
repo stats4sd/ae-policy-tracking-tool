@@ -73,7 +73,7 @@
                             @if($tags = $item->getFlatComponents()[0]?->getTags())
                                 <div class="w-20 flex items-start gap-y-1 flex-col">
                                     @foreach($tags as $tag)
-                                        <x-filament::badge :href="\App\Filament\App\Resources\PolicyResource::getUrl('index')" tag="a" tooltip="{{ $tag }}">
+                                        <x-filament::badge :href="\App\Filament\App\Resources\PolicyDocumentResource::getUrl('index')" tag="a" tooltip="{{ $tag }}">
                                             {{ $tag }}
                                         </x-filament::badge>
                                     @endforeach

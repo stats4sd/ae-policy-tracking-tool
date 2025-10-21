@@ -4,7 +4,7 @@ namespace App\Livewire;
 
 use App\Filament\Shared\Forms\Components\SimpleRepeaterWithTags;
 use App\Filament\Shared\Forms\Components\TextAreaWithTags;
-use App\Models\Policy;
+use App\Models\PolicyDocument;
 use App\Models\PriorityAction;
 use App\Models\Statement;
 use App\Models\Type;
@@ -114,9 +114,9 @@ class StatementEditor extends Component implements HasActions, HasForms
 
                             })
                             ->form([
-                                Select::make('policies')
+                                Select::make('policyDocuments')
                                     ->multiple()
-                                    ->options(Policy::where('assessment_id', Filament::getTenant()->id)->get()->pluck('name', 'id')->toArray())
+                                    ->options(PolicyDocument::where('assessment_id', Filament::getTenant()->id)->get()->pluck('name', 'id')->toArray())
                                     ->required(),
                             ])
                             ->action(function (array $arguments, array $data): void {
@@ -135,7 +135,7 @@ class StatementEditor extends Component implements HasActions, HasForms
                                     ]);
                                 }
 
-                                $statement->policies()->sync($data['policies']);
+                                $statement->policyDocuments()->sync($data['policyDocuments']);
 
                             }),
                     ]),

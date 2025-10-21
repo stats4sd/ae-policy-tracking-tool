@@ -13,9 +13,9 @@
             @foreach($priorityAction->statements->where('type_id', $this->type->id) as $statement)
                 <p>{{ $statement->name }}</p>
                 <div class="flex flex-wrap gap-2">
-                    @foreach($statement->policies as $policy)
-                        <x-filament::badge :href="\App\Filament\App\Resources\PolicyResource::getUrl('index')" tag="a">
-                            {{ $policy->name }}
+                    @foreach($statement->policyDocuments as $policyDocument)
+                        <x-filament::badge :href="\App\Filament\App\Resources\PolicyDocumentResource::getUrl('index')" tag="a">
+                            {{ $policyDocument->name }}
                         </x-filament::badge>
                     @endforeach
                 </div>

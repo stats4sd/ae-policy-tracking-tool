@@ -98,7 +98,7 @@
                                             @if($priorityAction->statements->where('type_id', $type->id)->pluck('policies')->flatten()->count() > 0)
                                                 <h4 class="text-sm font-bold">References:</h4>
                                                 @foreach($priorityAction->statements->where('type_id', $type->id)->pluck('policies')->flatten()->pluck('name', 'id')->unique() ?? [] as $policyId => $policy)
-                                                    <a href="{{ \App\Filament\App\Resources\PolicyResource::getUrl('index') }}" class="underline text-blue-800 block">{{ $policy }};</a>
+                                                    <a href="{{ \App\Filament\App\Resources\PolicyDocumentResource::getUrl('index') }}" class="underline text-blue-800 block">{{ $policy }};</a>
                                                 @endforeach
                                             @endif
                                         </div>

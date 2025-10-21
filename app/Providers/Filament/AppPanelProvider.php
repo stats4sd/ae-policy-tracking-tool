@@ -5,7 +5,7 @@ namespace App\Providers\Filament;
 use App\Filament\App\Pages\AssessmentOverview;
 use App\Filament\App\Pages\RegisterAssessment;
 use App\Filament\App\Pages\Review;
-use App\Filament\App\Resources\PolicyResource;
+use App\Filament\App\Resources\PolicyDocumentResource;
 use App\Filament\App\Resources\UserResource;
 use App\Models\Assessment;
 use Filament\Http\Middleware\Authenticate;
@@ -75,7 +75,7 @@ class AppPanelProvider extends PanelProvider
                 return $builder
                     ->items([
                         ...AssessmentOverview::getNavigationItems(),
-                        ...PolicyResource::getNavigationItems(),
+                        ...PolicyDocumentResource::getNavigationItems(),
                         ...Review::getNavigationItems(),
                         NavigationItem::make('Admin Panel')
                             ->icon('heroicon-o-shield-check')
