@@ -2,6 +2,7 @@
 
 namespace App\Filament\App\Resources;
 
+use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Get;
@@ -129,6 +130,10 @@ class PolicyDocumentResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\Action::make('review')
+                    ->label('Review Highlights')
+                    ->url(fn (PolicyDocument $record): string => static::getUrl('review', ['record' => $record]))
+                    ->icon('heroicon-o-eye'),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -151,6 +156,7 @@ class PolicyDocumentResource extends Resource
             'index' => Pages\ListPolicyDocuments::route('/'),
             'create' => Pages\CreatePolicyDocument::route('/create'),
             'edit' => Pages\EditPolicyDocument::route('/{record}/edit'),
+            'review' => Pages\ReviewPolicyDocument::route('/{record}/review')
         ];
     }
 }

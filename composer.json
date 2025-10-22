@@ -20,6 +20,7 @@
         "orangehill/iseed": "^3.0",
         "sentry/sentry-laravel": "^4.6",
         "spatie/laravel-permission": "^6.1",
+        "spatie/pdf-to-text": "^1.54",
         "stats4sd/filament-team-management": "dev-apni-fixes",
         "symfony/http-client": "^7.1",
         "symfony/mailgun-mailer": "^7.1"

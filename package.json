@@ -8,6 +8,7 @@
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.7",
         "@tailwindcss/typography": "^0.5.13",
+        "@vitejs/plugin-vue": "^6.0.1",
         "autoprefixer": "^10.4.19",
         "axios": "^1.6.1",
         "laravel-vite-plugin": "^1.0",
@@ -17,6 +18,7 @@
         "vite": "^5.0"
     },
     "dependencies": {
-        "@sentry/vue": "^7.40.0"
+        "@sentry/vue": "^7.40.0",
+        "vue": "^3.5.22"
     }
 }
