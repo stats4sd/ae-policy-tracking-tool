@@ -12,4 +12,6 @@ class ReviewPolicyDocument extends ViewRecord
 
     protected static string $view = 'filament.app.resources.policy-document-resource.pages.review-policy-document';
 
+    protected ?string $maxContentWidth = 'full';
+
 }

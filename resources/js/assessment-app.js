@@ -1,5 +1,8 @@
 import {createApp} from 'vue';
-import AssessmentApp from './components/AssessmentApp.vue';
+import Assessment from './components/Assessment.vue';
 
-const app = createApp(AssessmentApp);
+const app = createApp({});
+
+
+app.component('Assessment', Assessment);
 app.mount('#assessment-app');

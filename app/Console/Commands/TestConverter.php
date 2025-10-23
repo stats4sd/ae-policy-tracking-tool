@@ -38,6 +38,16 @@ class TestConverter extends Command
             ])
             ->text();
 
+        // formatting adjustments
+
+
+        // 1. convert multiple .s to fewer dots
+        $text = preg_replace('/\.{10,}/', '…', $text);
+
+        // 2. convert too many spaces
+        $text = preg_replace('/ {80,}/', '    ', $text);
+
+
         // save to file for reference
         file_put_contents(base_path('tests/Livestock_Policy_2006.txt'), $text);
         //
