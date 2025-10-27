@@ -2,13 +2,15 @@
 
 namespace App\Filament\App\Pages;
 
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Filament\Actions\Action;
+use App\Models\PolicyDocument;
+use Filament\Facades\Filament;
 use Filament\Support\Exceptions\Halt;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Concerns\InteractsWithForms;
 use App\Filament\App\Resources\PolicyDocumentResource;
 
@@ -36,15 +38,18 @@ class BulkUploadPage extends Page implements HasForms
     {
         return $form
             ->schema([
-                Forms\Components\SpatieMediaLibraryFileUpload::make('documents')
+                FileUpload::make('documents')
                     ->label('Upload Policy Document(s)')
                     ->hint('If you have the policy document(s), please upload them here.')
+                    ->required()
                     ->multiple()
-                    ->reorderable()
+                    // Question: do we need to restrict file types? e.g. MS Word, text file, etc?
                     ->preserveFilenames()
-                    ->collection('policy-documents'),
-        ])
-        ->statePath('data');
+                    // when storedFiles(false) is called, the $this->form->getState() will return an array of TemporaryUploadedFile objects 
+                    // instead of an array of paths to the stored files
+                    ->storeFiles(false),
+            ])
+            ->statePath('data');
     }
 
     // define actions
@@ -61,30 +66,51 @@ class BulkUploadPage extends Page implements HasForms
     public function save(): void
     {
         try {
-            // cannot access the uploaded files
-            // in this custom page, we did not bind file upload component to any Laravel model yet...
-            // do we need to relate the uploaded files to a Laravel model for successful upload?
-            // 
-            // Question: how to access the uploaded file in the submitted form?
+            // get submitted form
             $data = $this->form->getState();
-            ray($data);
 
-            // TODO: create one policy document model for each uploaded file
+            // get the uploaded files from submitted form
+            $documents = $data['documents'];
+
+            // create one policy document model for each uploaded file
+            foreach ($documents as $document) {
+                // create policy document model, set original file name
+                $policyDocument = PolicyDocument::create([
+                    'assessment_id' => Filament::getTenant()->id,
+                    'name' => $document->getClientOriginalName(),
+                ]);
+
+                // add the uploaded file to policy document model
+                $policyDocument->addMedia($document->getRealPath())->toMediaCollection('policy-documents');
+
+                // save policy document model
+                $policyDocument->save();
+
+                // get all uploaded file of the saved policy document
+                $medias = $policyDocument->getMedia('policy-documents');
+
+                // set original file name to media record
+                // only need to update the first item because one policy document has one uploaded file only
+                $medias[0]->name = $document->getClientOriginalName();
+                $medias[0]->file_name = $document->getClientOriginalName();
+                $medias[0]->save();                
+            }
+
+            // redirect to policy documents list page
+            redirect(PolicyDocumentResource::getUrl('index'));
+
+            // hardcode temporary for testing
+            $numberOfFiles = count($documents);
+
+            // show notification
+            Notification::make() 
+                ->success()
+                ->title($numberOfFiles . ' file uploaded and ' . $numberOfFiles . ' policy documents created')
+                ->send(); 
  
         } catch (Halt $exception) {
             return;
         }
 
-        // TODO: redirect to policy documents list page
-        // redirect(PolicyDocumentResource::getUrl('index'));
-
-        // hardcode temporary for testing
-        $numberOfFiles = 3;
-
-        // show notification
-        Notification::make() 
-            ->success()
-            ->title($numberOfFiles . ' file uploaded and 3 policy documents created')
-            ->send(); 
     }
 }
