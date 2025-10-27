@@ -14,7 +14,7 @@
         </div>
 
         <div class="flex-grow border border-gray-400 ps-12 p-4 rounded-md overflow-scroll h-[90vh]" ref="contentDiv">
-            <div ref="content-bounds" v-html="documentContent"/>
+            <div ref="content-bounds" v-html="formattedDocumentContent"/>
         </div>
     </div>
 </template>
@@ -31,6 +31,7 @@ const props = defineProps({
 
 const documentId = ref(props.documentId);
 const documentContent = ref('');
+const formattedDocumentContent = ref('');
 
 // Load document content from server
 const loadDocumentContent = async (id) => {
@@ -41,6 +42,7 @@ const loadDocumentContent = async (id) => {
         }
         const data = await response.text();
         documentContent.value = data;
+        formattedDocumentContent.value = '<span id="data-offset-0">' + data + '</span>';
         console.log('Document content loaded:', data);
 
     } catch (error) {
@@ -62,15 +64,20 @@ const demoHighlight = {
 // add demo highlight to page, from start to end number of characters offset from start of contentBound div:
 highlights.value.push(demoHighlight);
 
+/**
+ * <span id="data-offset-0">This is some sample text for the document content. Users can select text to highlight it.</span>-
+ * <span id="data-offset-0">This is some sample <span style="background-color: yellow;" id="data-offset-20">text for the document content. Users can</span> select text to highlight it.</span>
+ */
+
 const addHighlightToContent = () => {
-    let content = documentContent.value;
+    let content = formattedDocumentContent.value;
     highlights.value.forEach(highlight => {
         const before = content.slice(0, highlight.start);
         const highlightedText = content.slice(highlight.start, highlight.end);
         const after = content.slice(highlight.end);
         content = `${before}<span style="background-color: ${highlight.color};">${highlightedText}</span>${after}`;
     });
-    documentContent.value = content;
+    formattedDocumentContent.value = content;
 
     console.log('highlight added', content);
 };
@@ -96,8 +103,8 @@ const handleTextSelection = () => {
             console.log('Start offset:', range.startOffset);
             console.log('End container:', range.endContainer);
             console.log('End offset:', range.endOffset);
-            [range.startOffset, range.endOffset];
 
+            console.log('Test. text from documentContent:', documentContent.value.substring(range.startOffset, range.endOffset));
 
             // add new highlight to highlights array
             highlights.value.push({
