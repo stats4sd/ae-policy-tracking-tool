@@ -14,7 +14,11 @@
         </div>
 
         <div class="flex-grow border border-gray-400 ps-12 p-4 rounded-md overflow-scroll h-[90vh]" ref="contentDiv">
+        <pre>
             <div ref="content-bounds" v-html="formattedDocumentContent"/>
+
+        </pre>
+
         </div>
     </div>
 </template>
