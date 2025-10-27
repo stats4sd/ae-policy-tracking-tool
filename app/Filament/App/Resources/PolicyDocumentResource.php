@@ -40,20 +40,20 @@ class PolicyDocumentResource extends Resource
                     // the origninal file upload component
                     // it will be replaced by another two file upload components later
                     // TODO: remove this file upload component when finish testing Editable Documents and Non Editable Documents file upload components
-                    Forms\Components\Section::make('Documents')
-                        ->columnSpan(1)
-                        ->schema([
-                            Forms\Components\SpatieMediaLibraryFileUpload::make('documents')
-                                ->label('Upload Policy Document(s)')
-                                ->hint('If you have the policy document(s), please upload them here.')
-                                ->multiple()
-                                ->reorderable()
-                                ->preserveFilenames()
-                                ->collection('policy-documents'),
-                            Forms\Components\TextInput::make('url')
-                                ->label('URL to Policy Document(s)')
-                                ->hint('If you do not have the policy document(s), please provide the URL to the document(s) online'),
-                        ]),
+                    // Forms\Components\Section::make('Documents')
+                    //     ->columnSpan(1)
+                    //     ->schema([
+                    //         Forms\Components\SpatieMediaLibraryFileUpload::make('documents')
+                    //             ->label('Upload Policy Document(s)')
+                    //             ->hint('If you have the policy document(s), please upload them here.')
+                    //             ->multiple()
+                    //             ->reorderable()
+                    //             ->preserveFilenames()
+                    //             ->collection('policy-documents'),
+                    //         Forms\Components\TextInput::make('url')
+                    //             ->label('URL to Policy Document(s)')
+                    //             ->hint('If you do not have the policy document(s), please provide the URL to the document(s) online'),
+                    //     ]),
 
                     // file upload component to show files that can be deleted (files without any highlight)
                     Forms\Components\Section::make('Editable Documents')
@@ -64,7 +64,16 @@ class PolicyDocumentResource extends Resource
                                 ->hint('If you have the policy document(s), please upload them here.')
                                 ->multiple()
                                 ->reorderable()
+                                ->downloadable()
                                 ->preserveFilenames()
+                                // restrict file types to pdf, MS Word, text file
+                                ->acceptedFileTypes([
+                                    'application/pdf',
+                                    'application/x-pdf',
+                                    'application/msword',
+                                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                                    'text/plain',
+                                    ]) 
                                 // keep this file upload component enabled, so that user can delete the uploaded file
                                 ->filterMediaUsing(
                                     function (Collection $media, Get $get) {
@@ -81,7 +90,7 @@ class PolicyDocumentResource extends Resource
                         ]),
 
                     // file upload component to show files that cannot be deleted (files with any highlight)
-                    Forms\Components\Section::make('Non Editedable Documents')
+                    Forms\Components\Section::make('Non Editable Documents')
                         ->columnSpan(1)
                         ->schema([
                             Forms\Components\SpatieMediaLibraryFileUpload::make('non_editable_documents')
@@ -89,6 +98,7 @@ class PolicyDocumentResource extends Resource
                                 ->hint('There are highlights in these uploaded documents, therefore they cannot be deleted')
                                 ->multiple()
                                 ->reorderable()
+                                ->downloadable()
                                 ->preserveFilenames()
                                 // keep this file upload component disabled, so that user cannot delete the uploaded file
                                 ->disabled()
