@@ -43,7 +43,14 @@ class BulkUploadPage extends Page implements HasForms
                     ->hint('If you have the policy document(s), please upload them here.')
                     ->required()
                     ->multiple()
-                    // Question: do we need to restrict file types? e.g. MS Word, text file, etc?
+                    // restrict file types to pdf, MS Word, text file
+                    ->acceptedFileTypes([
+                        'application/pdf',
+                        'application/x-pdf',
+                        'application/msword',
+                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                        'text/plain',
+                        ]) 
                     ->preserveFilenames()
                     // when storedFiles(false) is called, the $this->form->getState() will return an array of TemporaryUploadedFile objects 
                     // instead of an array of paths to the stored files

@@ -66,6 +66,14 @@ class PolicyDocumentResource extends Resource
                                 ->reorderable()
                                 ->downloadable()
                                 ->preserveFilenames()
+                                // restrict file types to pdf, MS Word, text file
+                                ->acceptedFileTypes([
+                                    'application/pdf',
+                                    'application/x-pdf',
+                                    'application/msword',
+                                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                                    'text/plain',
+                                    ]) 
                                 // keep this file upload component enabled, so that user can delete the uploaded file
                                 ->filterMediaUsing(
                                     function (Collection $media, Get $get) {
