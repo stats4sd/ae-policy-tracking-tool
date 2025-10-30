@@ -3,8 +3,9 @@
 namespace App\Filament\App\Resources\PolicyDocumentResource\Pages;
 
 use App\Filament\App\Resources\PolicyDocumentResource;
-use Filament\Actions;
+use App\Models\PolicyDocument;
 use Filament\Resources\Pages\ViewRecord;
+use Illuminate\Contracts\Support\Htmlable;
 
 class ReviewPolicyDocument extends ViewRecord
 {
@@ -14,4 +15,11 @@ class ReviewPolicyDocument extends ViewRecord
 
     protected ?string $maxContentWidth = 'full';
 
+    public function getTitle(): string|Htmlable
+    {
+        /** @var PolicyDocument $record */
+        $record = $this->getRecord();
+
+        return $record->name;
+    }
 }

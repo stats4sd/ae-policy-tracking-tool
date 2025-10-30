@@ -24,3 +24,15 @@
 .header-dark .fi-section-header button {
     @apply text-gray-50;
 }
+
+.search-result {
+    background-color: rgba(173, 216, 230, 0.6);
+}
+
+.search-current {
+    outline: 2px solid #1e90ff;
+    background-color: rgba(30, 144, 255, 0.35);
+}
+
+.doc-highlight { /* highlights set inline for color */
+}
