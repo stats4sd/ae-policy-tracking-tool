@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Jobs\ExtractPolicyDocumentContent;
 use App\Models\Assessment;
 use App\Enums\TextDirection;
 use App\Models\PriorityAction;
@@ -18,7 +19,7 @@ class PolicyDocument extends Model implements HasMedia
 {
     use InteractsWithMedia;
 
-    protected $table = 'policies';
+    protected $table = 'policy_documents';
 
     protected $casts = [
         'text_direction' => TextDirection::class,

@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('highlights', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('policy_id')->constrained()->onDelete('cascade');
-            $table->foreignId('media_id')->constrained()->onDelete('cascade');
-            $table->integer('start_offset')->nullable();
-            $table->integer('end_offset')->nullable();
-            $table->text('snippet')->nullable();
+            $table->foreignId('policy_document_id')->constrained()->onDelete('cascade');
+            $table->integer('start_offset');
+            $table->integer('end_offset');
+            $table->string('colour');
+            $table->text('extract')->nullable();
             $table->timestamps();
         });
     }

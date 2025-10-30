@@ -15,7 +15,7 @@ export default defineConfig({
         laravel({
             input: [
                 'resources/js/app.js',
-                'resources/js/assessment-app.js',
+                'resources/js/assessment-app.ts',
                 'resources/css/app.css',
                 'resources/css/filament/app/theme.css',
                 'resources/css/filament/admin/theme.css',

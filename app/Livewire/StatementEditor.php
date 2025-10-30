@@ -76,7 +76,7 @@ class StatementEditor extends Component implements HasActions, HasForms
                                 $statement = Statement::find($statement_id);
 
                                 if ($statement) {
-                                    return $statement->policies->pluck('name')->toArray();
+                                    return $statement->policyDocuments->pluck('name')->toArray();
                                 }
 
                                 return [];
@@ -106,7 +106,7 @@ class StatementEditor extends Component implements HasActions, HasForms
 
                                 if ($statement) {
                                     return [
-                                        'policies' => $statement->policies->pluck('id')->toArray(),
+                                        'policyDocuments' => $statement->policyDocuments>pluck('id')->toArray(),
                                     ];
                                 }
 

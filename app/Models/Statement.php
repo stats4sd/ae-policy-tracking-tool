@@ -46,6 +46,6 @@ class Statement extends Model
 
     public function policyDocuments(): BelongsToMany
     {
-        return $this->belongsToMany(PolicyDocument::class, 'policy_statement', 'statement_id', 'policy_id');
+        return $this->belongsToMany(PolicyDocument::class);
     }
 }

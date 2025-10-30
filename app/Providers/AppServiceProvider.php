@@ -46,7 +46,7 @@ class AppServiceProvider extends ServiceProvider
 
         FilamentView::registerRenderHook(
             PanelsRenderHook::SCRIPTS_AFTER,
-            fn (): string => Blade::render('@vite("resources/js/assessment-app.js")'),
+            fn (): string => Blade::render('@vite("resources/js/assessment-app.ts")'),
             //            fn (): string => Blade::render('<script> console.log("Review Policy Document Page Loaded"); </script>'),
             scopes: [ReviewPolicyDocument::class],
         );
