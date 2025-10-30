@@ -18,6 +18,7 @@ Route::group(
         Route::get('/policy-documents/{document}/content', [\App\Http\Controllers\PolicyDocumentController::class, 'getContent'])
             ->name('policy-document.content');
 
+        Route::get('/policy-documents/{document}/highlights', [\App\Http\Controllers\PolicyDocumentController::class, 'getHighlights']);
 
         Route::apiResource('highlights', \App\Http\Controllers\HighlightController::class)->only([
             'store',

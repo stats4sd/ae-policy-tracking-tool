@@ -8,15 +8,27 @@
             <div class="flex flex-col justify-start items-center">
                 <div
                     v-for="highlight in highlights"
-                    :key="highlight.start"
+                    :key="highlight.start_offset"
                     class="mb-2 w-full"
                 >
                     <div
                         :style="{ backgroundColor: highlight.color }"
-                        class="p-2 rounded-md"
+                        class="p-2 rounded-md flex justify-between"
                     >
-                        Highlight from {{ highlight.start }} to
-                        {{ highlight.end }}
+                        <div>
+
+                        Highlight from {{ highlight.start_offset }} to
+                        {{ highlight.end_offset }}
+                        </div>
+
+                        <!-- Delete icon -->
+                        <div
+                            class="cursor-pointer text-red-600 hover:text-red-800"
+                            @click="highlights = highlights.filter(h => h !== highlight); addHighlightsToContent()"
+                        >
+                            &#10060;
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -68,10 +80,15 @@
 <script setup lang="ts">
 import { defineProps, onMounted, ref, useTemplateRef } from "vue";
 import HighlightModal from "./HighlightModal.vue";
+import axios
+    from "axios";
 
 interface Highlight {
-    start: number;
-    end: number;
+    id?: number;
+    policy_document_id: number;
+    extract: string;
+    start_offset: number;
+    end_offset: number;
     color: string;
 }
 
@@ -109,15 +126,15 @@ const highlights = ref<Highlight[]>([]);
 const addHighlightsToContent = (): void => {
     let content = documentContent.value;
 
-    highlights.value.sort((a, b) => b.end - a.end);
+    highlights.value.sort((a, b) => b.end_offset - a.end_offset);
 
     console.log(highlights);
 
     highlights.value.forEach((highlight) => {
-        const before = content.slice(0, highlight.start);
-        const highlightedText = content.slice(highlight.start, highlight.end);
-        const after = content.slice(highlight.end);
-        content = `${before}<span style="background-color: ${highlight.color};">${highlightedText}</span><span data-offset="${highlight.end}">${after}</span>`;
+        const before = content.slice(0, highlight.start_offset);
+        const highlightedText = content.slice(highlight.start_offset, highlight.end_offset);
+        const after = content.slice(highlight.end_offset);
+        content = `${before}<span style="background-color: ${highlight.color};">${highlightedText}</span><span data-offset="${highlight.end_offset}">${after}</span>`;
     });
 
     formattedDocumentContent.value = content;
@@ -175,7 +192,7 @@ const handleTextSelection = (): void => {
 const currentSelection = ref<Range | null>(null);
 const currentSelectedText = ref<string>("");
 
-const confirmHighlight = async (): void => {
+const confirmHighlight = async (): Promise<void> => {
     if (currentSelection.value) {
         const start = currentSelection.value.startOffset;
         const end = currentSelection.value.endOffset;
@@ -187,20 +204,18 @@ const confirmHighlight = async (): void => {
 
         console.log("offset:", offset);
 
-        highlights.value.push({
-            start: start + offset,
-            end: end + offset,
+        const newHighlight: Highlight = {
+            policy_document_id: documentId.value,
+            extract: currentSelection.value.toString(),
+            start_offset: start + offset,
+            end_offset: end + offset,
             color: "yellow",
-        });
+        };
+
+        highlights.value.push(newHighlight);
 
         // save to database
-        const result = await saveHighlightToDatabase({
-            documentId: documentId.value,
-            text: currentSelection.value.toString(),
-            start: start + offset,
-            end: end + offset,
-            color: "yellow",
-        });
+        const result = await saveHighlightToDatabase(newHighlight);
 
         addHighlightsToContent();
 
@@ -215,25 +230,11 @@ const confirmHighlight = async (): void => {
     }
 };
 
-const saveHighlightToDatabase = async (highlight: {
-    documentId: number;
-    text: string;
-    start: number;
-    end: number;
-    color: string;
-}): Promise<void> => {
+const saveHighlightToDatabase = async (highlight: Highlight): Promise<void> => {
     try {
-        const response = await fetch(`/highlights`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(highlight),
-        });
+        const response = await axios.post("/highlights", highlight);
 
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
+        console.log(response);
 
         console.log("Highlight saved to database:", highlight);
     } catch (error) {
@@ -244,11 +245,27 @@ const saveHighlightToDatabase = async (highlight: {
 
 onMounted(async (): Promise<void> => {
     await loadDocumentContent(documentId.value);
+    await loadHighlights(documentId.value);
 
     addHighlightsToContent();
 
     window.addEventListener("mouseup", handleTextSelection);
 });
+
+const loadHighlights = async (id: number): Promise<void> => {
+    try {
+        const response = await fetch(`/policy-documents/${id}/highlights`);
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+
+        const data = await response.json();
+        highlights.value = data;
+        console.log("Highlights loaded:", data);
+    } catch (error) {
+        console.error("Error loading highlights:", error);
+    }
+};
 
 // modal box that appears on text selection to add comments or tags to the selected text
 const showModal = ref<boolean>(false);

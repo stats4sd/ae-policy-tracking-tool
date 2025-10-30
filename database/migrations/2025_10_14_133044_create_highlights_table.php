@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('policy_document_id')->constrained()->onDelete('cascade');
             $table->integer('start_offset');
             $table->integer('end_offset');
-            $table->string('colour');
+            $table->string('color');
             $table->text('extract')->nullable();
             $table->timestamps();
         });
