@@ -34,5 +34,9 @@
     background-color: rgba(30, 144, 255, 0.35);
 }
 
+.highlight-current {
+    outline: 2px solid #ff5500;;
+}
+
 .doc-highlight { /* highlights set inline for color */
 }

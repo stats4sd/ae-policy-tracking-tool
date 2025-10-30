@@ -12,7 +12,8 @@
                     <div
                         v-for="highlight in highlights"
                         :key="highlight.start_offset"
-                        class="mb-2 w-full"
+                        class="mb-2 w-full cursor-pointer"
+                        @click="currentHighlightId = highlight.id; renderContent()"
                     >
                         <div
                             :style="{ backgroundColor: highlight.color }"
@@ -24,13 +25,13 @@
                                 {{ highlight.end_offset }}
                             </div>
 
-                            <!-- Delete icon -->
-                            <div
-                                class="cursor-pointer text-red-600 hover:text-red-800"
-                                @click="highlights = highlights.filter(h => h !== highlight); addHighlightsToContent()"
-                            >
-                                &#10060;
-                            </div>
+<!--                            &lt;!&ndash; Delete icon &ndash;&gt;-->
+<!--                            <div-->
+<!--                                class="cursor-pointer text-red-600 hover:text-red-800"-->
+<!--                                @click="alert('not yet working'); renderContent()"-->
+<!--                            >-->
+<!--                                &#10060;-->
+<!--                            </div>-->
 
                         </div>
                     </div>
@@ -124,6 +125,7 @@ const props = defineProps<Props>();
 const documentId = ref<number>(props.documentId);
 const documentContent = ref<string>("");
 const formattedDocumentContent = ref<string>("");
+const currentHighlightId = ref<number | null>(null);
 
 // Load document content from server
 const loadDocumentContent = async (id: number): Promise<void> => {
@@ -184,20 +186,27 @@ const confirmHighlight = async (): Promise<void> => {
         color: "yellow",
     };
 
-    highlights.value.push(newHighlight);
-    await saveHighlightToDatabase(newHighlight);
+    const newHighlightWithId: Highlight = await saveHighlightToDatabase(newHighlight);
+    highlights.value.push(newHighlightWithId);
+
+    console.log('new highlight with ID', newHighlightWithId);
 
     // re-render with new highlight + search highlights
-    computeSearchMatches();
+    // remove "current" search  and add "current" highlight
+    currentSearchIndex.value = -1;
+    currentHighlightId.value = newHighlightWithId.id;
+
+    renderContent();
 
     const selection = window.getSelection();
     selection?.removeAllRanges();
     showModal.value = false;
 };
 
-const saveHighlightToDatabase = async (highlight: Highlight): Promise<void> => {
+const saveHighlightToDatabase = async (highlight: Highlight): Promise<Highlight> => {
     try {
-        await axios.post("/highlights", highlight);
+        const result = await axios.post("/highlights", highlight);
+        return result.data
     } catch (error) {
         console.error("Error saving highlight to database:", error);
     }
@@ -234,7 +243,10 @@ const showModal = ref<boolean>(false);
 
 // Search state
 const searchQuery = ref<string>("");
-const searchMatches = ref<{ start: number; end: number }[]>([]);
+const searchMatches = ref<{
+    start: number;
+    end: number
+}[]>([]);
 const currentSearchIndex = ref<number>(-1);
 
 const contentDiv = useTemplateRef<HTMLDivElement>("contentDiv");
@@ -255,18 +267,42 @@ watch(searchQuery, () => {
 // Every plain-text chunk is wrapped with a span[data-offset] so selection offset logic can locate base offset.
 const renderContent = (): void => {
     const text = documentContent.value || "";
-    const events: { pos: number; kind: "h_start" | "h_end" | "s_start" | "s_end"; id: number; color?: string }[] = [];
+    const events: {
+        pos: number;
+        kind: "h_start" | "h_end" | "s_start" | "s_end";
+        id: number;
+        highlightId?: number | null;
+        color?: string
+    }[] = [];
 
     // highlight events
     highlights.value.forEach((h, idx) => {
-        events.push({ pos: h.start_offset, kind: "h_start", id: idx, color: h.color });
-        events.push({ pos: h.end_offset, kind: "h_end", id: idx });
+        events.push({
+            pos: h.start_offset,
+            kind: "h_start",
+            id: idx,
+            highlightId: h.id || null,
+            color: h.color
+        });
+        events.push({
+            pos: h.end_offset,
+            kind: "h_end",
+            id: idx
+        });
     });
 
     // search events
     searchMatches.value.forEach((m, idx) => {
-        events.push({ pos: m.start, kind: "s_start", id: idx });
-        events.push({ pos: m.end, kind: "s_end", id: idx });
+        events.push({
+            pos: m.start,
+            kind: "s_start",
+            id: idx
+        });
+        events.push({
+            pos: m.end,
+            kind: "s_end",
+            id: idx
+        });
     });
 
     // sort events: pos asc; when equal: start before end; for starts: highlight before search; for ends: search before highlight
@@ -303,7 +339,7 @@ const renderContent = (): void => {
 
         // handle event
         if (ev.kind === "h_start") {
-            out += `<span class="doc-highlight" style="background-color: ${ev.color}">`;
+            out += `<span class="doc-highlight" style="background-color: ${ev.color}" data-highlight-id="${ev.highlightId}">`;
             openStack.push("h");
         } else if (ev.kind === "s_start") {
             // differentiate current result visually
@@ -342,9 +378,37 @@ const renderContent = (): void => {
     formattedDocumentContent.value = out;
 
     // ensure current highlight is scrolled into view and visually marked
-    focusCurrentSearch();
+
+    console.log('renderContent: currentSearchIndex=', currentSearchIndex.value, 'currentHighlightId=', currentHighlightId.value);
+
+    if (currentSearchIndex.value > -1) {
+        focusCurrentSearch();
+    } else if (currentHighlightId.value) {
+        focusCurrentHighlight();
+    }
 };
 
+const focusCurrentHighlight = (): void => {
+
+    console.log('focus current highlight', currentHighlightId.value);
+    // remove previous current highlight markers
+    const prev = document.querySelectorAll(".highlight-current");
+    prev.forEach((el) => el.classList.remove("highlight-current"));
+
+    if (!currentHighlightId.value) return;
+    const sel = document.querySelector(`[data-highlight-id="${currentHighlightId.value}"]`) as HTMLElement | null;
+    if (!sel) return;
+    sel.classList.add("highlight-current");
+
+    if (!scrollToSelection(sel)) {
+        // fallback: scroll the element into view normally
+        sel.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+    }
+
+}
 
 const computeSearchMatches = (): void => {
     searchMatches.value = [];
@@ -361,7 +425,10 @@ const computeSearchMatches = (): void => {
     const regex = new RegExp(escaped, "gi");
     let match;
     while ((match = regex.exec(documentContent.value)) !== null) {
-        searchMatches.value.push({ start: match.index, end: match.index + match[0].length });
+        searchMatches.value.push({
+            start: match.index,
+            end: match.index + match[0].length
+        });
         // avoid infinite loops on zero-length matches
         if (match.index === regex.lastIndex) regex.lastIndex++;
     }
@@ -382,9 +449,23 @@ const focusCurrentSearch = (): void => {
     if (!sel) return;
     sel.classList.add("search-current");
 
-     // ensure the search bar (above the scrollable content) is visible in the viewport
+    if (!scrollToSelection(sel)) {
+        // fallback: scroll the element into view normally
+        sel.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+    }
+};
+
+
+const scrollToSelection = (sel: HTMLElement): boolean => {
+    // ensure the search bar (above the scrollable content) is visible in the viewport
     if (contentAndSearch.value) {
-        contentAndSearch.value.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        contentAndSearch.value.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest"
+        });
     }
 
     // if we have a scrollable content container, scroll it so `sel` is centered
@@ -397,13 +478,15 @@ const focusCurrentSearch = (): void => {
         const relativeTop = elRect.top - containerRect.top + container.scrollTop;
         const desiredScrollTop = relativeTop - (container.clientHeight / 2) + (sel.clientHeight / 2);
 
-        container.scrollTo({ top: desiredScrollTop, behavior: "smooth" });
-        return;
+        container.scrollTo({
+            top: desiredScrollTop,
+            behavior: "smooth"
+        });
+        return true;
     }
 
-    // fallback: scroll the element into view normally
-    sel.scrollIntoView({ behavior: "smooth", block: "center" });
-};
+    return false;
+}
 
 // navigate search results
 const nextSearch = (): void => {
@@ -433,17 +516,5 @@ const findOffsetAncestor = (node: Node | null): number => {
     return 0;
 };
 
-// --- existing highlight/selection logic, updated to use findOffsetAncestor ---
-
-const addHighlightsToContent = (): void => {
-    // keep for backward compatibility but rely on renderContent for final output
-    renderContent();
-};
-
 
 </script>
-
-
-<style scoped>
-
-</style>
