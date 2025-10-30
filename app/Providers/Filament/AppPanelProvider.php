@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\App\Pages\AssessmentOverview;
+use App\Filament\App\Pages\BulkUploadPage;
 use App\Filament\App\Pages\RegisterAssessment;
 use App\Filament\App\Pages\Review;
 use App\Filament\App\Resources\PolicyDocumentResource;
@@ -80,6 +81,7 @@ class AppPanelProvider extends PanelProvider
                     ->items([
                         ...AssessmentOverview::getNavigationItems(),
                         ...PolicyDocumentResource::getNavigationItems(),
+                        ...BulkUploadPage::getNavigationItems(),
                         ...Review::getNavigationItems(),
                         NavigationItem::make('Admin Panel')
                             ->icon('heroicon-o-shield-check')
