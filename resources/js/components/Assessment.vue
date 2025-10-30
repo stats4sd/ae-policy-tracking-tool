@@ -46,7 +46,6 @@ const loadDocumentContent = async (id) => {
         }
         const data = await response.text();
         documentContent.value = data;
-        formattedDocumentContent.value = '<span id="data-offset-0">' + data + '</span>';
         console.log('Document content loaded:', data);
 
     } catch (error) {
@@ -60,27 +59,48 @@ const contentBounds = useTemplateRef('content-bounds');
 const highlights = ref([]);
 
 const demoHighlight = {
-    start: 10,
-    end: 50,
+    start: 3660,
+    end: 4033,
     color: 'yellow'
+};
+
+const demoHighlight2 = {
+    start: 60,
+    end: 100,
+    color: 'lightgreen'
+};
+
+const demoHighlight3 = {
+    start: 110,
+    end: 150,
+    color: 'orange'
 };
 
 // add demo highlight to page, from start to end number of characters offset from start of contentBound div:
 highlights.value.push(demoHighlight);
+highlights.value.push(demoHighlight3);
+highlights.value.push(demoHighlight2);
 
 /**
  * <span id="data-offset-0">This is some sample text for the document content. Users can select text to highlight it.</span>-
  * <span id="data-offset-0">This is some sample <span style="background-color: yellow;" id="data-offset-20">text for the document content. Users can</span> select text to highlight it.</span>
  */
 
-const addHighlightToContent = () => {
-    let content = formattedDocumentContent.value;
-    highlights.value.forEach(highlight => {
+const addHighlightsToContent = () => {
+
+    let content = documentContent.value;
+
+    highlights.value.sort((a, b) => b.end - a.end)
+
+    console.log(highlights);
+
+        highlights.value.forEach(highlight => {
         const before = content.slice(0, highlight.start);
         const highlightedText = content.slice(highlight.start, highlight.end);
         const after = content.slice(highlight.end);
-        content = `${before}<span style="background-color: ${highlight.color};">${highlightedText}</span>${after}`;
+        content = `${before}<span style="background-color: ${highlight.color};">${highlightedText}</span><span data-offset="${highlight.end}">${after}</span>`;
     });
+
     formattedDocumentContent.value = content;
 
     console.log('highlight added', content);
@@ -102,6 +122,11 @@ const handleTextSelection = () => {
         const range = selection.getRangeAt(0);
         if (!range.collapsed) {
 
+
+            let offset = parseInt(range.startContainer.parentElement.dataset.offset ?? 0);
+
+            console.log('offset:', offset);
+
             console.log('Range is collapsed');
             console.log('Start container:', range.startContainer);
             console.log('Start offset:', range.startOffset);
@@ -112,14 +137,14 @@ const handleTextSelection = () => {
 
             // add new highlight to highlights array
             highlights.value.push({
-                start: range.startOffset,
-                end: range.endOffset,
+                start: offset + range.startOffset,
+                end: offset + range.endOffset,
                 color: 'lightblue'
             });
 
         }
         // re-render the content with highlights
-        addHighlightToContent();
+        addHighlightsToContent();
 
     }
 };
@@ -146,7 +171,7 @@ const describePos = function (node, offset) {
 onMounted(async () => {
     await loadDocumentContent(documentId.value);
 
-    addHighlightToContent();
+    addHighlightsToContent();
 
     window.addEventListener('mouseup', handleTextSelection);
 })
