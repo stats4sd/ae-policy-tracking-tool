@@ -22,6 +22,7 @@
     },
     "dependencies": {
         "@sentry/vue": "^7.40.0",
-        "vue": "^3.5.22"
+        "vue": "^3.5.22",
+        "vue-icons-plus": "^0.1.8"
     }
 }

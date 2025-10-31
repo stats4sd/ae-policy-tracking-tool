@@ -24,4 +24,8 @@ Route::group(
             'store',
         ]);
 
+        Route::apiResource('recommendations', \App\Http\Controllers\RecommendationController::class)->only([
+            'index', 'show',
+        ]);
+
     });

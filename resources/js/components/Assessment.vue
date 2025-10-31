@@ -1,54 +1,134 @@
 <template>
     <div class="px-2 py-2 h-screen">
 
-        <div class="flex">
+        <div class="xl:flex">
 
             <!--    sidebar -->
-            <div class="flex-grow p-4 mr-8 h-full">
-                <h2 class="text-2xl font-bold">
-                    Document Content (ID: {{ documentId }})
-                </h2>
-                <div class="flex flex-col justify-start items-center">
+            <div class="hidden xl:block flex-grow mr-8 h-full">
+
+                <!-- Recommendations / Priority Actions Filter -->
+                <div class="flex flex-col bg-white shadow-sm border border-slate-200 rounded-md py-4 min-w-96 ">
+                    <div class="mb-4 flex items-center justify-between">
+                        <h5 class="text-lg font-semibold">
+                            Filter by Recommendations / Priority Actions
+                        </h5>
+                        <a
+                            href="#"
+                            @click="showRecommendationsSidebar = !showRecommendationsSidebar"
+                            class="text-sm text-blue-600 hover:underline cursor-pointer"
+                        >
+                            {{ showRecommendationsSidebar ? 'Hide' : 'Show' }}
+                        </a>
+
+                    </div>
+
                     <div
-                        v-for="highlight in highlights"
-                        :key="highlight.start_offset"
-                        class="mb-2 w-full cursor-pointer"
-                        @click="currentHighlightId = highlight.id; renderContent()"
+                        class="flex flex-col justify-start items-center"
+                        :class="showRecommendationsSidebar ? '' : 'hidden'"
                     >
                         <div
-                            :style="{ backgroundColor: highlight.color }"
-                            class="p-2 rounded-md flex justify-between"
+                            v-for="recommendation in recommendations"
+                            :key="recommendation.id"
+                            class="mb-2 w-full cursor-pointer border border-gray-300 hover:bg-gray-100"
                         >
-                            <div>
-
-                                Highlight from {{ highlight.start_offset }} to
-                                {{ highlight.end_offset }}
+                            <div class="p-2 rounded-md flex justify-between items-center ">
+                                <div>
+                                    {{ recommendation.id }}: {{ recommendation.short_title }}
+                                </div>
                             </div>
+                            <div class="w-full justify-start items-center p-2">
+                                <small class="text-gray-500">
+                                    Priority Actions:
+                                    <ul class="list-disc list-inside">
+                                        <checkbox
+                                            v-for="action in recommendation.priority_actions"
+                                            :key="action.id"
+                                        >
+                                            {{ action.id }}: {{ action.name }}
+                                        </checkbox>
+                                    </ul>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Collapsible Highlights Card -->
+                <div class="flex flex-col bg-white shadow-sm border border-slate-200 rounded-md py-4 min-w-96 ">
+                    <div class="mb-4 flex items-center justify-between">
+                        <h5 class="text-lg font-semibold">
+                            Highlights
+                        </h5>
+                        <a
+                            href="#"
+                            @click="showHighlightsSidebar = !showHighlightsSidebar"
+                            class="text-sm text-blue-600 hover:underline cursor-pointer"
+                        >
+                            {{ showHighlightsSidebar ? 'Hide' : 'Show' }}
+                        </a>
+                    </div>
 
-<!--                            &lt;!&ndash; Delete icon &ndash;&gt;-->
-<!--                            <div-->
-<!--                                class="cursor-pointer text-red-600 hover:text-red-800"-->
-<!--                                @click="alert('not yet working'); renderContent()"-->
-<!--                            >-->
-<!--                                &#10060;-->
-<!--                            </div>-->
-
+                    <div
+                        class="flex flex-col justify-start items-center"
+                        :class="showHighlightsSidebar ? '' : 'hidden'"
+                    >
+                        <div
+                            v-for="highlight in highlights"
+                            :key="highlight.start_offset"
+                            class="mb-2 w-full cursor-pointer border border-gray-300 hover:bg-gray-100"
+                            @click="currentHighlightId = highlight.id; renderContent()"
+                        >
+                            <div class="p-2 rounded-md flex justify-between items-center ">
+                                <div>
+                                    <strong>Highlight:</strong>
+                                    "{{ highlight.extract.length > 50 ? highlight.extract.slice(0, 50) + '...' : highlight.extract }}"
+                                </div>
+                                <div class="flex justify-end items-center gap-x-4">
+                                    <div>
+                                        <SlActionRedo
+                                            class="cursor-pointer text-gray-600 hover:text-gray-800"
+                                            @click.stop="currentHighlightId = highlight.id; renderContent()"
+                                        />
+                                    </div>
+                                    <div>
+                                        <SlTrash
+                                            class="cursor-pointer text-red-600 hover:text-red-800 mr-4"
+                                            @click.stop="highlights = highlights.filter(h => h.id !== highlight.id); renderContent()"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="w-full justify-start items-center p-2">
+                                <small class="text-gray-500">
+                                    TAGS GO HERE
+                                </small>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
             <div>
 
-                <div class="w-full" ref="contentAndSearch">
+                <div class="w-full flex items-center" ref="contentAndSearch">
                     <input
-                        v-model="searchQuery"
+                        v-model.lazy="searchQuery"
                         type="text"
                         placeholder="Full Text Search..."
-                        class="w-full border border-gray-400 p-2 rounded-md mb-4"
+                        class="w-full border border-gray-400 p-2 rounded-md mb-4 flex-grow-1"
                         @keydown.tab.prevent="nextSearch"
                         @keydown.shift.tab.prevent="prevSearch"
                     />
+                    <button
+                        @click="prevSearch"
+                        class="p-2 px-4 text-sm rounded text-white bg-blue-500 focus:outline-none hover:bg-blue-400"
+                    >
+                        Previous
+                    </button>
+                    <button
+                        @click="nextSearch"
+                        class="p-2 px-4 text-sm rounded text-white bg-blue-500 focus:outline-none hover:bg-blue-400"
+                    >
+                        Next
+                    </button>
                 </div>
                 <div
                     class="flex-grow border border-gray-400 ps-12 p-4 rounded-md overflow-scroll h-[90vh]"
@@ -62,21 +142,45 @@
         </div>
     </div>
 
+
     <!-- Modal for text selection -->
     <HighlightModal
         v-if="showModal"
-        title="Confirm Action"
-        width="sm"
+        title="Save Extracted Text"
         v-on:close="showModal = false"
     >
-        <p class="text-gray-800">
-            Highlighted text: "<strong>{{
-                currentSelection ? currentSelection.toString() : ""
-            }}</strong
-        >"
-        </p>
+        <div class="w-full font-bold py-4 px-8 text-left rounded-md bg-green-100 border-green-800">
+            <strong>{{
+                    currentSelection ? currentSelection.toString() : ""
+                }}</strong>"
+        </div>
 
-        <p>Confirm highlight?</p>
+        <div class="w-full bg-gray-100 p-4 rounded-md mt-4">
+            <label class="block mb-2 font-semibold">You can expand your selection:</label>
+            <ul class="list-disc list-inside text-sm text-gray-700">
+                <button
+                    @click="currentSelection = expandSelectionToWordBoundaries(currentSelection)"
+                    class="px-4 py-2 text-sm text-primary-500 mr-2 border border-primary-700 rounded-md hover:bg-primary-50"
+                >
+                    Expand Selection to full word(s)
+                </button>
+                <button
+                    @click="currentSelection = expandSelectionToSentenceBoundaries(currentSelection)"
+                    class="px-4 py-2 text-sm text-primary-500 mr-2 border border-primary-700 rounded-md hover:bg-primary-50"
+                >
+                    Expand Selection to full sentence(s)
+                </button>
+            </ul>
+
+        </div>
+
+        <div class="w-full bg-gray-100 p-4 rounded-md mt-4">
+            <label class="block mb-2 font-semibold">Add Priority Actions to this highlight</label>
+            <ul class="list-disc list-inside text-sm text-gray-700">
+                <li class="mb-2">(Not yet implemented) You can add comments or tags to this highlight after confirming.</li>
+            </ul>
+        </div>
+
         <div class="text-right mt-4">
             <button
                 @click="showModal = false"
@@ -106,6 +210,11 @@ import HighlightModal
     from "./HighlightModal.vue";
 import axios
     from "axios";
+
+import {
+    SlActionRedo,
+    SlTrash,
+} from "vue-icons-plus/sl";
 
 interface Highlight {
     id?: number;
@@ -218,6 +327,10 @@ onMounted(async (): Promise<void> => {
     await loadHighlights(documentId.value);
     computeSearchMatches();
     window.addEventListener("mouseup", handleTextSelection);
+
+    await loadRecommendations();
+
+
 });
 
 const loadHighlights = async (id: number): Promise<void> => {
@@ -517,4 +630,92 @@ const findOffsetAncestor = (node: Node | null): number => {
 };
 
 
+const expandSelectionToWordBoundaries = (range: Range): Range => {
+
+    // update selected range to word boundaries
+    const isWordChar = (c: string) => /\w/.test(c);
+    let startContainer = range.startContainer;
+    let startOffset = range.startOffset;
+    let endContainer = range.endContainer;
+    let endOffset = range.endOffset;
+    // Expand start
+    while (startContainer.nodeType === Node.TEXT_NODE && startOffset > 0) {
+        const text = startContainer.textContent || "";
+        if (!isWordChar(text[startOffset - 1])) break;
+        startOffset--;
+    }
+    // Expand end
+    const textEnd = endContainer.textContent || "";
+    while (endContainer.nodeType === Node.TEXT_NODE && endOffset < textEnd.length) {
+        if (!isWordChar(textEnd[endOffset])) break;
+        endOffset++;
+    }
+    const newRange = document.createRange();
+    newRange.setStart(startContainer, startOffset);
+    newRange.setEnd(endContainer, endOffset);
+    return newRange;
+
+};
+
+const expandSelectionToSentenceBoundaries = (range: Range): Range => {
+    // update selected range to sentence boundaries
+    const sentenceEndChars = [".", "!", "?"];
+    let startContainer = range.startContainer;
+    let startOffset = range.startOffset;
+    let endContainer = range.endContainer;
+    let endOffset = range.endOffset;
+    // Expand start
+    while (startContainer.nodeType === Node.TEXT_NODE && startOffset > 0) {
+        const text = startContainer.textContent || "";
+        if (sentenceEndChars.includes(text[startOffset - 1])) break;
+        startOffset--;
+    }
+    // Expand end
+    const textEnd = endContainer.textContent || "";
+    while (endContainer.nodeType === Node.TEXT_NODE && endOffset < textEnd.length) {
+        if (sentenceEndChars.includes(textEnd[endOffset])) break;
+        endOffset++;
+    }
+    const newRange = document.createRange();
+    newRange.setStart(startContainer, startOffset);
+    newRange.setEnd(endContainer, endOffset);
+    return newRange;
+}
+
+
+/**** PRIORITY ACTIONS *****/
+
+interface PriorityAction {
+    id: number;
+    name: string;
+    recommendation_id: number;
+}
+
+interface Recommendation {
+    id: number;
+    short_title: string;
+    name: string;
+    priority_actions: PriorityAction[];
+}
+
+const recommendations = ref<Recommendation[]>([]);
+
+
+const loadRecommendations = async (): Promise<void> => {
+    try {
+        const response = await fetch(`/recommendations`);
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+
+        const data = await response.json();
+        recommendations.value = data;
+        console.log("Recommendations loaded:", data);
+    } catch (error) {
+        console.error("Error loading recommendations:", error);
+    }
+};
+
+const showHighlightsSidebar = ref<boolean>(false);
+const showRecommendationsSidebar = ref<boolean>(false);
 </script>

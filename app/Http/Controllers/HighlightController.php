@@ -26,6 +26,11 @@ class HighlightController extends Controller
 
         $highlight = Highlight::create($validated);
 
+        $priorityActions = $request->input('priority_actions', []);
+        if (!empty($priorityActions)) {
+            $highlight->priorityActions()->attach($priorityActions);
+        }
+
         return response()->json($highlight, 201);
     }
 
