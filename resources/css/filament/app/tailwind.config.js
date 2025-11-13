@@ -11,8 +11,8 @@ export default {
     theme: {
         extend: {
             colors: {
-                'dark-title-block': '#3A7898',
-                'bright-title-block': '#6AC4D3',
+                'dark-title-block': '#3c7798',
+                'bright-title-block': '#6cc4d3',
                 'light-title-block': '#AADCE5',
                 'orange-title': '#EF7B44',
                 'green-title': '#63B981',
