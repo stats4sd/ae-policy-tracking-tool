@@ -113,7 +113,7 @@
                         v-model.lazy="searchQuery"
                         type="text"
                         placeholder="Full Text Search..."
-                        class="w-full border border-gray-400 p-2 rounded-md mb-4 flex-grow-1"
+                        class="w-full bg-gray-100  border-0 px-4 py-2 rounded-xl mb-4 flex-grow-1"
                         @keydown.tab.prevent="nextSearch"
                         @keydown.shift.tab.prevent="prevSearch"
                     />
@@ -131,11 +131,11 @@
                     </button>
                 </div>
                 <div
-                    class=" border border-gray-400 ps-12 p-4 rounded-md overflow-scroll h-[90vh]"
+                    class=" border border-gray-300 ps-12 p-4 rounded-md overflow-scroll h-[90vh]"
                   
                     ref="contentDiv"
                 >
-                    <pre>
+                    <pre id="document_text">
                     <div ref="content-bounds" v-html="formattedDocumentContent"  />
                 </pre>
                 </div>
