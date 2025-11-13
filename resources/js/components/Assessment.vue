@@ -4,18 +4,18 @@
         <div class="xl:flex">
 
             <!--    sidebar -->
-            <div class="hidden xl:block flex-grow mr-8 h-full">
+            <div class="hidden xl:block flex-grow max-w-[45vw] mr-8 h-full">
 
                 <!-- Recommendations / Priority Actions Filter -->
-                <div class="flex flex-col bg-white shadow-sm border border-slate-200 rounded-md py-4 min-w-96 ">
-                    <div class="mb-4 flex items-center justify-between">
-                        <h5 class="text-lg font-semibold">
+                <div class="flex flex-col bg-bright-title-block mb-2  min-w-96 ">
+                    <div class=" flex items-center justify-between text-white py-4 px-4">
+                        <h5 class="text-lg font-semibold ">
                             Filter by Recommendations / Priority Actions
                         </h5>
                         <a
                             href="#"
                             @click="showRecommendationsSidebar = !showRecommendationsSidebar"
-                            class="text-sm text-blue-600 hover:underline cursor-pointer"
+                            class="text-sm  hover:underline cursor-pointer"
                         >
                             {{ showRecommendationsSidebar ? 'Hide' : 'Show' }}
                         </a>
@@ -23,21 +23,21 @@
                     </div>
 
                     <div
-                        class="flex flex-col justify-start items-center"
+                        class="flex flex-col justify-start bg-white items-center"
                         :class="showRecommendationsSidebar ? '' : 'hidden'"
                     >
                         <div
                             v-for="recommendation in recommendations"
                             :key="recommendation.id"
-                            class="mb-2 w-full cursor-pointer border border-gray-300 hover:bg-gray-100"
+                            class=" w-full cursor-pointer mt-2  p-4 hover:bg-[#e8e8e9]  bg-gray-50"
                         >
                             <div class="p-2 rounded-md flex justify-between items-center ">
                                 <div>
                                     {{ recommendation.id }}: {{ recommendation.short_title }}
                                 </div>
                             </div>
-                            <div class="w-full justify-start items-center p-2">
-                                <small class="text-gray-500">
+                            <div class="mx-12 mb-2 justify-start items-center border-l border-gray-400 pl-4">
+                                <small class="text-gray-600">
                                     Priority Actions:
                                     <ul class="list-disc list-inside">
                                         <checkbox
@@ -53,28 +53,28 @@
                     </div>
                 </div>
                 <!-- Collapsible Highlights Card -->
-                <div class="flex flex-col bg-white shadow-sm border border-slate-200 rounded-md py-4 min-w-96 ">
-                    <div class="mb-4 flex items-center justify-between">
+                <div class="flex flex-col bg-bright-title-block   min-w-96 ">
+                    <div class="mb-4 flex items-center mt-4 text-white px-4 justify-between">
                         <h5 class="text-lg font-semibold">
                             Highlights
                         </h5>
                         <a
                             href="#"
                             @click="showHighlightsSidebar = !showHighlightsSidebar"
-                            class="text-sm text-blue-600 hover:underline cursor-pointer"
+                            class="text-sm  hover:underline cursor-pointer"
                         >
                             {{ showHighlightsSidebar ? 'Hide' : 'Show' }}
                         </a>
                     </div>
 
                     <div
-                        class="flex flex-col justify-start items-center"
+                        class="flex flex-col bg-white justify-start items-center"
                         :class="showHighlightsSidebar ? '' : 'hidden'"
                     >
                         <div
                             v-for="highlight in highlights"
                             :key="highlight.start_offset"
-                            class="mb-2 w-full cursor-pointer border border-gray-300 hover:bg-gray-100"
+                            class="mt-2 p-2 w-full cursor-pointer  p-4 hover:bg-[#e8e8e9]  bg-gray-50"
                             @click="currentHighlightId = highlight.id; renderContent()"
                         >
                             <div class="p-2 rounded-md flex justify-between items-center ">
@@ -106,36 +106,37 @@
                     </div>
                 </div>
             </div>
-            <div>
+            <div class="">
 
                 <div class="w-full flex items-center" ref="contentAndSearch">
                     <input
                         v-model.lazy="searchQuery"
                         type="text"
                         placeholder="Full Text Search..."
-                        class="w-full border border-gray-400 p-2 rounded-md mb-4 flex-grow-1"
+                        class="w-full bg-gray-100  border-0 px-4 py-2 rounded-xl mb-4 flex-grow-1"
                         @keydown.tab.prevent="nextSearch"
                         @keydown.shift.tab.prevent="prevSearch"
                     />
                     <button
                         @click="prevSearch"
-                        class="p-2 px-4 text-sm rounded text-white bg-blue-500 focus:outline-none hover:bg-blue-400"
+                        class="theme_button mb-4 mx-2"
                     >
                         Previous
                     </button>
                     <button
                         @click="nextSearch"
-                        class="p-2 px-4 text-sm rounded text-white bg-blue-500 focus:outline-none hover:bg-blue-400"
+                        class="theme_button mb-4"
                     >
                         Next
                     </button>
                 </div>
                 <div
-                    class="flex-grow border border-gray-400 ps-12 p-4 rounded-md overflow-scroll h-[90vh]"
+                    class=" border border-gray-300 ps-12 p-4 rounded-md overflow-scroll h-[90vh]"
+                  
                     ref="contentDiv"
                 >
-                    <pre>
-                    <div ref="content-bounds" v-html="formattedDocumentContent"/>
+                    <pre id="document_text">
+                    <div ref="content-bounds" v-html="formattedDocumentContent"  />
                 </pre>
                 </div>
             </div>
@@ -149,51 +150,55 @@
         title="Save Extracted Text"
         v-on:close="showModal = false"
     >
-        <div class="w-full font-bold py-4 px-8 text-left rounded-md bg-green-100 border-green-800">
-            <strong>{{
+        <div class="w-full py-4 px-8 text-left rounded-md ">
+        <h3 class="  font-bold">Current selection</h3>
+        <div class="border-l-2 text-base border-black pl-6  mx-8 mt-6">
+            {{
                     currentSelection ? currentSelection.toString() : ""
-                }}</strong>"
+                }}"
+                </div>
         </div>
+        <div class="p-4">
+            <div class="w-full bg-gray-100 p-4 rounded-md mt-4">
+                <label class="block mb-4 font-semibold">Expand your selection</label>
+                <ul class="list-disc list-inside text-sm text-gray-700">
+                    <button
+                        @click="currentSelection = expandSelectionToWordBoundaries(currentSelection)"
+                        class="px-4 py-2 bg-dark-title-block text-white font-bold rounded-lg hover:bg-[#5594b8]"
+                    >
+                        Expand Selection to full word(s)
+                    </button>
+                    <button
+                        @click="currentSelection = expandSelectionToSentenceBoundaries(currentSelection)"
+                        class="px-4 py-2  ml-2 bg-dark-title-block text-white font-bold rounded-lg hover:bg-[#5594b8]"
+                    >
+                        Expand Selection to full sentence(s)
+                    </button>
+                </ul>
 
-        <div class="w-full bg-gray-100 p-4 rounded-md mt-4">
-            <label class="block mb-2 font-semibold">You can expand your selection:</label>
-            <ul class="list-disc list-inside text-sm text-gray-700">
+            </div>
+
+            <div class="w-full bg-gray-100 p-4 rounded-md mt-4">
+                <label class="block mb-4 font-semibold">Add Priority Actions to this highlight</label>
+                <ul class="list-disc list-inside text-sm text-gray-700">
+                    <li class="mb-2">(Not yet implemented) You can add comments or tags to this highlight after confirming.</li>
+                </ul>
+            </div>
+
+            <div class="text-right mt-4">
                 <button
-                    @click="currentSelection = expandSelectionToWordBoundaries(currentSelection)"
-                    class="px-4 py-2 text-sm text-primary-500 mr-2 border border-primary-700 rounded-md hover:bg-primary-50"
+                    @click="showModal = false"
+                    class="px-4 py-2 theme_button mr-2 !bg-gray-500 hover:!bg-gray-400"
                 >
-                    Expand Selection to full word(s)
+                    Cancel
                 </button>
                 <button
-                    @click="currentSelection = expandSelectionToSentenceBoundaries(currentSelection)"
-                    class="px-4 py-2 text-sm text-primary-500 mr-2 border border-primary-700 rounded-md hover:bg-primary-50"
+                    @click="confirmHighlight"
+                    class="mr-2 px-4 py-2 theme_button"
                 >
-                    Expand Selection to full sentence(s)
+                    Confirm
                 </button>
-            </ul>
-
-        </div>
-
-        <div class="w-full bg-gray-100 p-4 rounded-md mt-4">
-            <label class="block mb-2 font-semibold">Add Priority Actions to this highlight</label>
-            <ul class="list-disc list-inside text-sm text-gray-700">
-                <li class="mb-2">(Not yet implemented) You can add comments or tags to this highlight after confirming.</li>
-            </ul>
-        </div>
-
-        <div class="text-right mt-4">
-            <button
-                @click="showModal = false"
-                class="px-4 py-2 text-sm text-gray-600 focus:outline-none hover:underline"
-            >
-                Cancel
-            </button>
-            <button
-                @click="confirmHighlight"
-                class="mr-2 px-4 py-2 text-sm rounded text-white bg-green-500 focus:outline-none hover:bg-green-400"
-            >
-                Confirm
-            </button>
+            </div>
         </div>
     </HighlightModal>
 </template>
