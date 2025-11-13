@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources;
 
+use App\Filament\Admin\Resources\PriorityActionResource\RelationManagers\SearchTermsRelationManager;
 use App\Models\PriorityAction;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -18,7 +19,11 @@ class PriorityActionResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
+            ->columns(1)
             ->schema([
+                Forms\Components\TextInput::make('id')
+                ->label('ID')
+                ->disabledOn('edit'),
                 Forms\Components\Textarea::make('name')
                                 ->rows(4)
             ]);
@@ -50,7 +55,7 @@ class PriorityActionResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            SearchTermsRelationManager::class,
         ];
     }
 

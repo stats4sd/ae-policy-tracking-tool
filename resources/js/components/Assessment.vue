@@ -52,11 +52,11 @@
                         </div>
                     </div>
                 </div>
-                <!-- Collapsible Highlights Card -->
-                <div class="flex flex-col bg-bright-title-block   min-w-96 ">
+                <!-- Collapsible AUTO Highlights Card -->
+                <div class="flex flex-col bg-bright-title-block   min-w-96 mb-2">
                     <div class="mb-4 flex items-center mt-4 text-white px-4 justify-between">
                         <h5 class="text-lg font-semibold">
-                            Highlights
+                            Automatic Search Results
                         </h5>
                         <a
                             href="#"
@@ -72,7 +72,7 @@
                         :class="showHighlightsSidebar ? '' : 'hidden'"
                     >
                         <div
-                            v-for="highlight in highlights"
+                            v-for="highlight in highlights.filter(h => h.automatic !== 1)"
                             :key="highlight.start_offset"
                             class="mt-2 p-2 w-full cursor-pointer  p-4 hover:bg-[#e8e8e9]  bg-gray-50"
                             @click="currentHighlightId = highlight.id; renderContent()"
@@ -105,6 +105,60 @@
                         </div>
                     </div>
                 </div>
+                <!-- Collapsible Highlights Card -->
+                <div class="flex flex-col bg-bright-title-block   min-w-96 ">
+                    <div class="mb-4 flex items-center mt-4 text-white px-4 justify-between">
+                        <h5 class="text-lg font-semibold">
+                            Highlights
+                        </h5>
+                        <a
+                            href="#"
+                            @click="showHighlightsSidebar = !showHighlightsSidebar"
+                            class="text-sm  hover:underline cursor-pointer"
+                        >
+                            {{ showHighlightsSidebar ? 'Hide' : 'Show' }}
+                        </a>
+                    </div>
+
+                    <div
+                        class="flex flex-col bg-white justify-start items-center"
+                        :class="showHighlightsSidebar ? '' : 'hidden'"
+                    >
+                        <div
+                            v-for="highlight in highlights.filter(h => h.automatic !== true)"
+                            :key="highlight.start_offset"
+                            class="mt-2 p-2 w-full cursor-pointer  p-4 hover:bg-[#e8e8e9]  bg-gray-50"
+                            @click="currentHighlightId = highlight.id; renderContent()"
+                        >
+                            <div class="p-2 rounded-md flex justify-between items-center ">
+                                <div>
+                                    <strong>Highlight:</strong>
+                                    "{{ highlight.extract.length > 50 ? highlight.extract.slice(0, 50) + '...' : highlight.extract }}"
+                                </div>
+                                <div class="flex justify-end items-center gap-x-4">
+                                    <div>
+                                        <SlActionRedo
+                                            class="cursor-pointer text-gray-600 hover:text-gray-800"
+                                            @click.stop="currentHighlightId = highlight.id; renderContent()"
+                                        />
+                                    </div>
+                                    <div>
+                                        <SlTrash
+                                            class="cursor-pointer text-red-600 hover:text-red-800 mr-4"
+                                            @click.stop="highlights = highlights.filter(h => h.id !== highlight.id); renderContent()"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="w-full justify-start items-center p-2">
+                                <small class="text-gray-500">
+                                    TAGS GO HERE
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <div class="">
 
@@ -132,7 +186,7 @@
                 </div>
                 <div
                     class=" border border-gray-300 ps-12 p-4 rounded-md overflow-scroll h-[90vh]"
-                  
+
                     ref="contentDiv"
                 >
                     <pre id="document_text">
