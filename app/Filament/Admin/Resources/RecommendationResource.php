@@ -2,9 +2,17 @@
 
 namespace App\Filament\Admin\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\EditAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\CreateAction;
+use App\Filament\Admin\Resources\RecommendationResource\Pages\ListRecommendations;
+use App\Filament\Admin\Resources\RecommendationResource\Pages\EditRecommendation;
 use App\Models\Recommendation;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -13,13 +21,13 @@ class RecommendationResource extends Resource
 {
     protected static ?string $model = Recommendation::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Textarea::make('name')
+        return $schema
+            ->components([
+                Textarea::make('name')
                                 ->rows(4)
             ]);
     }
@@ -28,22 +36,22 @@ class RecommendationResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id'),
-                Tables\Columns\TextColumn::make('name')->wrap(),
+                TextColumn::make('id'),
+                TextColumn::make('name')->wrap(),
             ])
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ])
             ->emptyStateActions([
-                Tables\Actions\CreateAction::make(),
+                CreateAction::make(),
             ]);
     }
 
@@ -57,9 +65,9 @@ class RecommendationResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => \App\Filament\Admin\Resources\RecommendationResource\Pages\ListRecommendations::route('/'),
+            'index' => ListRecommendations::route('/'),
             // 'create' => Pages\CreateRecommendation::route('/create'),
-            'edit' => \App\Filament\Admin\Resources\RecommendationResource\Pages\EditRecommendation::route('/{record}/edit'),
+            'edit' => EditRecommendation::route('/{record}/edit'),
         ];
     }
 }

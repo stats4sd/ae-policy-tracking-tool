@@ -9,9 +9,9 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "althinect/filament-spatie-roles-permissions": "^2.2",
-        "filament/filament": "^3.2",
-        "filament/spatie-laravel-media-library-plugin": "^3.1",
+        "althinect/filament-spatie-roles-permissions": "3.x-dev",
+        "filament/filament": "^4.0",
+        "filament/spatie-laravel-media-library-plugin": "^4.0",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.0",
@@ -21,7 +21,7 @@
         "sentry/sentry-laravel": "^4.6",
         "spatie/laravel-permission": "^6.1",
         "spatie/pdf-to-text": "^1.54",
-        "stats4sd/filament-team-management": "dev-apni-fixes",
+        "stats4sd/filament-team-management": "^4.0",
         "symfony/http-client": "^7.1",
         "symfony/mailgun-mailer": "^7.1"
     },
@@ -78,15 +78,6 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
-        }
-    },
-    "repositories": {
-        "stats4sd/filament-team-management": {
-            "type": "path",
-            "url": "./packages/filament-team-management",
-            "option": {
-                "symlink": true
-            }
         }
     },
     "minimum-stability": "dev",

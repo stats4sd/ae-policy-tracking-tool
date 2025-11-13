@@ -2,6 +2,8 @@
 
 namespace App\Filament\Admin\Resources\UserResource\Pages;
 
+use Filament\Actions\Action;
+use Filament\Actions\CreateAction;
 use App\Filament\Admin\Resources\UserResource;
 use App\Models\User;
 use Awcodes\Shout\Components\Shout;
@@ -18,8 +20,8 @@ class ListUsers extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('invite users')
-                ->form([
+            Action::make('invite users')
+                ->schema([
                     Shout::make('info')
                         ->type('info')
                         ->content('Add the email address(es) of the user(s) you would like to invite with a role. An invitation will be sent to each address.')
@@ -39,7 +41,7 @@ class ListUsers extends ListRecords
                         ->addActionLabel('Add Another Email Address'),
                 ])
                 ->action(fn(array $data, ListRecords $livewire) => $this->handleInvitation($data)),
-            Actions\CreateAction::make(),
+            CreateAction::make(),
         ];
     }
 

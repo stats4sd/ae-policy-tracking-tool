@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use Filament\Pages\Dashboard;
+use Filament\Widgets\AccountWidget;
 use App\Filament\App\Pages\AssessmentOverview;
 use App\Filament\App\Pages\BulkUploadPage;
 use App\Filament\App\Pages\RegisterAssessment;
@@ -56,11 +58,11 @@ class AppPanelProvider extends PanelProvider
             // to include role register, program register, register filament pages from package stats4sd/filament-team-management
             ->discoverPages(in: app_path('../vendor/stats4sd/filament-team-management/src/Filament/App/Pages'), for: 'Stats4sd\\FilamentTeamManagement\\Filament\\App\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/App/Widgets'), for: 'App\\Filament\\App\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
+                AccountWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

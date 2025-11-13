@@ -2,9 +2,18 @@
 
 namespace App\Filament\Admin\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\EditAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\CreateAction;
+use App\Filament\Admin\Resources\TypeResource\Pages\ListTypes;
+use App\Filament\Admin\Resources\TypeResource\Pages\CreateType;
+use App\Filament\Admin\Resources\TypeResource\Pages\EditType;
 use App\Models\Type;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -13,15 +22,15 @@ class TypeResource extends Resource
 {
     protected static ?string $model = Type::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationLabel = 'Statement Types';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
+        return $schema
+            ->components([
+                TextInput::make('name')
             ]);
     }
 
@@ -29,21 +38,21 @@ class TypeResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->wrap(),
+                TextColumn::make('name')->wrap(),
             ])
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ])
             ->emptyStateActions([
-                Tables\Actions\CreateAction::make(),
+                CreateAction::make(),
             ]);
     }
 
@@ -57,9 +66,9 @@ class TypeResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => \App\Filament\Admin\Resources\TypeResource\Pages\ListTypes::route('/'),
-            'create' => \App\Filament\Admin\Resources\TypeResource\Pages\CreateType::route('/create'),
-            'edit' => \App\Filament\Admin\Resources\TypeResource\Pages\EditType::route('/{record}/edit'),
+            'index' => ListTypes::route('/'),
+            'create' => CreateType::route('/create'),
+            'edit' => EditType::route('/{record}/edit'),
         ];
     }
 }

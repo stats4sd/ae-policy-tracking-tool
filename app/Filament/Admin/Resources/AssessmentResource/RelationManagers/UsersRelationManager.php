@@ -2,6 +2,12 @@
 
 namespace App\Filament\Admin\Resources\AssessmentResource\RelationManagers;
 
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\Action;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use App\Models\Assessment;
 use App\Models\User;
 use Awcodes\Shout\Components\Shout;
@@ -9,7 +15,6 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,15 +27,15 @@ class UsersRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextColumn::make('email'),
+                TextColumn::make('name'),
+                TextColumn::make('email'),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
                 Action::make('invite users')
-                    ->form([
+                    ->schema([
                         Shout::make('info')
                             ->type('info')
                             ->content('Add the email address(es) of the user(s) you would like to invite with a role. An invitation will be sent to each address.')
@@ -47,13 +52,13 @@ class UsersRelationManager extends RelationManager
                     ])
                     ->action(fn (array $data, self $livewire) => $this->handleInvitation($data)),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+            ->recordActions([
+                EditAction::make(),
+                DeleteAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

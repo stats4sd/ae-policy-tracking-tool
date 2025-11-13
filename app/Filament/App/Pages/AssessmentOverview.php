@@ -29,9 +29,9 @@ use Livewire\Attributes\On;
 class AssessmentOverview extends Page
 {
 
-    protected static string $view = 'filament.app.pages.assessment-overview';
+    protected string $view = 'filament.app.pages.assessment-overview';
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $navigationLabel = 'Country Status';
 
     public ?Assessment $assessment;

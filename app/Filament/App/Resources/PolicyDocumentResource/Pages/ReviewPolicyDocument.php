@@ -2,6 +2,7 @@
 
 namespace App\Filament\App\Resources\PolicyDocumentResource\Pages;
 
+use Filament\Support\Enums\Width;
 use App\Filament\App\Resources\PolicyDocumentResource;
 use App\Models\PolicyDocument;
 use Filament\Resources\Pages\ViewRecord;
@@ -11,9 +12,9 @@ class ReviewPolicyDocument extends ViewRecord
 {
     protected static string $resource = PolicyDocumentResource::class;
 
-    protected static string $view = 'filament.app.resources.policy-document-resource.pages.review-policy-document';
+    protected string $view = 'filament.app.resources.policy-document-resource.pages.review-policy-document';
 
-    protected ?string $maxContentWidth = 'full';
+    protected Width|string|null $maxContentWidth = 'full';
 
     public function getTitle(): string|Htmlable
     {

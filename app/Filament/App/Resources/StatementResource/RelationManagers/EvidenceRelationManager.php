@@ -2,10 +2,18 @@
 
 namespace App\Filament\App\Resources\StatementResource\RelationManagers;
 
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Components\Toggle;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Actions\CreateAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Evidence;
-use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\App\Resources\EvidenceResource;
@@ -16,21 +24,21 @@ class EvidenceRelationManager extends RelationManager
 {
     protected static string $relationship = 'evidence';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-            Forms\Components\Textarea::make('evidence')
+        return $schema
+            ->components([
+            Textarea::make('evidence')
                             ->required()
                             ->label('Evidence description')
                             ->maxLength(400)
                             ->rows(7),
-                        Forms\Components\SpatieMediaLibraryFileUpload::make('files')
+                        SpatieMediaLibraryFileUpload::make('files')
                             ->multiple()
                             ->reorderable()
                             ->preserveFilenames()
                             ->collection('evidence-files'),
-                        Forms\Components\Toggle::make('official_source')
+                        Toggle::make('official_source')
                             ->inline(false)
                             ->offIcon('heroicon-m-x-mark')
                             ->onIcon('heroicon-m-check')
@@ -43,27 +51,27 @@ class EvidenceRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('evidence')
             ->columns([
-                Tables\Columns\TextColumn::make('evidence'),
-                Tables\Columns\IconColumn::make('official_source')
+                TextColumn::make('evidence'),
+                IconColumn::make('official_source')
                                 ->boolean()
                                 ->sortable(),
-                Tables\Columns\TextColumn::make('files'),
+                TextColumn::make('files'),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                CreateAction::make(),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                 Tables\Actions\DeleteAction::make(),
+            ->recordActions([
+                EditAction::make(),
+                 DeleteAction::make(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 //
             ])
             ->emptyStateActions([
-                Tables\Actions\CreateAction::make(),
+                CreateAction::make(),
             ]);
     }
 }

@@ -2,12 +2,12 @@
 
 namespace App\Filament\App\Pages;
 
+use Filament\Schemas\Schema;
 use App\Models\Assessment;
 use App\Models\Country;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Filament\Pages\Tenancy\RegisterTenant;
 use Illuminate\Contracts\View\View;
@@ -17,24 +17,24 @@ use PHPUnit\Framework\Constraint\Count;
 class RegisterAssessment extends RegisterTenant
 {
 
-    protected static string $view = 'filament.app.pages.register-assessment';
+    //protected string $view = 'filament.app.pages.register-assessment';
 
     public static function getLabel(): string
     {
         return 'Start New Assessment';
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Select::make('country_id')
                     ->label('Select or Add Country')
                     ->relationship('country', 'name')
-                    ->createOptionForm(function (Form $form, $get) {
+                    ->createOptionForm(function (Schema $schema, $get) {
 
-                        return $form
-                            ->schema([
+                        return $schema
+                            ->components([
                                 TextInput::make('name')
                                     ->label('Country Name: ' . $get('hello'))
                                     ->placeholder('Enter the name of the country')

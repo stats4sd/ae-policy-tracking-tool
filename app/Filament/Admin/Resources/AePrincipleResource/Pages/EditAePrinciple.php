@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\AePrincipleResource\Pages;
 
+use Filament\Actions\DeleteAction;
 use App\Filament\Admin\Resources\AePrincipleResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -18,7 +19,7 @@ class EditAePrinciple extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 }

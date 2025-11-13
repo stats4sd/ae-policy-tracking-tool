@@ -2,27 +2,34 @@
 
 namespace App\Filament\Admin\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\ViewAction;
+use Filament\Actions\CreateAction;
+use App\Filament\Admin\Resources\AssessmentResource\Pages\ListAssessments;
+use App\Filament\Admin\Resources\AssessmentResource\Pages\CreateAssessment;
+use App\Filament\Admin\Resources\AssessmentResource\Pages\ViewAssessment;
 use App\Filament\Admin\Resources\AssessmentResource\RelationManagers\UsersRelationManager;
 use App\Models\Assessment;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Stats4sd\FilamentTeamManagement\Filament\Admin\Resources\TeamResource\RelationManagers\InvitesRelationManager;
+use Stats4sd\FilamentTeamManagement\Filament\Admin\Resources\Teams\RelationManagers\InvitesRelationManager;
 
 class AssessmentResource extends Resource
 {
     protected static ?string $model = Assessment::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-clipboard-document-check';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Select::make('country_id')
+        return $schema
+            ->components([
+                Select::make('country_id')
                                     ->placeholder('Select a country')
                                     ->relationship('country', 'name')
                                     ->hiddenOn(['view'])
@@ -34,11 +41,11 @@ class AssessmentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('country.name')->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('country.name')->sortable(),
+                TextColumn::make('created_at')
                                     ->sortable()
                                     ->date(),
-                Tables\Columns\TextColumn::make('status')
+                TextColumn::make('status')
                                     ->sortable()
                                     ->badge()
                                     ->color(fn (string $state): string => match ($state) {
@@ -47,7 +54,7 @@ class AssessmentResource extends Resource
                                         'Review' => 'info',
                                         default => 'primary',
                                     }),
-                Tables\Columns\TextColumn::make('finalised_at')
+                TextColumn::make('finalised_at')
                                     ->sortable()
                                     ->date(),
             ])
@@ -60,8 +67,8 @@ class AssessmentResource extends Resource
                             'Finalised' => 'Finalised',
                         ])
             ])
-            ->actions([
-                Tables\Actions\ViewAction::make(),
+            ->recordActions([
+                ViewAction::make(),
 //                Tables\Actions\Action::make('finalise')
 //                                ->icon(fn(Assessment $record): string => $record->finalised_at ? '' : 'heroicon-o-check')
 //                                ->label(fn(Assessment $record): string => $record->finalised_at ? '' : 'Mark as finalised')
@@ -79,11 +86,11 @@ class AssessmentResource extends Resource
 //                                ->icon('heroicon-o-chart-bar-square')
 //                                ->openUrlInNewTab(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 //
             ])
             ->emptyStateActions([
-                Tables\Actions\CreateAction::make(),
+                CreateAction::make(),
             ]);
     }
 
@@ -98,9 +105,9 @@ class AssessmentResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => \App\Filament\Admin\Resources\AssessmentResource\Pages\ListAssessments::route('/'),
-            'create' => \App\Filament\Admin\Resources\AssessmentResource\Pages\CreateAssessment::route('/create'),
-            'view' => \App\Filament\Admin\Resources\AssessmentResource\Pages\ViewAssessment::route('/{record}/view'),
+            'index' => ListAssessments::route('/'),
+            'create' => CreateAssessment::route('/create'),
+            'view' => ViewAssessment::route('/{record}/view'),
         ];
     }
 }
