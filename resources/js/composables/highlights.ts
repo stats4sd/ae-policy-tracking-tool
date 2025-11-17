@@ -73,6 +73,9 @@ export function useHighlights(documentId: Ref<number, number>) {
         const newHighlightWithId: Highlight = await saveHighlightToDatabase(newHighlight);
         highlights.value.push(newHighlightWithId);
 
+        // resort highlights by start_offset
+        highlights.value.sort((a, b) => a.start_offset - b.start_offset);
+
         console.log('new highlight with ID', newHighlightWithId);
 
         const selection = window.getSelection();
