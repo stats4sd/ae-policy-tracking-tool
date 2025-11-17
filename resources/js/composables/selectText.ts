@@ -16,7 +16,7 @@ export function useTextSelection() {
 
     onMounted((): void => {
         console.log('boo');
-        window.addEventListener("mouseup", handleTextSelection);
+        contentBounds.value.addEventListener("mouseup", handleTextSelection);
     });
 
     const handleTextSelection = (): void => {
