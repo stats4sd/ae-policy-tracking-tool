@@ -53,58 +53,10 @@
                     </div>
                 </div>
                 <!-- Collapsible Highlights Card -->
-                <div class="flex flex-col bg-bright-title-block   min-w-96 ">
-                    <div class="mb-4 flex items-center mt-4 text-white px-4 justify-between">
-                        <h5 class="text-lg font-semibold">
-                            Highlights
-                        </h5>
-                        <a
-                            href="#"
-                            @click="showHighlightsSidebar = !showHighlightsSidebar"
-                            class="text-sm  hover:underline cursor-pointer"
-                        >
-                            {{ showHighlightsSidebar ? 'Hide' : 'Show' }}
-                        </a>
-                    </div>
-
-                    <div
-                        class="flex flex-col bg-white justify-start items-center"
-                        :class="showHighlightsSidebar ? '' : 'hidden'"
-                    >
-                        <div
-                            v-for="highlight in highlights"
-                            :key="highlight.start_offset"
-                            class="mt-2 p-2 w-full cursor-pointer  p-4 hover:bg-[#e8e8e9]  bg-gray-50"
-                            @click="currentHighlightId = highlight.id; renderContent()"
-                        >
-                            <div class="p-2 rounded-md flex justify-between items-center ">
-                                <div>
-                                    <strong>Highlight:</strong>
-                                    "{{ highlight.extract.length > 50 ? highlight.extract.slice(0, 50) + '...' : highlight.extract }}"
-                                </div>
-                                <div class="flex justify-end items-center gap-x-4">
-                                    <div>
-                                        <SlActionRedo
-                                            class="cursor-pointer text-gray-600 hover:text-gray-800"
-                                            @click.stop="currentHighlightId = highlight.id; renderContent()"
-                                        />
-                                    </div>
-                                    <div>
-                                        <SlTrash
-                                            class="cursor-pointer text-red-600 hover:text-red-800 mr-4"
-                                            @click.stop="highlights = highlights.filter(h => h.id !== highlight.id); renderContent()"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="w-full justify-start items-center p-2">
-                                <small class="text-gray-500">
-                                    TAGS GO HERE
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <HighlightsSidebar
+                    :highlights="highlights"
+                    v-model:currentHighlightId="currentHighlightId"
+                />
             </div>
             <div class="">
 
@@ -132,7 +84,6 @@
                 </div>
                 <div
                     class=" border border-gray-300 ps-12 p-4 rounded-md overflow-scroll h-[90vh]"
-
                     ref="contentDiv"
                 >
                     <pre id="document_text">
@@ -208,27 +159,15 @@ import {
     defineProps,
     onMounted,
     ref,
-    useTemplateRef,
     watch
 } from "vue";
-import HighlightModal
-    from "./HighlightModal.vue";
-import axios
-    from "axios";
 
-import {
-    SlActionRedo,
-    SlTrash,
-} from "vue-icons-plus/sl";
-import {
-    useHighlights
-} from "@/composables/highlights.ts";
-import {
-    useLiveSearch
-} from "@/composables/liveSearch.ts";
-import {
-    useTextSelection
-} from "@/composables/selectText.ts";
+import HighlightModal from "./HighlightModal.vue";
+import { useHighlights } from "@/composables/highlights.ts";
+import {useLiveSearch} from "@/composables/liveSearch.ts";
+import {useTextSelection} from "@/composables/selectText.ts";
+import {usePriorityActions} from "@/composables/priorityActions.ts";
+import HighlightsSidebar from "@/components/HighlightsSidebar.vue";
 
 
 interface Props {
@@ -268,7 +207,8 @@ const {
     confirmHighlight,
     currentHighlightId,
     focusCurrentHighlight,
-    showModal
+    showModal,
+    showHighlightsSidebar,
 }
     = useHighlights(documentId)
 
@@ -287,6 +227,11 @@ const {
     expandSelectionToSentenceBoundaries
 } = useTextSelection();
 
+const {
+    recommendations,
+    loadRecommendations,
+    showRecommendationsSidebar,
+} = usePriorityActions();
 
 // Utility: escape html
 const escapeHtml = (s: string) =>
@@ -424,11 +369,14 @@ const renderContent = (): void => {
 // - the search query or current search index changes
 
 watch(
-    [documentContent, highlights, searchMatches, currentSearchIndex],
+    [documentContent, highlights, searchMatches, currentSearchIndex, currentHighlightId],
     () => {
         renderContent();
     },
-    {immediate: true, deep: true}
+    {
+        immediate: true,
+        deep: true
+    }
 );
 
 watch(
@@ -438,38 +386,5 @@ watch(
 )
 
 
-/**** PRIORITY ACTIONS *****/
 
-interface PriorityAction {
-    id: number;
-    name: string;
-    recommendation_id: number;
-}
-
-interface Recommendation {
-    id: number;
-    short_title: string;
-    name: string;
-    priority_actions: PriorityAction[];
-}
-
-const recommendations = ref<Recommendation[]>([]);
-
-const loadRecommendations = async (): Promise<void> => {
-    try {
-        const response = await fetch(`/recommendations`);
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
-
-        const data = await response.json();
-        recommendations.value = data;
-        console.log("Recommendations loaded:", data);
-    } catch (error) {
-        console.error("Error loading recommendations:", error);
-    }
-};
-
-const showHighlightsSidebar = ref<boolean>(false);
-const showRecommendationsSidebar = ref<boolean>(false);
 </script>

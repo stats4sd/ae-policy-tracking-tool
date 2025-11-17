@@ -28,7 +28,7 @@ export function useHighlights(documentId: Ref<number, number>) {
     const highlights = ref<Highlight[]>([]);
 
     const showModal = ref<boolean>(false);
-
+    const showHighlightsSidebar = ref<boolean>(false);
 
     /*********** READ HIGHLIGHTS FROM DATABASE ***********/
     onMounted(async (): Promise<void> => {
@@ -122,13 +122,13 @@ export function useHighlights(documentId: Ref<number, number>) {
 
     }
 
-
     return {
         highlights,
         confirmHighlight,
         currentHighlightId,
         focusCurrentHighlight,
         showModal,
+        showHighlightsSidebar,
     }
 
 
