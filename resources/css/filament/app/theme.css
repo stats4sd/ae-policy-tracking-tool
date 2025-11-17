@@ -51,3 +51,12 @@
 
 .doc-highlight { /* highlights set inline for color */
 }
+
+.theme_button {
+    @apply p-2 px-4 font-semibold text-base rounded-lg text-white bg-[#0f8e76] focus:outline-none hover:bg-[#119e83]
+}
+
+#document_text {
+    font-family: 'inter', 'sans-serif';
+    @apply xl:mx-12;
+}

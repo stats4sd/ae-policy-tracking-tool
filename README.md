@@ -49,3 +49,21 @@ is drafted, then marked as “ready for review” (i.e. finalised.), and the ass
 ### User Management
 
 Our standard setup of inviting users to teams and or roles (to be added later)
+
+
+## Setup for Local Development
+
+1. Clone the repository
+2. Copy the .env.example file to .env 
+3. Add your database credentials to the .env file
+4. Create the local MySQL database if needed (e.g. `mysql -u root -e "CREATE DATABASE ae_policy_tracking_tool;"`)
+5. Run `composer install` to install PHP dependencies
+6. Run `npm install` to install JavaScript dependencies
+7. Run `php artisan key:generate` to set the application key
+8. Run `php artisan migrate --seed` to set up the database with tables and seed
+
+9. Run `npm run dev` to set Vite running, which reloads assets on changes
+
+10. If you're using Laravel Valet or Herd, go to `http://ae-policy-tracking-tool.test` in your browser. Otherwise, run `php artisan serve` and go to the provided URL.
+
+If you've run the seeders, you can log in with test@example.com and password 'password'.
