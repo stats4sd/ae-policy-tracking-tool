@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Collection;
 
 class Review extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
-    protected static string $view = 'filament.app.pages.review';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
+    protected string $view = 'filament.app.pages.review';
 
     protected ?string $heading = 'PREVIEW REPORT';
 

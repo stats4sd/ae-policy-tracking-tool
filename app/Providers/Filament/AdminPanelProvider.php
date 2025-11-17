@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use Filament\Pages\Dashboard;
+use Filament\Widgets\AccountWidget;
 use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
 use Althinect\FilamentSpatieRolesPermissions\Resources\PermissionResource;
 use Althinect\FilamentSpatieRolesPermissions\Resources\RoleResource;
@@ -30,13 +32,13 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Stats4sd\FilamentTeamManagement\Http\Middleware\AuthenticateThroughDefaultPanel;
 
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->default()
             ->id('admin')
             ->path('/admin')
             ->colors([
@@ -45,16 +47,15 @@ class AdminPanelProvider extends PanelProvider
                 'warning' => "#FFB822",
                 'danger' => "#FF5B5B",
                 'info' => "#3490DC",
-                'gray' => '#6B7280',
             ])
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\\Filament\\Admin\\Resources')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\\Filament\\Admin\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\\Filament\\Admin\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
+                AccountWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -68,7 +69,7 @@ class AdminPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             ->authMiddleware([
-                Authenticate::class,
+                AuthenticateThroughDefaultPanel::class,
             ])
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 return $builder

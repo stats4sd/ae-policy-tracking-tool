@@ -6,7 +6,7 @@ use Filament\Pages\Page;
 
 class StakeholderEngagement extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.app.pages.stakeholder-engagement';
+    protected string $view = 'filament.app.pages.stakeholder-engagement';
 }

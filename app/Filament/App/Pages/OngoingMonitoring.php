@@ -6,7 +6,7 @@ use Filament\Pages\Page;
 
 class OngoingMonitoring extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.app.pages.ongoing-monitoring';
+    protected string $view = 'filament.app.pages.ongoing-monitoring';
 }

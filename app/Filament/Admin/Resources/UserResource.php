@@ -2,26 +2,30 @@
 
 namespace App\Filament\Admin\Resources;
 
+use Filament\Schemas\Components\Form;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\EditAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use App\Filament\Admin\Resources\UserResource\Pages\ListUsers;
 use App\Filament\Admin\Resources\UserResource\Pages;
 use App\Models\User;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Tables;
 use Filament\Tables\Table;
 
-class UserResource extends \Stats4sd\FilamentTeamManagement\Filament\Admin\Resources\UserResource
+class UserResource extends \Stats4sd\FilamentTeamManagement\Filament\Admin\Resources\Users\UserResource
 {
     protected static ?string $model = User::class;
 
 
-
-
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 TextInput::make('name')
                     ->required()
                     ->maxLength(255),
@@ -54,32 +58,32 @@ class UserResource extends \Stats4sd\FilamentTeamManagement\Filament\Admin\Resou
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email')
+                TextColumn::make('email')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('programs.name')
+                TextColumn::make('programs.name')
                     ->searchable()
                     ->badge()
                     ->color('success')
                     ->visible(config('filament-team-management.use_programs')),
-                Tables\Columns\TextColumn::make('assessments.title')
+                TextColumn::make('assessments.title')
                     ->searchable()
                     ->badge()
                     ->color('success'),
-                Tables\Columns\TextColumn::make('roles.name')
+                TextColumn::make('roles.name')
                     ->badge()
                     ->searchable(),
             ])
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -94,7 +98,7 @@ class UserResource extends \Stats4sd\FilamentTeamManagement\Filament\Admin\Resou
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUsers::route('/'),
+            'index' => ListUsers::route('/'),
         ];
     }
 }

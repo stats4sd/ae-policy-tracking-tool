@@ -6,20 +6,22 @@
         heading="Page information"
         icon="heroicon-o-information-circle"
         icon-color="primary"
-        collapsible>
+        collapsible="true">
         <p class="mb-4">This page is for bulk upload. Each uploaded file will become a new policy document.</p>
     </x-filament::section>
 
 
-    <!-- wire form submission to call save() function in custom page -->
-    <x-filament-panels::form wire:submit="save">
+    <form wire:submit="save">
 
-        <!-- show filament form defined in form() function custom page -->
-        {{ $this->form }}
+        <div class="mb-6">
+            {{ $this->form }}
+        </div>
 
-        <!-- show filament actions (buttons) defined in getFormActions() function custom page -->
-        <x-filament-panels::form.actions :actions="$this->getFormActions()"/> 
-
-    </x-filament-panels::form>
+        <div class="flex justify-end">
+            <x-filament::button type="submit" color="primary">
+                Save Documents
+            </x-filament::button>
+        </div>
+    </form>
 
 </x-filament-panels::page>

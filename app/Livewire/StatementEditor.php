@@ -2,6 +2,8 @@
 
 namespace App\Livewire;
 
+use Filament\Schemas\Schema;
+use Filament\Actions\Action;
 use App\Filament\Shared\Forms\Components\SimpleRepeaterWithTags;
 use App\Filament\Shared\Forms\Components\TextAreaWithTags;
 use App\Models\PolicyDocument;
@@ -11,12 +13,10 @@ use App\Models\Type;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Facades\Filament;
-use Filament\Forms\Components\Actions\Action as FormComponentAction;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
@@ -50,10 +50,10 @@ class StatementEditor extends Component implements HasActions, HasForms
         return view('livewire.statement-editor');
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 SimpleRepeaterWithTags::make('statements')
                     ->relationship(modifyQueryUsing: function (Builder $query) {
                         $query->where('type_id', $this->type->id);
@@ -84,18 +84,18 @@ class StatementEditor extends Component implements HasActions, HasForms
                             }),
                     )
                     ->addActionLabel('Add Statement')
-                    ->deleteAction(fn (FormComponentAction $action) => $action
+                    ->deleteAction(fn (Action $action) => $action
                         ->tooltip('Delete Statement')
                         ->requiresConfirmation()
                         ->size('xs')
-                        ->view(FormComponentAction::LINK_VIEW)
+                        ->view(Action::LINK_VIEW)
 
                     )
                     ->extraItemActions([
-                        FormComponentAction::make('link-to-policies')
+                        Action::make('link-to-policies')
 
 //                            ->hiddenLabel(false)
-                            ->view(FormComponentAction::LINK_VIEW)
+                            ->view(Action::LINK_VIEW)
                             ->size('xs')
                             ->label('Policy Documents')
                             ->icon('heroicon-o-link')
@@ -113,7 +113,7 @@ class StatementEditor extends Component implements HasActions, HasForms
                                 return [];
 
                             })
-                            ->form([
+                            ->schema([
                                 Select::make('policyDocuments')
                                     ->multiple()
                                     ->options(PolicyDocument::where('assessment_id', Filament::getTenant()->id)->get()->pluck('name', 'id')->toArray())

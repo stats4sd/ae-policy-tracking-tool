@@ -2,6 +2,7 @@
 
 namespace App\Filament\App\Resources\PolicyDocumentResource\Pages;
 
+use Filament\Actions\DeleteAction;
 use App\Filament\App\Resources\PolicyDocumentResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -13,7 +14,7 @@ class EditPolicyDocument extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 

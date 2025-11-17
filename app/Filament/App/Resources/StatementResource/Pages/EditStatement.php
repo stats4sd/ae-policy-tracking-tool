@@ -2,6 +2,7 @@
 
 namespace App\Filament\App\Resources\StatementResource\Pages;
 
+use Filament\Actions\Action;
 use App\Filament\Admin\Resources\AssessmentResource;
 use App\Filament\App\Resources\AssessmentPriorityActionResource;
 use App\Filament\App\Resources\CountryResource;
@@ -32,7 +33,7 @@ class EditStatement extends EditRecord
      protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('delete_statement')
+            Action::make('delete_statement')
                 ->label('Delete')
                 ->action(function (): void {
                     $assessment_priority_action_id = $this->record->assessment_priority_action_id;

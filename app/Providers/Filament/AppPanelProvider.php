@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use Filament\Pages\Dashboard;
+use Filament\Widgets\AccountWidget;
 use App\Filament\App\Pages\AssessmentOverview;
 use App\Filament\App\Pages\BulkUploadPage;
 use App\Filament\App\Pages\RegisterAssessment;
@@ -29,6 +31,8 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Stats4sd\FilamentTeamManagement\Filament\Auth\Login;
+use Stats4sd\FilamentTeamManagement\Filament\Auth\Register;
 
 class AppPanelProvider extends PanelProvider
 {
@@ -40,7 +44,8 @@ class AppPanelProvider extends PanelProvider
             ->path('app')
             ->tenant(Assessment::class)
             ->tenantRegistration(RegisterAssessment::class)
-            ->login()
+            ->login(Login::class)
+            ->registration(Register::class)
             ->passwordReset()
             ->colors([
                 'primary' => '#119E83',
@@ -48,7 +53,7 @@ class AppPanelProvider extends PanelProvider
                 'warning' => '#FFB822',
                 'danger' => '#FF5B5B',
                 'info' => '#3490DC',
-                'gray' => '#6B7280',
+                //'gray' => '#6B7280',
             ])
             ->darkMode(false)
             ->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\\Filament\\App\\Resources')
@@ -56,11 +61,11 @@ class AppPanelProvider extends PanelProvider
             // to include role register, program register, register filament pages from package stats4sd/filament-team-management
             ->discoverPages(in: app_path('../vendor/stats4sd/filament-team-management/src/Filament/App/Pages'), for: 'Stats4sd\\FilamentTeamManagement\\Filament\\App\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/App/Widgets'), for: 'App\\Filament\\App\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
+                AccountWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

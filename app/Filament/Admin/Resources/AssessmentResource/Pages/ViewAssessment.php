@@ -2,6 +2,8 @@
 
 namespace App\Filament\Admin\Resources\AssessmentResource\Pages;
 
+use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
 use App\Filament\Admin\Resources\AssessmentResource;
 use App\Models\Assessment;
 use Carbon\Carbon;
@@ -24,7 +26,7 @@ class ViewAssessment extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('finalise')
+            Action::make('finalise')
                                 ->label('Mark as finalised')
                                 ->color('success')
                                 ->visible(fn(Assessment $record) => $record->status === 'In Progress')
@@ -35,7 +37,7 @@ class ViewAssessment extends ViewRecord
                                         $record->save();
                                     }
                                 }),
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 

@@ -2,10 +2,14 @@
 
 namespace App\Filament\App\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use App\Filament\App\Resources\StatementResource\RelationManagers\EvidenceRelationManager;
+use App\Filament\App\Resources\StatementResource\Pages\EditStatement;
 use Filament\Forms;
 use App\Models\Type;
 use Filament\Tables;
-use Filament\Forms\Form;
 use App\Models\Statement;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
@@ -18,17 +22,17 @@ class StatementResource extends Resource
 {
     protected static ?string $model = Statement::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Select::make('type_id')
+        return $schema
+            ->components([
+                Select::make('type_id')
                                 ->label('Type')
                                 ->options(Type::all()->pluck('name','id')->toArray())
                                 ->required(),  
-                Forms\Components\Textarea::make('name')
+                Textarea::make('name')
                                 ->rows(4)
                                 ->label('Statement')
                                 ->required(),
@@ -44,10 +48,10 @@ class StatementResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
+            ->recordActions([
                //
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 //
             ])
             ->emptyStateActions([
@@ -58,14 +62,14 @@ class StatementResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\EvidenceRelationManager::class,
+            EvidenceRelationManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'edit' => Pages\EditStatement::route('/{record}/edit'),
+            'edit' => EditStatement::route('/{record}/edit'),
         ];
     }
 }

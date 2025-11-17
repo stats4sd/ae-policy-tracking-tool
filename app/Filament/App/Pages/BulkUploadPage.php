@@ -2,42 +2,47 @@
 
 namespace App\Filament\App\Pages;
 
-use Filament\Forms\Form;
-use Filament\Pages\Page;
-use Filament\Actions\Action;
+use App\Filament\App\Resources\PolicyDocumentResource;
 use App\Models\PolicyDocument;
+use Filament\Actions\Action;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Facades\Filament;
-use Filament\Support\Exceptions\Halt;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Notifications\Notification;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Concerns\InteractsWithForms;
-use App\Filament\App\Resources\PolicyDocumentResource;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
+use Filament\Pages\Page;
+use Filament\Schemas\Concerns\InteractsWithSchemas;
+use Filament\Schemas\Contracts\HasSchemas;
+use Filament\Schemas\Schema;
+use Filament\Support\Exceptions\Halt;
 
-class BulkUploadPage extends Page implements HasForms
+class BulkUploadPage extends Page implements HasSchemas, HasActions
 {
-    use InteractsWithForms;
+    use InteractsWithSchemas;
+    use InteractsWithActions;
 
     // declare array to store submitted form data
-    public ?array $data = []; 
+    public ?array $data = [];
 
-    protected static ?string $navigationIcon = 'heroicon-o-arrow-up-on-square-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-arrow-up-on-square-stack';
 
     protected static ?string $title = 'Bulk Upload';
 
     // define custom page blade view file location
-    protected static string $view = 'filament.app.pages.bulk-upload-page';
+    protected string $view = 'filament.app.pages.bulk-upload-page';
 
-    public function mount(): void 
+    public function mount(): void
     {
         $this->form->fill();
     }
- 
+
     // define form components
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 FileUpload::make('documents')
                     ->label('Upload Policy Document(s)')
                     ->hint('If you have the policy document(s), please upload them here.')
@@ -50,9 +55,9 @@ class BulkUploadPage extends Page implements HasForms
                         'application/msword',
                         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                         'text/plain',
-                        ]) 
+                    ])
                     ->preserveFilenames()
-                    // when storedFiles(false) is called, the $this->form->getState() will return an array of TemporaryUploadedFile objects 
+                    // when storedFiles(false) is called, the $this->form->getState() will return an array of TemporaryUploadedFile objects
                     // instead of an array of paths to the stored files
                     ->storeFiles(false),
             ])
@@ -60,13 +65,13 @@ class BulkUploadPage extends Page implements HasForms
     }
 
     // define actions
-    protected function getFormActions(): array
+    protected function saveFormAction(): Action
     {
-        return [
-            Action::make('save')
-                ->label(__('filament-panels::resources/pages/edit-record.form.actions.save.label'))
-                ->submit('save'),
-        ];
+
+        return Action::make('save')
+            ->label(__('filament-panels::resources/pages/edit-record.form.actions.save.label'))
+            ->submit('save');
+
     }
 
     // define what to do when user clicked Save button
@@ -100,7 +105,7 @@ class BulkUploadPage extends Page implements HasForms
                 // only need to update the first item because one policy document has one uploaded file only
                 $medias[0]->name = $document->getClientOriginalName();
                 $medias[0]->file_name = $document->getClientOriginalName();
-                $medias[0]->save();                
+                $medias[0]->save();
             }
 
             // redirect to policy documents list page
@@ -110,11 +115,11 @@ class BulkUploadPage extends Page implements HasForms
             $numberOfFiles = count($documents);
 
             // show notification
-            Notification::make() 
+            Notification::make()
                 ->success()
                 ->title($numberOfFiles . ' file uploaded and ' . $numberOfFiles . ' policy documents created')
-                ->send(); 
- 
+                ->send();
+
         } catch (Halt $exception) {
             return;
         }

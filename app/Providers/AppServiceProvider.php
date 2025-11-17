@@ -2,9 +2,10 @@
 
 namespace App\Providers;
 
+use Eloquent;
+use Filament\Auth\Pages\Login;
 use App\Filament\App\Pages\RegisterAssessment;
 use App\Filament\App\Resources\PolicyDocumentResource\Pages\ReviewPolicyDocument;
-use Filament\Pages\Auth\Login;
 use Filament\Support\Facades\FilamentView;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Support\Facades\Blade;
@@ -26,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // unguarded all models across the app
-        \Eloquent::unguard();
+        Eloquent::unguard();
 
         // footer on some pages
         FilamentView::registerRenderHook(PanelsRenderHook::BODY_END, fn () => view('filament.app.render-hook-components.register-assessment-footer'),

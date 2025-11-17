@@ -1,6 +1,17 @@
-@import '/vendor/filament/filament/resources/css/theme.css';
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
 
-@config 'tailwind.config.js';
+@source '../../../../app/Filament';
+@source '../../../../resources/views/filament';
+@source '../../../../resources/js/components';
+
+@theme {
+    --color-dark-title-block: #3A7898;
+    --color-bright-title-block: #6AC4D3;
+    --color-light-title-block: #AADCE5;
+    --color-orange-title: #EF7B41;
+    --color-green-title: #63B981;
+    --color-yellow-title: #F8BF2E;
+}
 
 
 .fi-body {

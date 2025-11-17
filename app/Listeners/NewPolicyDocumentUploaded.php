@@ -2,6 +2,8 @@
 
 namespace App\Listeners;
 
+use App\Models\PolicyDocument;
+use App\Jobs\ExtractPolicyDocumentContent;
 use Spatie\MediaLibrary\MediaCollections\Events\MediaHasBeenAddedEvent;
 
 class NewPolicyDocumentUploaded
@@ -17,11 +19,11 @@ class NewPolicyDocumentUploaded
         $policyDocument = $event->media->model;
 
         // only operate on PolicyDocument models
-        if (! $policyDocument instanceof \App\Models\PolicyDocument) {
+        if (! $policyDocument instanceof PolicyDocument) {
             return;
         }
 
         // Dispatch job to extract content
-        \App\Jobs\ExtractPolicyDocumentContent::dispatch($policyDocument);
+        ExtractPolicyDocumentContent::dispatch($policyDocument);
     }
 }

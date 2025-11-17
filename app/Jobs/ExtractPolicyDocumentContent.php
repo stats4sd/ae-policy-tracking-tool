@@ -2,6 +2,8 @@
 
 namespace App\Jobs;
 
+use App\Models\PolicyDocument;
+use Spatie\PdfToText\Pdf;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
@@ -12,7 +14,7 @@ class ExtractPolicyDocumentContent implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public readonly \App\Models\PolicyDocument $policyDocument)
+    public function __construct(public readonly PolicyDocument $policyDocument)
     {
         //
     }
@@ -27,7 +29,7 @@ class ExtractPolicyDocumentContent implements ShouldQueue
         if ($media) {
             $filePath = $media->getPath();
 
-            $text = (new \Spatie\PdfToText\Pdf)
+            $text = (new Pdf)
                 ->setPdf($filePath)
                 ->addOptions([
                     '-layout', // maintain original physical layout
