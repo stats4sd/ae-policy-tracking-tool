@@ -132,11 +132,11 @@
                 </div>
                 <div
                     class=" border border-gray-300 ps-12 p-4 rounded-md overflow-scroll h-[90vh]"
-                  
+
                     ref="contentDiv"
                 >
                     <pre id="document_text">
-                    <div ref="content-bounds" v-html="formattedDocumentContent"  />
+                    <div ref="content-bounds" v-html="formattedDocumentContent"/>
                 </pre>
                 </div>
             </div>
@@ -151,25 +151,25 @@
         v-on:close="showModal = false"
     >
         <div class="w-full py-4 px-8 text-left rounded-md ">
-        <h3 class="  font-bold">Current selection</h3>
-        <div class="border-l-2 text-base border-black pl-6  mx-8 mt-6">
-            {{
+            <h3 class="  font-bold">Current selection</h3>
+            <div class="border-l-2 text-base border-black pl-6  mx-8 mt-6">
+                {{
                     currentSelection ? currentSelection.toString() : ""
                 }}"
-                </div>
+            </div>
         </div>
         <div class="p-4">
             <div class="w-full bg-gray-100 p-4 rounded-md mt-4">
                 <label class="block mb-4 font-semibold">Expand your selection</label>
                 <ul class="list-disc list-inside text-sm text-gray-700">
                     <button
-                        @click="currentSelection = expandSelectionToWordBoundaries(currentSelection)"
+                        @click="expandSelectionToWordBoundaries"
                         class="px-4 py-2 bg-dark-title-block text-white font-bold rounded-lg hover:bg-[#5594b8]"
                     >
                         Expand Selection to full word(s)
                     </button>
                     <button
-                        @click="currentSelection = expandSelectionToSentenceBoundaries(currentSelection)"
+                        @click="expandSelectionToSentenceBoundaries"
                         class="px-4 py-2  ml-2 bg-dark-title-block text-white font-bold rounded-lg hover:bg-[#5594b8]"
                     >
                         Expand Selection to full sentence(s)
@@ -193,7 +193,7 @@
                     Cancel
                 </button>
                 <button
-                    @click="confirmHighlight"
+                    @click="confirmHighlight(currentSelection); showModal = false"
                     class="mr-2 px-4 py-2 theme_button"
                 >
                     Confirm
@@ -220,15 +220,16 @@ import {
     SlActionRedo,
     SlTrash,
 } from "vue-icons-plus/sl";
+import {
+    useHighlights
+} from "@/composables/highlights.ts";
+import {
+    useLiveSearch
+} from "@/composables/liveSearch.ts";
+import {
+    useTextSelection
+} from "@/composables/selectText.ts";
 
-interface Highlight {
-    id?: number;
-    policy_document_id: number;
-    extract: string;
-    start_offset: number;
-    end_offset: number;
-    color: string;
-}
 
 interface Props {
     documentId: number;
@@ -239,7 +240,7 @@ const props = defineProps<Props>();
 const documentId = ref<number>(props.documentId);
 const documentContent = ref<string>("");
 const formattedDocumentContent = ref<string>("");
-const currentHighlightId = ref<number | null>(null);
+
 
 // Load document content from server
 const loadDocumentContent = async (id: number): Promise<void> => {
@@ -251,135 +252,45 @@ const loadDocumentContent = async (id: number): Promise<void> => {
 
         const data = await response.text();
         documentContent.value = data;
-        console.log("Document content loaded:", data);
     } catch (error) {
         console.error("Error loading document content:", error);
     }
 };
 
-// on highlight / selection of text inside content div, log the selected text
-const contentBounds = useTemplateRef<HTMLDivElement>("content-bounds");
-
-const highlights = ref<Highlight[]>([]);
-
-const handleTextSelection = (): void => {
-    const selection = window.getSelection();
-    if (!selection) return;
-
-    // if the selection is not inside the content div, return
-    if (!contentBounds.value?.contains(selection.anchorNode) || !contentBounds.value?.contains(selection.focusNode)) {
-        return;
-    }
-
-    const selectedText = selection.toString();
-    if (selectedText) {
-        currentSelection.value = selection.getRangeAt(0);
-        if (!currentSelection.value.collapsed) {
-            // find base offset from nearest ancestor
-            const offset = findOffsetAncestor(currentSelection.value.startContainer);
-            console.log("offset:", offset);
-            showModal.value = true;
-        }
-    }
-};
-
-const currentSelection = ref<Range | null>(null);
-const currentSelectedText = ref<string>("");
-
-const confirmHighlight = async (): Promise<void> => {
-    if (!currentSelection.value) return;
-    const start = currentSelection.value.startOffset;
-    const end = currentSelection.value.endOffset;
-    const offset = findOffsetAncestor(currentSelection.value.startContainer);
-
-    const newHighlight: Highlight = {
-        policy_document_id: documentId.value,
-        extract: currentSelection.value.toString(),
-        start_offset: start + offset,
-        end_offset: end + offset,
-        color: "yellow",
-    };
-
-    const newHighlightWithId: Highlight = await saveHighlightToDatabase(newHighlight);
-    highlights.value.push(newHighlightWithId);
-
-    console.log('new highlight with ID', newHighlightWithId);
-
-    // re-render with new highlight + search highlights
-    // remove "current" search  and add "current" highlight
-    currentSearchIndex.value = -1;
-    currentHighlightId.value = newHighlightWithId.id;
-
-    renderContent();
-
-    const selection = window.getSelection();
-    selection?.removeAllRanges();
-    showModal.value = false;
-};
-
-const saveHighlightToDatabase = async (highlight: Highlight): Promise<Highlight> => {
-    try {
-        const result = await axios.post("/highlights", highlight);
-        return result.data
-    } catch (error) {
-        console.error("Error saving highlight to database:", error);
-    }
-};
-
-
 onMounted(async (): Promise<void> => {
     await loadDocumentContent(documentId.value);
-    await loadHighlights(documentId.value);
-    computeSearchMatches();
-    window.addEventListener("mouseup", handleTextSelection);
-
     await loadRecommendations();
-
-
 });
 
-const loadHighlights = async (id: number): Promise<void> => {
-    try {
-        const response = await fetch(`/policy-documents/${id}/highlights`);
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
 
-        const data = await response.json();
-        highlights.value = data;
-        console.log("Highlights loaded:", data);
-    } catch (error) {
-        console.error("Error loading highlights:", error);
-    }
-};
+const {
+    highlights,
+    confirmHighlight,
+    currentHighlightId,
+    focusCurrentHighlight,
+    showModal
+}
+    = useHighlights(documentId)
 
-// modal box that appears on text selection to add comments or tags to the selected text
-const showModal = ref<boolean>(false);
+const {
+    searchQuery,
+    searchMatches,
+    currentSearchIndex,
+    nextSearch,
+    prevSearch,
+    focusCurrentSearch
+} = useLiveSearch(documentContent);
 
-
-// ************* Search Functionality *************
-
-// Search state
-const searchQuery = ref<string>("");
-const searchMatches = ref<{
-    start: number;
-    end: number
-}[]>([]);
-const currentSearchIndex = ref<number>(-1);
-
-const contentDiv = useTemplateRef<HTMLDivElement>("contentDiv");
-const contentAndSearch = useTemplateRef<HTMLDivElement>("contentAndSearch");
+const {
+    currentSelection,
+    expandSelectionToWordBoundaries,
+    expandSelectionToSentenceBoundaries
+} = useTextSelection();
 
 
 // Utility: escape html
 const escapeHtml = (s: string) =>
     s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-
-// watch searchQuery
-watch(searchQuery, () => {
-    computeSearchMatches();
-});
 
 // Render combined HTML from documentContent, applying highlights and search spans.
 // Every plain-text chunk is wrapped with a span[data-offset] so selection offset logic can locate base offset.
@@ -506,186 +417,25 @@ const renderContent = (): void => {
     }
 };
 
-const focusCurrentHighlight = (): void => {
 
-    console.log('focus current highlight', currentHighlightId.value);
-    // remove previous current highlight markers
-    const prev = document.querySelectorAll(".highlight-current");
-    prev.forEach((el) => el.classList.remove("highlight-current"));
+// Re-render the content whenever:
+// - document content changes
+// - the highlights change
+// - the search query or current search index changes
 
-    if (!currentHighlightId.value) return;
-    const sel = document.querySelector(`[data-highlight-id="${currentHighlightId.value}"]`) as HTMLElement | null;
-    if (!sel) return;
-    sel.classList.add("highlight-current");
-
-    if (!scrollToSelection(sel)) {
-        // fallback: scroll the element into view normally
-        sel.scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-        });
-    }
-
-}
-
-const computeSearchMatches = (): void => {
-    searchMatches.value = [];
-    currentSearchIndex.value = -1;
-
-    const q = searchQuery.value.trim();
-    if (!q) {
+watch(
+    [documentContent, highlights, searchMatches, currentSearchIndex],
+    () => {
         renderContent();
-        return;
-    }
+    },
+    {immediate: true, deep: true}
+);
 
-    // escape special regex chars in query
-    const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const regex = new RegExp(escaped, "gi");
-    let match;
-    while ((match = regex.exec(documentContent.value)) !== null) {
-        searchMatches.value.push({
-            start: match.index,
-            end: match.index + match[0].length
-        });
-        // avoid infinite loops on zero-length matches
-        if (match.index === regex.lastIndex) regex.lastIndex++;
-    }
-
-    if (searchMatches.value.length > 0) currentSearchIndex.value = 0;
-    renderContent();
-};
-
-const focusCurrentSearch = (): void => {
-
-    console.log('focusCurrentSearch', currentSearchIndex.value);
-    // remove previous current markers
-    const prev = document.querySelectorAll(".search-current");
-    prev.forEach((el) => el.classList.remove("search-current"));
-
-    if (currentSearchIndex.value < 0) return;
-    const sel = document.querySelector(`[data-search-index="${currentSearchIndex.value}"]`) as HTMLElement | null;
-    if (!sel) return;
-    sel.classList.add("search-current");
-
-    if (!scrollToSelection(sel)) {
-        // fallback: scroll the element into view normally
-        sel.scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-        });
-    }
-};
-
-
-const scrollToSelection = (sel: HTMLElement): boolean => {
-    // ensure the search bar (above the scrollable content) is visible in the viewport
-    if (contentAndSearch.value) {
-        contentAndSearch.value.scrollIntoView({
-            behavior: "smooth",
-            block: "nearest"
-        });
-    }
-
-    // if we have a scrollable content container, scroll it so `sel` is centered
-    if (contentDiv.value && contentDiv.value.contains(sel)) {
-        const container = contentDiv.value;
-        const containerRect = container.getBoundingClientRect();
-        const elRect = sel.getBoundingClientRect();
-
-        // calculate element position relative to container scroll
-        const relativeTop = elRect.top - containerRect.top + container.scrollTop;
-        const desiredScrollTop = relativeTop - (container.clientHeight / 2) + (sel.clientHeight / 2);
-
-        container.scrollTo({
-            top: desiredScrollTop,
-            behavior: "smooth"
-        });
-        return true;
-    }
-
-    return false;
-}
-
-// navigate search results
-const nextSearch = (): void => {
-    if (searchMatches.value.length === 0) return;
-    currentSearchIndex.value = (currentSearchIndex.value + 1) % searchMatches.value.length;
-    renderContent(); // re-render to update `search-current`
-};
-
-const prevSearch = (): void => {
-
-
-    if (searchMatches.value.length === 0) return;
-
-    // minus 2 because it triggers next-search first;
-    currentSearchIndex.value = (currentSearchIndex.value - 2) % searchMatches.value.length;
-    renderContent();
-};
-
-// helper: find nearest ancestor with data-offset (used by selection logic)
-const findOffsetAncestor = (node: Node | null): number => {
-    let el = node && node.nodeType === Node.ELEMENT_NODE ? (node as Element) : (node && node.parentElement);
-    while (el) {
-        const v = (el as HTMLElement).dataset?.offset;
-        if (v !== undefined) return parseInt(v || "0");
-        el = el.parentElement;
-    }
-    return 0;
-};
-
-
-const expandSelectionToWordBoundaries = (range: Range): Range => {
-
-    // update selected range to word boundaries
-    const isWordChar = (c: string) => /\w/.test(c);
-    let startContainer = range.startContainer;
-    let startOffset = range.startOffset;
-    let endContainer = range.endContainer;
-    let endOffset = range.endOffset;
-    // Expand start
-    while (startContainer.nodeType === Node.TEXT_NODE && startOffset > 0) {
-        const text = startContainer.textContent || "";
-        if (!isWordChar(text[startOffset - 1])) break;
-        startOffset--;
-    }
-    // Expand end
-    const textEnd = endContainer.textContent || "";
-    while (endContainer.nodeType === Node.TEXT_NODE && endOffset < textEnd.length) {
-        if (!isWordChar(textEnd[endOffset])) break;
-        endOffset++;
-    }
-    const newRange = document.createRange();
-    newRange.setStart(startContainer, startOffset);
-    newRange.setEnd(endContainer, endOffset);
-    return newRange;
-
-};
-
-const expandSelectionToSentenceBoundaries = (range: Range): Range => {
-    // update selected range to sentence boundaries
-    const sentenceEndChars = [".", "!", "?"];
-    let startContainer = range.startContainer;
-    let startOffset = range.startOffset;
-    let endContainer = range.endContainer;
-    let endOffset = range.endOffset;
-    // Expand start
-    while (startContainer.nodeType === Node.TEXT_NODE && startOffset > 0) {
-        const text = startContainer.textContent || "";
-        if (sentenceEndChars.includes(text[startOffset - 1])) break;
-        startOffset--;
-    }
-    // Expand end
-    const textEnd = endContainer.textContent || "";
-    while (endContainer.nodeType === Node.TEXT_NODE && endOffset < textEnd.length) {
-        if (sentenceEndChars.includes(textEnd[endOffset])) break;
-        endOffset++;
-    }
-    const newRange = document.createRange();
-    newRange.setStart(startContainer, startOffset);
-    newRange.setEnd(endContainer, endOffset);
-    return newRange;
-}
+watch(
+    [currentSelection],
+    () => showModal.value = currentSelection.value !== null,
+    {immediate: true}
+)
 
 
 /**** PRIORITY ACTIONS *****/
@@ -704,7 +454,6 @@ interface Recommendation {
 }
 
 const recommendations = ref<Recommendation[]>([]);
-
 
 const loadRecommendations = async (): Promise<void> => {
     try {
