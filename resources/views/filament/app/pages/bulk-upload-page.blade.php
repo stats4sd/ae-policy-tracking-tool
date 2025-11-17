@@ -11,15 +11,17 @@
     </x-filament::section>
 
 
-    <!-- wire form submission to call save() function in custom page -->
     <form wire:submit="save">
 
-        <!-- show filament form defined in form() function custom page -->
-        {{ $this->form }}
+        <div class="mb-6">
+            {{ $this->form }}
+        </div>
 
-        <!-- show filament actions (buttons) defined in getFormActions() function custom page -->
-        {{ $this->getFormActions() }}
-
+        <div class="flex justify-end">
+            <x-filament::button type="submit" color="primary">
+                Save Documents
+            </x-filament::button>
+        </div>
     </form>
 
 </x-filament-panels::page>

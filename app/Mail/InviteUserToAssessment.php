@@ -2,15 +2,15 @@
 
 namespace App\Mail;
 
-use Illuminate\Mail\Mailables\Attachment;
+use Filament\Facades\Filament;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\URL;
-use Stats4sd\FilamentTeamManagement\Models\TeamInvite;
+use Stats4sd\FilamentTeamManagement\Models\Invite;
 
 class InviteUserToAssessment extends Mailable
 {
@@ -19,7 +19,7 @@ class InviteUserToAssessment extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public TeamInvite $invite)
+    public function __construct(public Invite $invite)
     {
         //
     }
@@ -31,7 +31,7 @@ class InviteUserToAssessment extends Mailable
     {
         return new Envelope(
             from: config('mail.from.address'),
-            subject: config('app.name') . ': Invitation To Join Team ' . $this->invite->team->title,
+            subject: config('app.name').': Invitation To Join Team '.$this->invite->team->title,
 
         );
     }
@@ -41,11 +41,13 @@ class InviteUserToAssessment extends Mailable
      */
     public function content(): Content
     {
+        $routeName = Filament::getDefaultPanel()->generateRouteName('auth.register');
+
         return new Content(
-            markdown: 'mail.invite-user-to-assessment',
+            markdown: 'filament-team-management::emails.invite',
             with: [
                 'acceptUrl' => URL::signedRoute(
-                    'filament.app.register',
+                    $routeName,
                     [
                         'token' => $this->invite->token,
                     ],

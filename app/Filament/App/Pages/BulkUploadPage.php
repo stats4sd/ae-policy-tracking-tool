@@ -65,13 +65,13 @@ class BulkUploadPage extends Page implements HasSchemas, HasActions
     }
 
     // define actions
-    protected function getFormActions(): array
+    protected function saveFormAction(): Action
     {
-        return [
-            Action::make('save')
-                ->label(__('filament-panels::resources/pages/edit-record.form.actions.save.label'))
-                ->submit('save'),
-        ];
+
+        return Action::make('save')
+            ->label(__('filament-panels::resources/pages/edit-record.form.actions.save.label'))
+            ->submit('save');
+
     }
 
     // define what to do when user clicked Save button
@@ -117,7 +117,7 @@ class BulkUploadPage extends Page implements HasSchemas, HasActions
             // show notification
             Notification::make()
                 ->success()
-                ->title($numberOfFiles.' file uploaded and '.$numberOfFiles.' policy documents created')
+                ->title($numberOfFiles . ' file uploaded and ' . $numberOfFiles . ' policy documents created')
                 ->send();
 
         } catch (Halt $exception) {

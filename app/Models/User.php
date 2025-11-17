@@ -13,7 +13,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
-use Stats4sd\FilamentTeamManagement\Models\TeamInvite;
 
 class User extends \Stats4sd\FilamentTeamManagement\Models\User
 {
@@ -60,11 +59,6 @@ class User extends \Stats4sd\FilamentTeamManagement\Models\User
     /** @return BelongsToMany<Assessment, $this> */
     public function assessments(): BelongsToMany
     {
-        return $this->belongsToMany(Assessment::class, 'assessment_user', 'user_id', 'assessment_id');
-    }
-
-    public function teams(): BelongsToMany
-    {
-        return $this->belongsToMany(Assessment::class, 'assessment_user', 'user_id', 'assessment_id');
+        return $this->teams();
     }
 }

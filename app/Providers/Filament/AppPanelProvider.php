@@ -31,6 +31,8 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Stats4sd\FilamentTeamManagement\Filament\Auth\Login;
+use Stats4sd\FilamentTeamManagement\Filament\Auth\Register;
 
 class AppPanelProvider extends PanelProvider
 {
@@ -42,7 +44,8 @@ class AppPanelProvider extends PanelProvider
             ->path('app')
             ->tenant(Assessment::class)
             ->tenantRegistration(RegisterAssessment::class)
-            ->login()
+            ->login(Login::class)
+            ->registration(Register::class)
             ->passwordReset()
             ->colors([
                 'primary' => '#119E83',
@@ -50,7 +53,7 @@ class AppPanelProvider extends PanelProvider
                 'warning' => '#FFB822',
                 'danger' => '#FF5B5B',
                 'info' => '#3490DC',
-                'gray' => '#6B7280',
+                //'gray' => '#6B7280',
             ])
             ->darkMode(false)
             ->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\\Filament\\App\\Resources')
