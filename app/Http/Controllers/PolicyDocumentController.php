@@ -24,17 +24,7 @@ class PolicyDocumentController extends Controller
                     'start_offset' => $highlight->start_offset,
                     'end_offset' => $highlight->end_offset,
                     'color' => $highlight->color,
-                    'priority_actions' => $highlight->priorityActions->map(function ($action) {
-                        return [
-                            'id' => $action->id,
-                            'name' => $action->name,
-                            'recommendation' => [
-                                'id' => $action->recommendation->id,
-                                'name' => $action->recommendation->name,
-                                'short_title' => $action->recommendation->short_title,
-                            ],
-                        ];
-                    })->toArray(),
+                    'priority_actions' => $highlight->priorityActions->pluck('id')->toArray(), // return only IDs for the Vue FormKit checkboxes.
                 ];
             });
 

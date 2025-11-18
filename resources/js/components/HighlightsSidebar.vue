@@ -1,15 +1,15 @@
 <template>
-    <div class="flex flex-col bg-bright-title-block   min-w-96 ">
-        <div class="mb-4 flex items-center mt-4 text-white px-4 justify-between">
-            <h5 class="text-lg font-semibold">
-                Highlights
-            </h5>
+    <div class="flex flex-col bg-bright-title-block min-w-96">
+        <div
+            class="mb-4 flex items-center mt-4 text-white px-4 justify-between"
+        >
+            <h5 class="text-lg font-semibold">Highlights</h5>
             <a
                 href="#"
                 @click="showHighlightsSidebar = !showHighlightsSidebar"
-                class="text-sm  hover:underline cursor-pointer"
+                class="text-sm hover:underline cursor-pointer"
             >
-                {{ showHighlightsSidebar ? 'Hide' : 'Show' }}
+                {{ showHighlightsSidebar ? "Hide" : "Show" }}
             </a>
         </div>
 
@@ -20,53 +20,88 @@
             <div
                 v-for="highlight in highlights"
                 :key="highlight.start_offset"
-                class="mt-2 p-2 w-full cursor-pointer  hover:bg-[#e8e8e9]  bg-gray-50"
-                @click="currentHighlightId = highlight.id; renderContent()"
+                class="mt-2 p-2 w-full cursor-pointer hover:bg-[#e8e8e9] bg-gray-50"
+                @click="
+                    currentHighlightId = highlight.id;
+                    renderContent();
+                "
             >
-                <div class="p-2 rounded-md flex justify-between items-center ">
+                <div
+                    class="p-2 rounded-md flex justify-between items-center text-sm"
+                >
                     <div>
                         <strong>Highlight:</strong>
-                        "{{ highlight.extract.length > 50 ? highlight.extract.slice(0, 50) + '...' : highlight.extract }}"
+                        "{{
+                            highlight.extract.length > 50
+                                ? highlight.extract.slice(0, 100) + "..."
+                                : highlight.extract
+                        }}"
                     </div>
                     <div class="flex justify-end items-center gap-x-4">
                         <div>
-                            <SlActionRedo
-                                class="cursor-pointer text-gray-600 hover:text-gray-800"
-                                @click.stop="currentHighlightId = highlight.id;"
+                            <SlPencil
+                                class="cursor-pointer text-gray-600 hover:text-gray-800 w-8"
+                                @click.stop="editHighlight(highlight.id)"
                             />
                         </div>
                         <div>
                             <SlTrash
                                 class="cursor-pointer text-red-600 hover:text-red-800 mr-4"
-                                @click.stop="highlights = highlights.filter(h => h.id !== highlight.id);"
+                                @click.stop="
+                                    highlights = highlights.filter(
+                                        (h) => h.id !== highlight.id,
+                                    )
+                                "
                             />
                         </div>
                     </div>
                 </div>
                 <div class="w-full justify-start items-center p-2">
                     <small class="text-gray-500">
-                        TAGS GO HERE
+                        PRIORITY ACTIONS:
+                        <span
+                            v-for="priorityAction in highlight.priority_actions"
+                            :key="priorityAction"
+                            class="mr-2"
+                        >
+                            {{ priorityAction.id }}
+                        </span>
+                        <span
+                            v-if="highlight.priority_actions.length === 0"
+                            class="mr-2"
+                        >
+                            None
+                        </span>
                     </small>
                 </div>
             </div>
         </div>
     </div>
 </template>
-<script setup>
+<script setup lang="ts">
+import { ref } from "vue";
 
-import {ref} from 'vue';
+import { SlTrash, SlPencil } from "vue-icons-plus/sl";
 
-const props = defineProps(
-    {
-        highlights: {
-            type: Array,
-            required: true
-        },
-    }
-)
+const props = defineProps({
+    highlights: {
+        type: Array,
+        required: true,
+    },
+});
 
-const currentHighlightId = defineModel('currentHighlightId');
+const emit = defineEmits<{
+    editHighlight: [];
+}>();
+
+const currentHighlightId = defineModel("currentHighlightId");
 
 const showHighlightsSidebar = ref(true);
 
+const editHighlight = (highlightId) => {
+    currentHighlightId.value = highlightId;
+
+    console.log("editing highlight with ID:", highlightId);
+    emit("editHighlight", highlightId);
+};
 </script>

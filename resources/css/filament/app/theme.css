@@ -1,5 +1,6 @@
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
 
+
 @source '../../../../app/Filament';
 @source '../../../../resources/views/filament';
 @source '../../../../resources/js/components';
@@ -58,5 +59,15 @@
 
 #document_text {
     font-family: 'inter', 'sans-serif';
+    font-size: 1.1rem;
     @apply xl:mx-12;
+
+}
+
+.formkit-option {
+    @apply p-2;
+}
+
+.formkit-inner {
+    @apply pe-2;
 }

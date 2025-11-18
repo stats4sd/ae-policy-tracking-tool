@@ -27,7 +27,7 @@ class HighlightController extends Controller
         $highlight = Highlight::create($validated);
 
         $priorityActions = $request->input('priority_actions', []);
-        if (!empty($priorityActions)) {
+        if (! empty($priorityActions)) {
             $highlight->priorityActions()->attach($priorityActions);
         }
 
@@ -45,9 +45,23 @@ class HighlightController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Highlight $highlight)
+    public function update(Request $request, Highlight $highlight): JsonResponse
     {
-        //
+        // check priority actions exist
+        $validated = $request->validate([
+            'priority_actions' => 'array',
+            'priority_actions.*' => 'exists:priority_actions,id',
+        ]);
+
+        $priorityActions = $validated['priority_actions'];
+
+        if (! empty($priorityActions)) {
+            $highlight->priorityActions()->sync($priorityActions);
+        } else {
+            $highlight->priorityActions()->detach();
+        }
+
+        return response()->json($highlight, 200);
     }
 
     /**

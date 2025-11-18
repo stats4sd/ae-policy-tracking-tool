@@ -2,8 +2,8 @@
   <div class="fixed w-full h-full top-0 left-0 flex items-center justify-center z-10" v-if="open">
     <div class="absolute w-full h-full bg-gray-900 opacity-50" @click="close"></div>
 
-    <div class="absolute max-h-full" :class="width ? width : 'w-11/12 md:w-2/3'">
-      <div class="container bg-white overflow-hidden ">
+    <div class="absolute max-h-[85vh] overflow-y-scroll" :class="width ? width : 'w-11/12 md:w-2/3'">
+      <div class="container bg-white">
         <div class="px-8 py-4 leading-none flex justify-between items-center text-xl font-bold bg-bright-title-block text-white select-none">
           <h3>{{ title }}</h3>
           <div @click="close" class="text-2xl hover:text-gray-600 cursor-pointer">

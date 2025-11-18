@@ -1,21 +1,10 @@
-import {
-    scrollToSelection
-} from "@/composables/scrollHandler.ts";
-import {
-    onMounted,
-    ref,
-    type Ref,
-    useTemplateRef
-} from "vue";
+import { scrollToSelection } from "@/composables/scrollHandler.ts";
+import { onMounted, ref, type Ref, useTemplateRef, watch } from "vue";
 
-import {
-    findOffsetAncestor
-} from "@/composables/findOffsetAncestor.ts";
-import axios
-    from "axios";
+import { findOffsetAncestor } from "@/composables/findOffsetAncestor.ts";
+import axios from "axios";
 
 export function useHighlights(documentId: Ref<number, number>) {
-
     interface Highlight {
         id?: number;
         policy_document_id: number;
@@ -23,9 +12,14 @@ export function useHighlights(documentId: Ref<number, number>) {
         start_offset: number;
         end_offset: number;
         color: string;
+        priority_actions: Array<CheckboxItem>;
     }
 
+
     const highlights = ref<Highlight[]>([]);
+    const currentHighlightId = ref<number | null>(null);
+    const currentHighlight: Ref<Highlight> = ref<Highlight>(null);
+    const highlightPriorityActions = ref<string[]>([]); // array of selected priority action IDs
 
     const showModal = ref<boolean>(false);
     const showHighlightsSidebar = ref<boolean>(false);
@@ -33,7 +27,7 @@ export function useHighlights(documentId: Ref<number, number>) {
     /*********** READ HIGHLIGHTS FROM DATABASE ***********/
     onMounted(async (): Promise<void> => {
         await loadHighlights(documentId.value);
-    })
+    });
 
     const loadHighlights = async (id: number): Promise<void> => {
         try {
@@ -50,11 +44,7 @@ export function useHighlights(documentId: Ref<number, number>) {
         }
     };
 
-
-
-
     const confirmHighlight = async (currentSelection: Range): Promise<void> => {
-
         console.log(currentSelection);
 
         if (!currentSelection) return;
@@ -68,50 +58,43 @@ export function useHighlights(documentId: Ref<number, number>) {
             start_offset: start + offset,
             end_offset: end + offset,
             color: "yellow",
+            priority_actions: highlightPriorityActions.value,
         };
 
-        const newHighlightWithId: Highlight = await saveHighlightToDatabase(newHighlight);
+        const newHighlightWithId: Highlight =
+            await saveHighlightToDatabase(newHighlight);
         highlights.value.push(newHighlightWithId);
 
         // resort highlights by start_offset
         highlights.value.sort((a, b) => a.start_offset - b.start_offset);
 
-        console.log('new highlight with ID', newHighlightWithId);
+        console.log("new highlight with ID", newHighlightWithId);
 
         const selection = window.getSelection();
         selection?.removeAllRanges();
-
-        // // re-render with new highlight + search highlights
-        // // remove "current" search  and add "current" highlight
-        // currentSearchIndex.value = -1;
-        // currentHighlightId.value = newHighlightWithId.id;
-        //
-        // renderContent();
-        //
-        // showModal.value = false;
     };
 
-    const saveHighlightToDatabase = async (highlight: Highlight): Promise<Highlight> => {
+    const saveHighlightToDatabase = async (
+        highlight: Highlight,
+    ): Promise<Highlight> => {
         try {
             const result = await axios.post("/highlights", highlight);
-            return result.data
+            return result.data;
         } catch (error) {
             console.error("Error saving highlight to database:", error);
         }
     };
 
-
-    const currentHighlightId = ref<number | null>(null);
-
     const focusCurrentHighlight = (): void => {
-
-        console.log('focus current highlight', currentHighlightId.value);
+        console.log("focus current highlight", currentHighlightId.value);
         // remove previous current highlight markers
         const prev = document.querySelectorAll(".highlight-current");
         prev.forEach((el) => el.classList.remove("highlight-current"));
 
         if (!currentHighlightId.value) return;
-        const sel = document.querySelector(`[data-highlight-id="${currentHighlightId.value}"]`) as HTMLElement | null;
+        const sel = document.querySelector(
+            `[data-highlight-id="${currentHighlightId.value}"]`,
+        ) as HTMLElement | null;
         if (!sel) return;
         sel.classList.add("highlight-current");
 
@@ -119,21 +102,78 @@ export function useHighlights(documentId: Ref<number, number>) {
             // fallback: scroll the element into view normally
             sel.scrollIntoView({
                 behavior: "smooth",
-                block: "center"
+                block: "center",
             });
         }
+    };
 
-    }
+    const editHighlight = () => {
+        showModal.value = true;
+    };
+
+    // add watcher to update currentHighlight when Id changes
+    watch(currentHighlightId, (newId) => {
+        if (newId === null) return;
+        currentHighlight.value =
+            highlights.value.find((h) => h.id === newId) || null;
+
+        // populate priority actions form for editing
+
+        console.log('updating priority actions form', currentHighlight.value.priority_actions)
+        highlightPriorityActions.value = currentHighlight.value.priority_actions
+    });
+
+    const saveHighlight = async (): Promise<void> => {
+
+        const updatedHighlight: Highlight = {
+            id: currentHighlight.value.id,
+            policy_document_id: documentId.value,
+            extract: currentHighlight.value.extract,
+            start_offset: currentHighlight.value.start_offset,
+            end_offset: currentHighlight.value.end_offset,
+            color: currentHighlight.value.color,
+            priority_actions: highlightPriorityActions.value, // only change
+        };
+
+
+        console.log(highlightPriorityActions.value)
+
+        currentHighlight.value = updatedHighlight;
+
+        console.log('saving highlight', currentHighlight.value);
+
+        // update in local highlights array
+        const index = highlights.value.findIndex(h => h.id === currentHighlight.value.id);
+        if (index !== -1) {
+            highlights.value[index] = currentHighlight.value;
+        }
+
+        // send update to server
+        try {
+            await axios.put(`/highlights/${currentHighlight.value.id}`, updatedHighlight);
+            console.log("Highlight updated successfully");
+        } catch (error) {
+            console.error("Error updating highlight:", error);
+        }
+
+        const selection = window.getSelection();
+        selection?.removeAllRanges();
+
+
+        showModal.value = false;
+
+    };
 
     return {
         highlights,
-        confirmHighlight,
+        currentHighlight,
         currentHighlightId,
-        focusCurrentHighlight,
         showModal,
         showHighlightsSidebar,
-    }
-
-
-
+        highlightPriorityActions,
+        confirmHighlight,
+        focusCurrentHighlight,
+        editHighlight,
+        saveHighlight,
+    };
 }
