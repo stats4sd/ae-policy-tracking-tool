@@ -63,6 +63,7 @@
                     :highlights="highlights"
                     v-model:currentHighlightId="currentHighlightId"
                     @edit-highlight="editHighlight"
+                    @delete-highlight="deleteHighlight"
                 />
             </div>
             <div class="flex-grow">
@@ -240,6 +241,7 @@ const {
     focusCurrentHighlight,
     editHighlight,
     saveHighlight,
+    deleteHighlight,
 } = useHighlights(documentId);
 
 const {

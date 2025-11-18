@@ -47,11 +47,7 @@
                         <div>
                             <SlTrash
                                 class="cursor-pointer text-red-600 hover:text-red-800 mr-4"
-                                @click.stop="
-                                    highlights = highlights.filter(
-                                        (h) => h.id !== highlight.id,
-                                    )
-                                "
+                                @click.stop="deleteHighlight(highlight.id)"
                             />
                         </div>
                     </div>
@@ -83,15 +79,18 @@ import { ref } from "vue";
 
 import { SlTrash, SlPencil } from "vue-icons-plus/sl";
 
+import { type Highlight } from "../composables/highlights";
+
 const props = defineProps({
     highlights: {
-        type: Array,
+        type: Array[Highlight],
         required: true,
     },
 });
 
 const emit = defineEmits<{
     editHighlight: [];
+    deleteHighlight: [];
 }>();
 
 const currentHighlightId = defineModel("currentHighlightId");
@@ -103,5 +102,11 @@ const editHighlight = (highlightId) => {
 
     console.log("editing highlight with ID:", highlightId);
     emit("editHighlight", highlightId);
+};
+
+const deleteHighlight = (highlightId) => {
+    console.log("deleting highlight with ID:", highlightId);
+    // Emit an event or call a method to handle deletion
+    emit("deleteHighlight", highlightId);
 };
 </script>

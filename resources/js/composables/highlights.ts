@@ -4,18 +4,17 @@ import { onMounted, ref, type Ref, useTemplateRef, watch } from "vue";
 import { findOffsetAncestor } from "@/composables/findOffsetAncestor.ts";
 import axios from "axios";
 
+export interface Highlight {
+    id?: number;
+    policy_document_id: number;
+    extract: string;
+    start_offset: number;
+    end_offset: number;
+    color: string;
+    priority_actions: Array<string>;
+}
+
 export function useHighlights(documentId: Ref<number, number>) {
-    interface Highlight {
-        id?: number;
-        policy_document_id: number;
-        extract: string;
-        start_offset: number;
-        end_offset: number;
-        color: string;
-        priority_actions: Array<CheckboxItem>;
-    }
-
-
     const highlights = ref<Highlight[]>([]);
     const currentHighlightId = ref<number | null>(null);
     const currentHighlight: Ref<Highlight> = ref<Highlight>(null);
@@ -119,12 +118,15 @@ export function useHighlights(documentId: Ref<number, number>) {
 
         // populate priority actions form for editing
 
-        console.log('updating priority actions form', currentHighlight.value.priority_actions)
-        highlightPriorityActions.value = currentHighlight.value.priority_actions
+        console.log(
+            "updating priority actions form",
+            currentHighlight.value.priority_actions,
+        );
+        highlightPriorityActions.value =
+            currentHighlight.value.priority_actions;
     });
 
     const saveHighlight = async (): Promise<void> => {
-
         const updatedHighlight: Highlight = {
             id: currentHighlight.value.id,
             policy_document_id: documentId.value,
@@ -135,22 +137,26 @@ export function useHighlights(documentId: Ref<number, number>) {
             priority_actions: highlightPriorityActions.value, // only change
         };
 
-
-        console.log(highlightPriorityActions.value)
+        console.log(highlightPriorityActions.value);
 
         currentHighlight.value = updatedHighlight;
 
-        console.log('saving highlight', currentHighlight.value);
+        console.log("saving highlight", currentHighlight.value);
 
         // update in local highlights array
-        const index = highlights.value.findIndex(h => h.id === currentHighlight.value.id);
+        const index = highlights.value.findIndex(
+            (h) => h.id === currentHighlight.value.id,
+        );
         if (index !== -1) {
             highlights.value[index] = currentHighlight.value;
         }
 
         // send update to server
         try {
-            await axios.put(`/highlights/${currentHighlight.value.id}`, updatedHighlight);
+            await axios.put(
+                `/highlights/${currentHighlight.value.id}`,
+                updatedHighlight,
+            );
             console.log("Highlight updated successfully");
         } catch (error) {
             console.error("Error updating highlight:", error);
@@ -159,9 +165,27 @@ export function useHighlights(documentId: Ref<number, number>) {
         const selection = window.getSelection();
         selection?.removeAllRanges();
 
-
         showModal.value = false;
+    };
 
+    const deleteHighlight = async (highlightId: number): Promise<void> => {
+
+        // confirm deletion with the user
+        const confirmed = window.confirm(
+            "Are you sure you want to delete this highlight?",
+        );
+        if (!confirmed) return;
+
+        try {
+            await axios.delete(`/highlights/${highlightId}`);
+            // remove from local highlights array
+            highlights.value = highlights.value.filter(
+                (h) => h.id !== highlightId,
+            );
+            console.log("Highlight deleted successfully");
+        } catch (error) {
+            console.error("Error deleting highlight:", error);
+        }
     };
 
     return {
@@ -175,5 +199,6 @@ export function useHighlights(documentId: Ref<number, number>) {
         focusCurrentHighlight,
         editHighlight,
         saveHighlight,
+        deleteHighlight,
     };
 }

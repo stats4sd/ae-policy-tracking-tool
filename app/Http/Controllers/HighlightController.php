@@ -69,6 +69,8 @@ class HighlightController extends Controller
      */
     public function destroy(Highlight $highlight)
     {
-        //
+        $highlight->delete();
+
+        return response()->json(null, 204);
     }
 }

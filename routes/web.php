@@ -21,7 +21,7 @@ Route::group(
         Route::get('/policy-documents/{document}/highlights', [\App\Http\Controllers\PolicyDocumentController::class, 'getHighlights']);
 
         Route::apiResource('highlights', \App\Http\Controllers\HighlightController::class)->only([
-            'store','update'
+            'store', 'update', 'destroy',
         ]);
 
         Route::apiResource('recommendations', \App\Http\Controllers\RecommendationController::class)->only([
