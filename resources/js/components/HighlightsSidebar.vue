@@ -4,13 +4,13 @@
             class="mb-4 flex items-center mt-4 text-white px-4 justify-between"
         >
             <h5 class="text-lg font-semibold">Highlights</h5>
-            <a
-                href="#"
-                @click="showHighlightsSidebar = !showHighlightsSidebar"
-                class="text-sm hover:underline cursor-pointer"
-            >
-                {{ showHighlightsSidebar ? "Hide" : "Show" }}
-            </a>
+<!--            <a-->
+<!--                href="#"-->
+<!--                @click="showHighlightsSidebar = !showHighlightsSidebar"-->
+<!--                class="text-sm hover:underline cursor-pointer"-->
+<!--            >-->
+<!--                {{ showHighlightsSidebar ? "Hide" : "Show" }}-->
+<!--            </a>-->
         </div>
 
         <div
@@ -21,10 +21,7 @@
                 v-for="highlight in highlights"
                 :key="highlight.start_offset"
                 class="mt-2 p-2 w-full cursor-pointer hover:bg-[#e8e8e9] bg-gray-50"
-                @click="
-                    currentHighlightId = highlight.id;
-                    renderContent();
-                "
+                @click="currentHighlightId = highlight.id;"
             >
                 <div
                     class="p-2 rounded-md flex justify-between items-center text-sm"
@@ -60,7 +57,7 @@
                             :key="priorityAction"
                             class="mr-2"
                         >
-                            {{ priorityAction.id }}
+                            {{ priorityAction }}
                         </span>
                         <span
                             v-if="highlight.priority_actions.length === 0"
@@ -83,7 +80,7 @@ import { type Highlight } from "../composables/highlights";
 
 const props = defineProps({
     highlights: {
-        type: Array[Highlight],
+        type: Array<Highlight>,
         required: true,
     },
 });

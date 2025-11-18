@@ -18,6 +18,8 @@ export function usePriorityActions() {
 
     const recommendations = ref<Recommendation[]>([]);
 
+    const selectedPriorityActions = ref<string[]>([]); // array of selected priority action IDs
+
     const loadRecommendations = async (): Promise<void> => {
         try {
             const response = await fetch(`/recommendations`);
@@ -40,5 +42,6 @@ export function usePriorityActions() {
         recommendations,
         loadRecommendations,
         showRecommendationsSidebar,
+        selectedPriorityActions,
     }
 }

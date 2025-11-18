@@ -44,15 +44,24 @@
                                 class="mx-12 mb-2 justify-start items-center border-l border-gray-400 pl-4"
                             >
                                 <small class="text-gray-600">
-                                    Priority Actions:
-                                    <ul class="list-disc list-inside">
-                                        <checkbox
-                                            v-for="action in recommendation.priority_actions"
-                                            :key="action.id"
-                                        >
-                                            {{ action.id }}: {{ action.name }}
-                                        </checkbox>
-                                    </ul>
+                                    <FormKit type="form" :actions="false">
+                                        <FormKit
+                                            type="checkbox"
+                                            label=""
+                                            :options="
+                                                recommendation.priority_actions.map(
+                                                    (action) => ({
+                                                        label:
+                                                            action.id +
+                                                            ': ' +
+                                                            action.name,
+                                                        value: action.id,
+                                                    }),
+                                                )
+                                            "
+                                            v-model="selectedPriorityActions"
+                                        />
+                                    </FormKit>
                                 </small>
                             </div>
                         </div>
@@ -60,7 +69,7 @@
                 </div>
                 <!-- Collapsible Highlights Card -->
                 <HighlightsSidebar
-                    :highlights="highlights"
+                    :highlights="filteredHighlights"
                     v-model:currentHighlightId="currentHighlightId"
                     @edit-highlight="editHighlight"
                     @delete-highlight="deleteHighlight"
@@ -82,6 +91,20 @@
                     <button @click="nextSearch" class="theme_button mb-4">
                         Next
                     </button>
+                </div>
+                <div
+                    v-if="selectedPriorityActions.length > 0"
+                    class="flex items-center justify-center border-t border-gray-400"
+                >
+                    <div
+                        class="bg-yellow-100 text-yellow-800 text-sm px-4 py-2 rounded-md my-2"
+                    >
+                        Filtering highlights by selected Priority Actions:
+                        <b>{{ selectedPriorityActions.join(", ") }}</b>
+
+                        <br />To clear the filter, deselect all Priority Actions
+                        in the sidebar.
+                    </div>
                 </div>
                 <div class="flex align-middle items-center w-full">
                     <div
@@ -193,7 +216,14 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, onMounted, ref, watch } from "vue";
+import {
+    defineProps,
+    onMounted,
+    type Ref,
+    ref,
+    type UnwrapRef,
+    watch,
+} from "vue";
 
 import HighlightModal from "./HighlightModal.vue";
 import { useHighlights } from "@/composables/highlights.ts";
@@ -201,6 +231,8 @@ import { useLiveSearch } from "@/composables/liveSearch.ts";
 import { useTextSelection } from "@/composables/selectText.ts";
 import { usePriorityActions } from "@/composables/priorityActions.ts";
 import HighlightsSidebar from "@/components/HighlightsSidebar.vue";
+
+import { type Highlight } from "@/composables/highlights.ts";
 
 interface Props {
     documentId: number;
@@ -229,6 +261,9 @@ const loadDocumentContent = async (id: number): Promise<void> => {
 onMounted(async (): Promise<void> => {
     await loadDocumentContent(documentId.value);
     await loadRecommendations();
+
+    updateFilteredHighlights();
+    renderContent();
 });
 
 const {
@@ -259,8 +294,34 @@ const {
     expandSelectionToSentenceBoundaries,
 } = useTextSelection();
 
-const { recommendations, loadRecommendations, showRecommendationsSidebar } =
-    usePriorityActions();
+const {
+    recommendations,
+    loadRecommendations,
+    showRecommendationsSidebar,
+    selectedPriorityActions,
+} = usePriorityActions();
+
+watch(
+    [currentSelection],
+    () => (showModal.value = currentSelection.value !== null),
+    { immediate: true },
+);
+
+
+
+// filter highlights by priority action
+const filteredHighlights = ref<Highlight[]>([]);
+
+const updateFilteredHighlights = () => {
+    filteredHighlights.value = highlights.value.filter((h) => {
+        if (selectedPriorityActions.value.length === 0) {
+            return true;
+        }
+        return h.priority_actions.some((id) =>
+            selectedPriorityActions.value.includes(id),
+        );
+    });
+};
 
 // Utility: escape html
 const escapeHtml = (s: string) =>
@@ -279,7 +340,7 @@ const renderContent = (): void => {
     }[] = [];
 
     // highlight events
-    highlights.value.forEach((h, idx) => {
+    filteredHighlights.value.forEach((h, idx) => {
         events.push({
             pos: h.start_offset,
             kind: "h_start",
@@ -421,15 +482,20 @@ watch(
     },
 );
 
+
 watch(
-    [currentSelection],
-    () => (showModal.value = currentSelection.value !== null),
+    [selectedPriorityActions],
+    () => {
+        updateFilteredHighlights();
+        renderContent();
+    },
     { immediate: true },
 );
 
-const saveHighlightEdits = (): void => {
 
-    console.log('hi')
+
+const saveHighlightEdits = (): void => {
+    console.log("hi");
 
     if (currentHighlight.value) {
         // editing existing highlight
