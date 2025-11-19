@@ -12,6 +12,8 @@ export interface Highlight {
     end_offset: number;
     color: string;
     priority_actions: Array<string>;
+    automatic?: boolean;
+    verified?: boolean;
 }
 
 export function useHighlights(documentId: Ref<number, number>) {
@@ -128,6 +130,8 @@ export function useHighlights(documentId: Ref<number, number>) {
             );
             highlightPriorityActions.value =
                 currentHighlight.value.priority_actions;
+        } else {
+            highlightPriorityActions.value = [];
         }
     });
 

@@ -4,7 +4,7 @@ import {
 
 export function usePriorityActions() {
     interface PriorityAction {
-        id: number;
+        id: string;
         name: string;
         recommendation_id: number;
     }

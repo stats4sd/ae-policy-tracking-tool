@@ -4,7 +4,14 @@
             <!--    sidebar -->
             <div class="hidden xl:block flex-grow max-w-[35vw] mr-8 h-full">
                 <!-- Recommendations / Priority Actions Filter -->
-                <div class="flex flex-col bg-bright-title-block mb-2 min-w-96">
+                <div
+                    class="flex flex-col mb-2 min-w-96"
+                    :class="
+                        selectedPriorityActions.length > 0
+                            ? 'border-2 border-yellow-400 bg-yellow-800'
+                            : 'bg-bright-title-block'
+                    "
+                >
                     <div
                         class="flex items-center justify-between text-white py-4 px-4"
                     >
@@ -96,7 +103,6 @@
                     v-if="selectedPriorityActions.length > 0"
                     class="flex items-center justify-center border-t border-gray-400"
                 >
-                    ß
                     <div
                         class="bg-yellow-100 text-yellow-800 text-sm px-4 py-2 rounded-md my-2"
                     >
@@ -130,7 +136,15 @@
         <div class="w-full py-4 px-8 text-left rounded-md flex">
             <div class="flex-grow">
                 <h3 class="font-bold">
-                    <span class="text-blue-600">[Auto]</span> Selected Text
+                    <span
+                        v-if="
+                            currentHighlight?.automatic &&
+                            currentHighlight?.verified
+                        "
+                        class="text-blue-600"
+                        >[Auto]</span
+                    >
+                    Selected Text
                 </h3>
                 <div class="border-l-2 text-base border-black pl-6 mx-8 mt-6">
                     "{{
@@ -205,7 +219,12 @@
                 To change the selected text, please delete this highlight and
                 recreate it.
             </div>
-            <div class="w-full bg-gray-100 p-4 rounded-md mt-4 space-y-4">
+
+            <!-- If no priority actions are selected, show all of them -->
+            <div
+                v-if="selectedPriorityActions.length === 0"
+                class="w-full bg-gray-100 p-4 rounded-md mt-4 space-y-4"
+            >
                 <label class="block mb-4 font-semibold w-full"
                     >Add Priority Actions to this highlight</label
                 >
@@ -235,6 +254,18 @@
                         </FormKit>
                     </div>
                 </div>
+            </div>
+            <div v-else class="w-full bg-yellow-100 p-4 rounded-md mt-4">
+                <span class="font-bold">This highlight will be associated with the selected Priority
+                Actions:</span>
+                <ul class="list-none list-inside mt-2 text-center">
+                    <li
+                        v-for="actionId in selectedPriorityActions"
+                        :key="actionId"
+                    >
+                        {{ actionId }}: {{ recommendations.find((rec) => rec.priority_actions.some((pa) => pa.id === actionId))?.priority_actions.find((pa) => pa.id === actionId)?.name }}
+                    </li>
+                </ul>
             </div>
         </div>
         <div class="text-right py-4">
@@ -363,6 +394,15 @@ watch(
             showModal.value = true;
             currentHighlight.value = null;
             currentHighlightId.value = null;
+
+            // if priority actions are selected for filtering, pre-fill the form
+            if (selectedPriorityActions.value) {
+                highlightPriorityActions.value = [
+                    ...selectedPriorityActions.value,
+                ];
+            } else {
+                highlightPriorityActions.value = [];
+            }
         } else {
             // no selection
             showModal.value = false;
@@ -574,9 +614,11 @@ const saveHighlightEdits = async (): Promise<void> => {
         success = await saveHighlight();
     } else if (currentSelection.value) {
         // creating new highlight
-        success = confirmHighlight(currentSelection.value);
+        success = await confirmHighlight(currentSelection.value);
     }
 
-    showModal.value = false;
+    if (success) {
+        showModal.value = false;
+    }
 };
 </script>
