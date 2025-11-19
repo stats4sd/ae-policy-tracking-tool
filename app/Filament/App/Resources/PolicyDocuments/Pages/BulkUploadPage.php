@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\App\Pages;
+namespace App\Filament\App\Resources\PolicyDocuments\Pages;
 
-use App\Filament\App\Resources\PolicyDocumentResource;
+use App\Filament\App\Resources\PolicyDocuments\PolicyDocumentResource;
 use App\Models\PolicyDocument;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
@@ -13,25 +13,30 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 use Filament\Support\Exceptions\Halt;
 
-class BulkUploadPage extends Page implements HasSchemas, HasActions
+class BulkUploadPage extends ListRecords implements HasSchemas, HasActions
 {
     use InteractsWithSchemas;
     use InteractsWithActions;
 
+
+    protected static string $resource = PolicyDocumentResource::class;
+
+
     // declare array to store submitted form data
     public ?array $data = [];
-
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-arrow-up-on-square-stack';
 
     protected static ?string $title = 'Bulk Upload';
 
     // define custom page blade view file location
     protected string $view = 'filament.app.pages.bulk-upload-page';
+
+    protected static ?string $breadcrumb = 'Bulk Upload';
 
     public function mount(): void
     {

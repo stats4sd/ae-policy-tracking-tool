@@ -1,14 +1,16 @@
 <?php
 
-namespace App\Filament\App\Resources;
+namespace App\Filament\App\Resources\PolicyDocuments;
 
-use App\Filament\App\Resources\PolicyDocumentResource\Pages\CreatePolicyDocument;
-use App\Filament\App\Resources\PolicyDocumentResource\Pages\EditPolicyDocument;
-use App\Filament\App\Resources\PolicyDocumentResource\Pages\ListPolicyDocuments;
-use App\Filament\App\Resources\PolicyDocumentResource\Pages\ReviewPolicyDocument;
+use App\Filament\App\Resources\PolicyDocuments\Pages\BulkUploadPage;
+use App\Filament\App\Resources\PolicyDocuments\Pages\CreatePolicyDocument;
+use App\Filament\App\Resources\PolicyDocuments\Pages\EditPolicyDocument;
+use App\Filament\App\Resources\PolicyDocuments\Pages\ListPolicyDocuments;
+use App\Filament\App\Resources\PolicyDocuments\Pages\ReviewPolicyDocument;
 use App\Models\PolicyDocument;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
@@ -74,12 +76,15 @@ class PolicyDocumentResource extends Resource
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('url')
-                    ->url(fn (PolicyDocument $record) => $record->url)
-                    ->searchable(),
                 TextColumn::make('comments')
                     ->limit(200)
                     ->searchable(),
+                TextColumn::make('automatic_highlights_count')
+                    ->label('# Automatic Search results')
+                    ->counts('automaticHighlights'),
+                TextColumn::make('verified_highlights_count')
+                    ->label('# Verified Highlights')
+                    ->counts('verifiedHighlights'),
 
             ])
             ->filters([
@@ -91,6 +96,9 @@ class PolicyDocumentResource extends Resource
                     ->url(fn (PolicyDocument $record): string => static::getUrl('review', ['record' => $record]))
                     ->icon('heroicon-o-eye'),
                 EditAction::make(),
+                DeleteAction::make()
+                    ->requiresConfirmation()
+                    ->modalDescription('Any highlights and extracts will be permanently deleted. Do not do this unless you have uploaded the wrong document and need to remove it from the assessment.'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
@@ -113,6 +121,7 @@ class PolicyDocumentResource extends Resource
             'create' => CreatePolicyDocument::route('/create'),
             'edit' => EditPolicyDocument::route('/{record}/edit'),
             'review' => ReviewPolicyDocument::route('/{record}/review'),
+            'bulk-upload' => BulkUploadPage::route('/bulk-upload'),
         ];
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\App\Resources;
+namespace App\Filament\App\Resources\StatementResource;
 
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
@@ -31,7 +31,7 @@ class StatementResource extends Resource
                 Select::make('type_id')
                                 ->label('Type')
                                 ->options(Type::all()->pluck('name','id')->toArray())
-                                ->required(),  
+                                ->required(),
                 Textarea::make('name')
                                 ->rows(4)
                                 ->label('Statement')

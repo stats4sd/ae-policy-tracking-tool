@@ -6,7 +6,7 @@ use Filament\Actions\Action;
 use App\Filament\Admin\Resources\AssessmentResource;
 use App\Filament\App\Resources\AssessmentPriorityActionResource;
 use App\Filament\App\Resources\CountryResource;
-use App\Filament\App\Resources\StatementResource;
+use App\Filament\App\Resources\StatementResource\StatementResource;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;

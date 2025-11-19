@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\App\Resources\PolicyDocumentResource\Pages;
+namespace App\Filament\App\Resources\PolicyDocuments\Pages;
 
-use App\Filament\App\Resources\PolicyDocumentResource;
+use App\Filament\App\Resources\PolicyDocuments\PolicyDocumentResource;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 

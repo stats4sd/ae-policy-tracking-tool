@@ -2,7 +2,7 @@
 
 namespace App\Filament\App\Resources\StatementResource\Pages;
 
-use App\Filament\App\Resources\StatementResource;
+use App\Filament\App\Resources\StatementResource\StatementResource;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 

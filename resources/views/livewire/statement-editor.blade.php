@@ -14,7 +14,7 @@
                 <p>{{ $statement->name }}</p>
                 <div class="flex flex-wrap gap-2">
                     @foreach($statement->policyDocuments as $policyDocument)
-                        <x-filament::badge :href="\App\Filament\App\Resources\PolicyDocumentResource::getUrl('index')" tag="a">
+                        <x-filament::badge :href="\App\Filament\App\Resources\PolicyDocuments\PolicyDocumentResource::getUrl('index')" tag="a">
                             {{ $policyDocument->name }}
                         </x-filament::badge>
                     @endforeach

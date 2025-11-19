@@ -103,9 +103,9 @@
                         <p class="text-sm text-gray-800">
                             <super>4</super>
                             CFS 2021. Agroecological and other innovative approaches for sustainable agriculture and
-                            food systems that enhance food security and nutrition.<br />
+                            food systems that enhance food security and nutrition.<br/>
                             <a href="https://www.fao.org/fileadmin/templates/cfs/Docs2021/Documents/Policy_Recommendations_Agroecology_other_Innovations/2021_Agroecological_and_other_innovations_EN.pdf"
-                                style="word-break: break-all">https://www.fao.org/fileadmin/templates/cfs/Docs2021/Documents/Policy_Recommendations_Agroecology_other_Innovations/2021_Agroecological_and_other_innovations_EN.pdf</a>.
+                               style="word-break: break-all">https://www.fao.org/fileadmin/templates/cfs/Docs2021/Documents/Policy_Recommendations_Agroecology_other_Innovations/2021_Agroecological_and_other_innovations_EN.pdf</a>.
                         </p>
                     </div>
                 </div>
@@ -155,14 +155,14 @@
                                             @if ($priorityAction->statements->where('type_id', $type->id)->pluck('policyDocuments')->flatten()->count() > 0)
                                                 <h4 class="text-sm font-bold">References:</h4>
                                                 @foreach ($priorityAction->statements->where('type_id', $type->id)->pluck('policyDocuments')->flatten()->pluck('name', 'id')->unique() ?? [] as $policyId => $policy)
-                                                    <a href="{{ \App\Filament\App\Resources\PolicyDocumentResource::getUrl('index') }}"
-                                                        class="underline text-blue-800 block">{{ $policy }};</a>
+                                                    <a href="{{ \App\Filament\App\Resources\PolicyDocuments\PolicyDocumentResource::getUrl('index') }}"
+                                                       class="underline text-blue-800 block">{{ $policy }};</a>
                                                 @endforeach
                                             @endif
                                         </div>
                                     </div>
                                     @if (!$loop->last)
-                                        <hr />
+                                        <hr/>
                                     @endif
                                 @endforeach
                             </div>

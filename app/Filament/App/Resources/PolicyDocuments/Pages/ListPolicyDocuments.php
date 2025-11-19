@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\App\Resources\PolicyDocumentResource\Pages;
+namespace App\Filament\App\Resources\PolicyDocuments\Pages;
 
 use Filament\Actions\CreateAction;
-use App\Filament\App\Resources\PolicyDocumentResource;
+use App\Filament\App\Resources\PolicyDocuments\PolicyDocumentResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -18,7 +18,13 @@ class ListPolicyDocuments extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            Actions\Action::make('bulk-upload')
+                ->label('Bulk Upload')
+                ->url(PolicyDocumentResource::getUrl('bulk-upload'))
+                ->icon('heroicon-o-arrow-up-on-square'),
+            CreateAction::make()
+            ->label('Add New')
+            ->icon('heroicon-o-plus'),
         ];
     }
 }

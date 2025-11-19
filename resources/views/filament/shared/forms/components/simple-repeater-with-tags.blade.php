@@ -23,26 +23,26 @@
 
 <x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
     <div
-            x-data="{}"
-            {{
-                $attributes
-                    ->merge($getExtraAttributes(), escape: false)
-                    ->class(['fi-fo-simple-repeater grid gap-y-4'])
-            }}
+        x-data="{}"
+        {{
+            $attributes
+                ->merge($getExtraAttributes(), escape: false)
+                ->class(['fi-fo-simple-repeater grid gap-y-4'])
+        }}
     >
         @if (count($containers))
             <ul>
                 <x-filament::grid
-                        :default="$getGridColumns('default')"
-                        :sm="$getGridColumns('sm')"
-                        :md="$getGridColumns('md')"
-                        :lg="$getGridColumns('lg')"
-                        :xl="$getGridColumns('xl')"
-                        :two-xl="$getGridColumns('2xl')"
-                        :wire:end.stop="'mountFormComponentAction(\'' . $statePath . '\', \'reorder\', { items: $event.target.sortable.toArray() })'"
-                        x-sortable
-                        :data-sortable-animation-duration="$getReorderAnimationDuration()"
-                        class="gap-4"
+                    :default="$getGridColumns('default')"
+                    :sm="$getGridColumns('sm')"
+                    :md="$getGridColumns('md')"
+                    :lg="$getGridColumns('lg')"
+                    :xl="$getGridColumns('xl')"
+                    :two-xl="$getGridColumns('2xl')"
+                    :wire:end.stop="'mountFormComponentAction(\'' . $statePath . '\', \'reorder\', { items: $event.target.sortable.toArray() })'"
+                    x-sortable
+                    :data-sortable-animation-duration="$getReorderAnimationDuration()"
+                    class="gap-4"
                 >
                     @foreach ($containers as $uuid => $item)
                         @php
@@ -62,9 +62,9 @@
                         @endphp
 
                         <li
-                                wire:key="{{ $this->getId() }}.{{ $item->getStatePath() }}.{{ $field::class }}.item"
-                                x-sortable-item="{{ $uuid }}"
-                                class="fi-fo-repeater-item simple flex justify-start gap-x-3"
+                            wire:key="{{ $this->getId() }}.{{ $item->getStatePath() }}.{{ $field::class }}.item"
+                            x-sortable-item="{{ $uuid }}"
+                            class="fi-fo-repeater-item simple flex justify-start gap-x-3"
                         >
                             <div class="flex-1">
                                 {{ $item }}
@@ -73,7 +73,7 @@
                             @if($tags = $item->getFlatComponents()[0]?->getTags())
                                 <div class="w-20 flex items-start gap-y-1 flex-col">
                                     @foreach($tags as $tag)
-                                        <x-filament::badge :href="\App\Filament\App\Resources\PolicyDocumentResource::getUrl('index')" tag="a" tooltip="{{ $tag }}">
+                                        <x-filament::badge :href="\App\Filament\App\Resources\PolicyDocuments\PolicyDocumentResource::getUrl('index')" tag="a" tooltip="{{ $tag }}">
                                             {{ $tag }}
                                         </x-filament::badge>
                                     @endforeach
@@ -90,13 +90,13 @@
 
                                     @if ($moveUpActionIsVisible || $moveDownActionIsVisible)
                                         <li
-                                                class="flex items-center justify-center"
+                                            class="flex items-center justify-center"
                                         >
                                             {{ $moveUpAction }}
                                         </li>
 
                                         <li
-                                                class="flex items-center justify-center"
+                                            class="flex items-center justify-center"
                                         >
                                             {{ $moveDownAction }}
                                         </li>

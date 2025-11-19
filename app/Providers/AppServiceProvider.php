@@ -5,7 +5,7 @@ namespace App\Providers;
 use Eloquent;
 use Filament\Auth\Pages\Login;
 use App\Filament\App\Pages\RegisterAssessment;
-use App\Filament\App\Resources\PolicyDocumentResource\Pages\ReviewPolicyDocument;
+use App\Filament\App\Resources\PolicyDocuments\Pages\ReviewPolicyDocument;
 use Filament\Support\Facades\FilamentView;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Support\Facades\Blade;
