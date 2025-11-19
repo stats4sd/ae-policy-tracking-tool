@@ -32,6 +32,7 @@ export function useTextSelection() {
             return;
         }
 
+
         const selectedText = selection.toString();
 
         console.log(selectedText);

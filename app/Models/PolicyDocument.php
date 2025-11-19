@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Jobs\ExtractPolicyDocumentContent;
+use App\Jobs\PolicyDocumentExtractContent;
 use App\Models\Assessment;
 use App\Enums\TextDirection;
 use App\Models\PriorityAction;

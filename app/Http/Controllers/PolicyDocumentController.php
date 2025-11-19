@@ -24,6 +24,8 @@ class PolicyDocumentController extends Controller
                     'start_offset' => $highlight->start_offset,
                     'end_offset' => $highlight->end_offset,
                     'color' => $highlight->color,
+                'automatic' => $highlight->automatic,
+                'verified' => $highlight->verified,
                     'priority_actions' => $highlight->priorityActions
                         ->sortby('id')
                         ->pluck('id')

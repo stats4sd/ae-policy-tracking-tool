@@ -7,7 +7,7 @@ use Spatie\PdfToText\Pdf;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
-class ExtractPolicyDocumentContent implements ShouldQueue
+class PolicyDocumentExtractContent implements ShouldQueue
 {
     use Queueable;
 

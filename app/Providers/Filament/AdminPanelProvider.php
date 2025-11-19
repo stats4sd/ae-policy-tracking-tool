@@ -12,6 +12,7 @@ use App\Filament\Admin\Resources\AssessmentResource;
 use App\Filament\Admin\Resources\CountryResource;
 use App\Filament\Admin\Resources\PriorityActionResource;
 use App\Filament\Admin\Resources\RecommendationResource;
+use App\Filament\Admin\Resources\SearchTermResource;
 use App\Filament\Admin\Resources\TypeResource;
 use App\Filament\Admin\Resources\UserResource;
 use Filament\Http\Middleware\Authenticate;

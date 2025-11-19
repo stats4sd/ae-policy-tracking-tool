@@ -29,7 +29,7 @@
                     <div>
                         <strong>Highlight:</strong>
                         "{{
-                            highlight.extract.length > 50
+                            highlight.extract?.length > 50
                                 ? highlight.extract.slice(0, 100) + "..."
                                 : highlight.extract
                         }}"

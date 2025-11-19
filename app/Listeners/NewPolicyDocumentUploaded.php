@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Models\PolicyDocument;
-use App\Jobs\ExtractPolicyDocumentContent;
+use App\Jobs\PolicyDocumentExtractContent;
 use Spatie\MediaLibrary\MediaCollections\Events\MediaHasBeenAddedEvent;
 
 class NewPolicyDocumentUploaded
@@ -24,6 +24,6 @@ class NewPolicyDocumentUploaded
         }
 
         // Dispatch job to extract content
-        ExtractPolicyDocumentContent::dispatch($policyDocument);
+        PolicyDocumentExtractContent::dispatch($policyDocument);
     }
 }

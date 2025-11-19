@@ -1,5 +1,5 @@
 <template>
-    <div class="px-2 py-2 h-screen">
+    <div class="px-2 py-2">
         <div class="xl:flex">
             <!--    sidebar -->
             <div class="hidden xl:block flex-grow max-w-[35vw] mr-8 h-full">
@@ -108,7 +108,7 @@
                 </div>
                 <div class="flex align-middle items-center w-full">
                     <div
-                        class="border border-gray-300 ps-12 mx-auto rounded-md overflow-scroll h-[90vh]"
+                        class="border border-gray-300 ps-12 mx-auto rounded-md overflow-scroll h-[75vh]"
                         ref="contentDiv"
                     >
                         <pre id="document_text">
@@ -303,11 +303,18 @@ const {
 
 watch(
     [currentSelection],
-    () => (showModal.value = currentSelection.value !== null),
+    () => {
+        if (currentSelection.value) {
+            showModal.value = true;
+            currentHighlight.value = null;
+            currentHighlightId.value = null;
+        } else {
+            // no selection
+            showModal.value = false;
+        }
+    },
     { immediate: true },
 );
-
-
 
 // filter highlights by priority action
 const filteredHighlights = ref<Highlight[]>([]);
@@ -482,7 +489,6 @@ watch(
     },
 );
 
-
 watch(
     [selectedPriorityActions],
     () => {
@@ -491,8 +497,6 @@ watch(
     },
     { immediate: true },
 );
-
-
 
 const saveHighlightEdits = (): void => {
     console.log("hi");

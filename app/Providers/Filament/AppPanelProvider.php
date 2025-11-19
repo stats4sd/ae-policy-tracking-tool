@@ -2,34 +2,28 @@
 
 namespace App\Providers\Filament;
 
-use Filament\Pages\Dashboard;
-use Filament\Widgets\AccountWidget;
 use App\Filament\App\Pages\AssessmentOverview;
 use App\Filament\App\Pages\BulkUploadPage;
 use App\Filament\App\Pages\RegisterAssessment;
 use App\Filament\App\Pages\Review;
 use App\Filament\App\Resources\PolicyDocumentResource;
-use App\Filament\App\Resources\UserResource;
 use App\Models\Assessment;
-use Closure;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\NavigationItem;
 use Filament\Pages;
+use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Support\Facades\FilamentView;
-use Filament\View\PanelsRenderHook;
-use Filament\Widgets;
+use Filament\Widgets\AccountWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Stats4sd\FilamentTeamManagement\Filament\Auth\Login;
 use Stats4sd\FilamentTeamManagement\Filament\Auth\Register;
@@ -53,7 +47,7 @@ class AppPanelProvider extends PanelProvider
                 'warning' => '#FFB822',
                 'danger' => '#FF5B5B',
                 'info' => '#3490DC',
-                //'gray' => '#6B7280',
+                // 'gray' => '#6B7280',
             ])
             ->darkMode(false)
             ->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\\Filament\\App\\Resources')
@@ -95,8 +89,8 @@ class AppPanelProvider extends PanelProvider
                                 return auth()->user()->isAdmin();
                             }),
                         NavigationItem::make('Feedback Form')
-                        ->icon('heroicon-o-chat-bubble-oval-left-ellipsis')
-                        ->url('https://odk.stats4sd.org/-/single/tnBvd5N3wzFvqZigrV1gZ7CaLof0agi?st=laZ3QZZ5icr1DoKtm7KrKM0qUZCr52K81$1oXhEm5NjjKiaMVCrNeun9F2WBR1Kd'),
+                            ->icon('heroicon-o-chat-bubble-oval-left-ellipsis')
+                            ->url('https://odk.stats4sd.org/-/single/tnBvd5N3wzFvqZigrV1gZ7CaLof0agi?st=laZ3QZZ5icr1DoKtm7KrKM0qUZCr52K81$1oXhEm5NjjKiaMVCrNeun9F2WBR1Kd'),
                     ]);
             })
             ->topNavigation(true)

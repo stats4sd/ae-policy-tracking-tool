@@ -2,8 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Highlight;
 use App\Models\PolicyDocument;
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 use Spatie\PdfToText\Pdf;
 
 class TestConverter extends Command
@@ -28,40 +30,11 @@ class TestConverter extends Command
     public function handle()
     {
 
-        // //        // Spatie PDF to Text package usage
-        $text = (new Pdf)
-            ->setPdf(base_path('tests/Livestock_Policy_2006.pdf'))
-            ->addOptions([
-                '-layout', // maintain original physical layout
-                // '-htmlmeta', // include a simple HTML header with metadata
-                '-nopgbrk', // do not insert page breaks between pages
-            ])
-            ->text();
+        $policyDocument = PolicyDocument::find(1);
 
-        // formatting adjustments
+        \App\Jobs\PolicyDocumentAutoSearch::dispatchSync($policyDocument);
 
-
-        // 1. convert multiple .s to fewer dots
-        $text = preg_replace('/\.{10,}/', '…', $text);
-
-        // 2. convert too many spaces
-        $text = preg_replace('/ {80,}/', '    ', $text);
-
-
-        // save to file for reference
-        file_put_contents(base_path('tests/Livestock_Policy_2006.txt'), $text);
-        //
-        //        $pandocIn = escapeshellarg(base_path('tests/Livestock_Policy_2006.txt'));
-        //        $pandocOut = escapeshellarg(base_path('tests/Livestock_Policy_2006.html'));
-        //
-        //        $pandocCommand = 'pandoc -f markdown+hard_line_breaks -t html -s -o '.$pandocOut.' '.$pandocIn;
-        //
-        //        shell_exec($pandocCommand);
-        //
-
-        // save to db
-        PolicyDocument::first()
-            ->update(['content' => $text]);
+        $this->info('done');
 
     }
 }
