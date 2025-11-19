@@ -43,10 +43,12 @@ export function useHighlights(documentId: Ref<number, number>) {
         }
     };
 
-    const confirmHighlight = async (currentSelection: Range): Promise<void> => {
+    const confirmHighlight = async (
+        currentSelection: Range,
+    ): Promise<boolean> => {
         console.log(currentSelection);
 
-        if (!currentSelection) return;
+        if (!currentSelection) return false;
         const start = currentSelection.startOffset;
         const end = currentSelection.endOffset;
         const offset = findOffsetAncestor(currentSelection.startContainer);
@@ -71,6 +73,7 @@ export function useHighlights(documentId: Ref<number, number>) {
 
         const selection = window.getSelection();
         selection?.removeAllRanges();
+        return true;
     };
 
     const saveHighlightToDatabase = async (
@@ -106,7 +109,9 @@ export function useHighlights(documentId: Ref<number, number>) {
         }
     };
 
-    const editHighlight = () => {
+    const editHighlight = (highlightId: number) => {
+        currentHighlightId.value = highlightId;
+
         showModal.value = true;
     };
 
@@ -116,25 +121,26 @@ export function useHighlights(documentId: Ref<number, number>) {
         currentHighlight.value =
             highlights.value.find((h) => h.id === newId) || null;
 
-        // populate priority actions form for editing
-
-        console.log(
-            "updating priority actions form",
-            currentHighlight.value.priority_actions,
-        );
-        highlightPriorityActions.value =
-            currentHighlight.value.priority_actions;
+        if (currentHighlight.value) {
+            console.log(
+                "updating priority actions form",
+                currentHighlight.value.priority_actions,
+            );
+            highlightPriorityActions.value =
+                currentHighlight.value.priority_actions;
+        }
     });
 
-    const saveHighlight = async (): Promise<void> => {
+    const saveHighlight = async (): Promise<boolean> => {
         const updatedHighlight: Highlight = {
             id: currentHighlight.value.id,
             policy_document_id: documentId.value,
             extract: currentHighlight.value.extract,
             start_offset: currentHighlight.value.start_offset,
             end_offset: currentHighlight.value.end_offset,
-            color: currentHighlight.value.color,
-            priority_actions: highlightPriorityActions.value, // only change
+            color: 'yellow', // verified highlight color
+            priority_actions: highlightPriorityActions.value,
+            verified: true // if the user is saving the highlight, it is considered verified
         };
 
         console.log(highlightPriorityActions.value);
@@ -160,16 +166,15 @@ export function useHighlights(documentId: Ref<number, number>) {
             console.log("Highlight updated successfully");
         } catch (error) {
             console.error("Error updating highlight:", error);
+            return false;
         }
 
         const selection = window.getSelection();
         selection?.removeAllRanges();
-
-        showModal.value = false;
+        return true;
     };
 
     const deleteHighlight = async (highlightId: number): Promise<void> => {
-
         // confirm deletion with the user
         const confirmed = window.confirm(
             "Are you sure you want to delete this highlight?",
@@ -182,10 +187,13 @@ export function useHighlights(documentId: Ref<number, number>) {
             highlights.value = highlights.value.filter(
                 (h) => h.id !== highlightId,
             );
+
             console.log("Highlight deleted successfully");
         } catch (error) {
             console.error("Error deleting highlight:", error);
         }
+
+        showModal.value = false;
     };
 
     return {

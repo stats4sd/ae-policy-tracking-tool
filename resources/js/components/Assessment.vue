@@ -96,6 +96,7 @@
                     v-if="selectedPriorityActions.length > 0"
                     class="flex items-center justify-center border-t border-gray-400"
                 >
+                    ß
                     <div
                         class="bg-yellow-100 text-yellow-800 text-sm px-4 py-2 rounded-md my-2"
                     >
@@ -126,16 +127,45 @@
         :title="currentHighlight ? 'Edit Highlight' : 'Save New Highlight'"
         v-on:close="showModal = false"
     >
-        <div class="w-full py-4 px-8 text-left rounded-md">
-            <h3 class="font-bold">Selected Text</h3>
-            <div class="border-l-2 text-base border-black pl-6 mx-8 mt-6">
-                {{
-                    currentHighlight
-                        ? currentHighlight.extract
-                        : currentSelection
-                          ? currentSelection.toString()
-                          : ""
-                }}"
+        <div class="w-full py-4 px-8 text-left rounded-md flex">
+            <div class="flex-grow">
+                <h3 class="font-bold">
+                    <span class="text-blue-600">[Auto]</span> Selected Text
+                </h3>
+                <div class="border-l-2 text-base border-black pl-6 mx-8 mt-6">
+                    "{{
+                        currentHighlight
+                            ? currentHighlight.extract
+                            : currentSelection
+                              ? currentSelection.toString()
+                              : ""
+                    }}"
+                </div>
+            </div>
+            <div class="text-right py-4 flex align-top justify-start">
+                <div class="flex flex-col space-y-2">
+                    <button
+                        @click="saveHighlightEdits"
+                        class="text-nowrap w-full text-xs mr-2 px-4 py-2 theme_button"
+                    >
+                        {{
+                            currentHighlight?.verified ||
+                            !currentHighlight?.automatic
+                                ? "Save Highlight"
+                                : "Confirm Highlight"
+                        }}
+                    </button>
+                    <button
+                        @click="deleteHighlight(currentHighlight.id)"
+                        v-if="
+                            currentHighlight?.automatic &&
+                            !currentHighlight?.verified
+                        "
+                        class="text-nowrap w-full text-xs px-4 py-2 theme_button !bg-red-600 hover:!bg-red-500"
+                    >
+                        Delete Highlight
+                    </button>
+                </div>
             </div>
         </div>
         <div class="p-4">
@@ -161,11 +191,20 @@
                     </button>
                 </ul>
             </div>
+            <div
+                v-else-if="
+                    currentHighlight.automatic && !currentHighlight.verified
+                "
+                class="w-full bg-gray-100 p-4 rounded-md mt-4"
+            >
+                This highlight was automatically created from the search terms
+                for one or more Priority Actions. It will not appear in the
+                final results until you confirm or delete it.
+            </div>
             <div v-else class="w-full bg-gray-100 p-4 rounded-md mt-4">
                 To change the selected text, please delete this highlight and
                 recreate it.
             </div>
-
             <div class="w-full bg-gray-100 p-4 rounded-md mt-4 space-y-4">
                 <label class="block mb-4 font-semibold w-full"
                     >Add Priority Actions to this highlight</label
@@ -206,10 +245,23 @@
                 Cancel
             </button>
             <button
-                @click="saveHighlightEdits"
-                class="mr-2 px-4 py-2 theme_button"
+                @click="deleteHighlight(currentHighlight.id)"
+                v-if="
+                    currentHighlight?.automatic && !currentHighlight?.verified
+                "
+                class="mr-2 text-nowrap text-xs px-4 py-2 theme_button !bg-red-600 hover:!bg-red-500"
             >
-                Confirm
+                Delete Highlight
+            </button>
+            <button
+                @click="saveHighlightEdits"
+                class="text-nowrap text-xs mr-2 px-4 py-2 theme_button"
+            >
+                {{
+                    currentHighlight?.verified || !currentHighlight?.automatic
+                        ? "Save Highlight"
+                        : "Confirm Highlight"
+                }}
             </button>
         </div>
     </HighlightModal>
@@ -243,6 +295,9 @@ const props = defineProps<Props>();
 const documentId = ref<number>(props.documentId);
 const documentContent = ref<string>("");
 const formattedDocumentContent = ref<string>("");
+
+// get contentDiv element by ref
+const contentDiv = ref<HTMLElement | null>(null);
 
 // Load document content from server
 const loadDocumentContent = async (id: number): Promise<void> => {
@@ -410,7 +465,7 @@ const renderContent = (): void => {
 
         // handle event
         if (ev.kind === "h_start") {
-            out += `<span class="doc-highlight" style="background-color: ${ev.color}" data-highlight-id="${ev.highlightId}">`;
+            out += `<span class="doc-highlight cursor-pointer" style="background-color: ${ev.color}" data-highlight-id="${ev.highlightId}">`;
             openStack.push("h");
         } else if (ev.kind === "s_start") {
             // differentiate current result visually
@@ -465,6 +520,19 @@ const renderContent = (): void => {
     } else if (currentHighlightId.value) {
         focusCurrentHighlight();
     }
+
+    // add event listeners to highlights for editing
+    setTimeout(() => {
+        const highlightElements = document.querySelectorAll(".doc-highlight");
+        highlightElements.forEach((el) => {
+            el.addEventListener("click", (event) => {
+                const highlightId = el.getAttribute("data-highlight-id");
+                if (highlightId) {
+                    editHighlight(parseInt(highlightId, 10));
+                }
+            });
+        });
+    }, 0);
 };
 
 // Re-render the content whenever:
@@ -490,23 +558,25 @@ watch(
 );
 
 watch(
-    [selectedPriorityActions],
+    [highlights, selectedPriorityActions],
     () => {
         updateFilteredHighlights();
         renderContent();
     },
-    { immediate: true },
+    { immediate: true, deep: true },
 );
 
-const saveHighlightEdits = (): void => {
+const saveHighlightEdits = async (): Promise<void> => {
     console.log("hi");
-
+    let success = false;
     if (currentHighlight.value) {
         // editing existing highlight
-        saveHighlight();
+        success = await saveHighlight();
     } else if (currentSelection.value) {
         // creating new highlight
-        confirmHighlight(currentSelection.value);
+        success = confirmHighlight(currentSelection.value);
     }
+
+    showModal.value = false;
 };
 </script>

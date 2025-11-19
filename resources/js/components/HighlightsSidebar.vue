@@ -20,14 +20,16 @@
             <div
                 v-for="highlight in highlights"
                 :key="highlight.start_offset"
-                class="mt-2 p-2 w-full cursor-pointer hover:bg-[#e8e8e9] bg-gray-50"
+                class="mt-2 p-2 w-full cursor-pointer"
+                :class="highlight.automatic ? 'hover:bg-blue-100 bg-blue-50' : `hover:bg-[#e8e8e9] bg-gray-50`"
                 @click="currentHighlightId = highlight.id;"
             >
                 <div
                     class="p-2 rounded-md flex justify-between items-center text-sm"
                 >
                     <div>
-                        <strong>Highlight:</strong>
+                        <span v-if="highlight.automatic" class="text-blue-600 font-semibold"
+                            >[AUTO]</span>
                         "{{
                             highlight.extract?.length > 50
                                 ? highlight.extract.slice(0, 100) + "..."
@@ -35,18 +37,18 @@
                         }}"
                     </div>
                     <div class="flex justify-end items-center gap-x-4">
-                        <div>
+                        <button>
                             <SlPencil
                                 class="cursor-pointer text-gray-600 hover:text-gray-800 w-8"
                                 @click.stop="editHighlight(highlight.id)"
                             />
-                        </div>
-                        <div>
+                        </button>
+                        <button>
                             <SlTrash
                                 class="cursor-pointer text-red-600 hover:text-red-800 mr-4"
                                 @click.stop="deleteHighlight(highlight.id)"
                             />
-                        </div>
+                        </button>
                     </div>
                 </div>
                 <div class="w-full justify-start items-center p-2">
@@ -95,9 +97,6 @@ const currentHighlightId = defineModel("currentHighlightId");
 const showHighlightsSidebar = ref(true);
 
 const editHighlight = (highlightId) => {
-    currentHighlightId.value = highlightId;
-
-    console.log("editing highlight with ID:", highlightId);
     emit("editHighlight", highlightId);
 };
 
