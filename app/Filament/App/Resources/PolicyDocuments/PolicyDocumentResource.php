@@ -26,9 +26,9 @@ class PolicyDocumentResource extends Resource
 {
     protected static ?string $model = PolicyDocument::class;
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-arrow-up';
 
-    protected static ?string $navigationLabel = 'Policy Documents';
+    protected static ?string $navigationLabel = '1. Search Documents';
 
     public static function form(Schema $schema): Schema
     {

@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Znck\Eloquent\Relations\BelongsToThrough;
 
 class Highlight extends Model
 {
     use SoftDeletes;
+    use \Znck\Eloquent\Traits\BelongsToThrough;
 
     protected static function booted()
     {
@@ -22,13 +24,29 @@ class Highlight extends Model
         });
     }
 
-    public function policyDocument(): BelongsTo
+    /** @return BelongsToThrough<Assessment, $this> */
+    public function assessment(): BelongsToThrough
     {
-        return $this->belongs(PolicyDocument::class);
+        return $this->belongsToThrough(Assessment::class, [PolicyDocument::class]);
     }
 
+    /** @return BelongsTo<PolicyDocument, $this> */
+    public function policyDocument(): BelongsTo
+    {
+        return $this->belongsTo(PolicyDocument::class);
+    }
+
+    /** @return BelongsToMany<PriorityAction, $this> */
     public function priorityActions(): BelongsToMany
     {
         return $this->belongsToMany(PriorityAction::class);
     }
+
+    /** @return BelongsToMany<SearchTerm, $this> */
+    public function searchTerms(): BelongsToMany
+    {
+        return $this->belongsToMany(SearchTerm::class);
+    }
+
+
 }

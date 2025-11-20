@@ -10,6 +10,7 @@
     "require": {
         "php": "^8.2",
         "althinect/filament-spatie-roles-permissions": "3.x-dev",
+        "defstudio/filament-column-length-limiter": "^4.0",
         "filament/filament": "^4.0",
         "filament/spatie-laravel-media-library-plugin": "^4.0",
         "guzzlehttp/guzzle": "^7.2",
@@ -22,8 +23,10 @@
         "spatie/laravel-permission": "^6.1",
         "spatie/pdf-to-text": "^1.54",
         "stats4sd/filament-team-management": "^4.0",
+        "staudenmeir/belongs-to-through": "^2.5",
         "symfony/http-client": "^7.1",
-        "symfony/mailgun-mailer": "^7.1"
+        "symfony/mailgun-mailer": "^7.1",
+        "watheqalshowaiter/filament-sticky-table-header": "^1.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\App\Pages\AssessmentOverview;
+use App\Filament\App\Resources\Highlights\HighlightResource;
 use App\Filament\App\Resources\PolicyDocuments\Pages\BulkUploadPage;
 use App\Filament\App\Pages\RegisterAssessment;
 use App\Filament\App\Pages\Review;
@@ -27,6 +28,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Stats4sd\FilamentTeamManagement\Filament\Auth\Login;
 use Stats4sd\FilamentTeamManagement\Filament\Auth\Register;
+use WatheqAlshowaiter\FilamentStickyTableHeader\StickyTableHeaderPlugin;
 
 class AppPanelProvider extends PanelProvider
 {
@@ -41,6 +43,7 @@ class AppPanelProvider extends PanelProvider
             ->login(Login::class)
             ->registration(Register::class)
             ->passwordReset()
+            ->globalSearch(false)
             ->colors([
                 'primary' => '#119E83',
                 'success' => '#17B978',
@@ -78,8 +81,9 @@ class AppPanelProvider extends PanelProvider
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 return $builder
                     ->items([
-                        ...AssessmentOverview::getNavigationItems(),
                         ...PolicyDocumentResource::getNavigationItems(),
+                        ...HighlightResource::getNavigationItems(),
+                        ...AssessmentOverview::getNavigationItems(),
                         ...Review::getNavigationItems(),
                         NavigationItem::make('Admin Panel')
                             ->icon('heroicon-o-shield-check')
@@ -93,6 +97,9 @@ class AppPanelProvider extends PanelProvider
                     ]);
             })
             ->topNavigation(true)
-            ->viteTheme('resources/css/filament/app/theme.css');
+            ->viteTheme('resources/css/filament/app/theme.css')
+            ->plugins([
+                StickyTableHeaderPlugin::make(),
+            ]);
     }
 }

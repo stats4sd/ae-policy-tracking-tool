@@ -49,9 +49,17 @@ class HighlightController extends Controller
     {
         // check priority actions exist
         $validated = $request->validate([
+            'verified' => 'boolean',
             'priority_actions' => 'array',
             'priority_actions.*' => 'exists:priority_actions,id',
         ]);
+
+
+        if (isset($validated['verified'])) {
+            $highlight->verified = $validated['verified'];
+            $highlight->save();
+        }
+
 
         $priorityActions = $validated['priority_actions'];
 
