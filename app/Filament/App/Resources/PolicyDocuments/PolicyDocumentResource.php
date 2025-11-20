@@ -9,7 +9,7 @@ use App\Filament\App\Resources\PolicyDocuments\Pages\ListPolicyDocuments;
 use App\Filament\App\Resources\PolicyDocuments\Pages\ReviewPolicyDocument;
 use App\Models\PolicyDocument;
 use Filament\Actions\Action;
-use Filament\Actions\BulkActionGroup;
+use Filament\Actions\BulkAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -101,9 +101,17 @@ class PolicyDocumentResource extends Resource
                     ->modalDescription('Any highlights and extracts will be permanently deleted. Do not do this unless you have uploaded the wrong document and need to remove it from the assessment.'),
             ])
             ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
+                BulkAction::make('redo_search')
+                    ->label('Re-run auto search')
+                    ->tooltip('Re-runs the automatic search for all selected documents. Any existing, unverified highlights will be deleted and new ones will be created. This may take some time depending on the number of documents selected.')
+                    ->action(function (BulkAction $action, \Illuminate\Support\Collection $selectedRecords) {
+                        foreach ($selectedRecords as $record) {
+                            $record->runAutomaticSearch();
+                        }
+                    }),
+
+                DeleteBulkAction::make(),
+
             ]);
     }
 

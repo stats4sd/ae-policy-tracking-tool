@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\Highlight;
 use App\Models\PolicyDocument;
+use Filament\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
@@ -36,17 +37,11 @@ class PolicyDocumentAutoSearch implements ShouldQueue
                 $content = $this->policyDocument->content;
                 $term = $searchTerm->phrase;
 
-                dump('working on term:' . $term);
-
                 while (($pos = mb_stripos($content, $term, $offset)) !== false) {
                     $matches[] = $pos;
                     $offset = $pos + strlen($term);
                     dump('found at offset:' . $offset);
                 }
-
-                dump('done with term:' . $term . ', total matches: ' . count($matches));
-
-                dump($matches);
 
                 // if matches found, create highlights with start_offset and end_offset
                 if (count($matches) > 0) {
@@ -92,5 +87,12 @@ class PolicyDocumentAutoSearch implements ShouldQueue
                 }
             }
         }
+
+
+        Notification::make('Auto Search Completed')
+            ->body('Automatic search for priority actions completed for document: ' . $this->policyDocument->name)
+            ->success()
+            ->send();
+        $this->policyDocument->stopProcessing();
     }
 }

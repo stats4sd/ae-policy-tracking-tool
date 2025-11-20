@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Jobs\PolicyDocumentAutoSearch;
 use App\Jobs\PolicyDocumentExtractContent;
 use App\Models\Assessment;
 use App\Enums\TextDirection;
@@ -58,4 +59,28 @@ class PolicyDocument extends Model implements HasMedia
             ->where('verified', true)
             ->orWhere('automatic', false);
     }
+
+
+    public function processing(): void
+    {
+//        $this->update([
+//            'processing' => true,
+//        ]);
+    }
+
+    public function stopProcessing()
+    {
+//        $this->update([
+//            'processing' => false,
+//        ]);
+    }
+
+    public function runAutomaticSearch()
+    {
+
+        $this->processing();
+
+        PolicyDocumentAutoSearch::dispatch($this);
+    }
+
 }

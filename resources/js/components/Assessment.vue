@@ -2,7 +2,7 @@
     <div class="px-2 py-2">
         <div class="xl:flex">
             <!--    sidebar -->
-            <div class="hidden xl:block flex-grow max-w-[35vw] mr-8 h-full">
+            <div class="hidden xl:block flex-grow max-w-[35vw] mr-8 h-[80vh] overflow-scroll">
                 <!-- Recommendations / Priority Actions Filter -->
                 <div
                     class="flex flex-col mb-2 min-w-96"
