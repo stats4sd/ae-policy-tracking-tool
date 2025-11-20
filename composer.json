@@ -24,6 +24,7 @@
         "spatie/pdf-to-text": "^1.54",
         "stats4sd/filament-team-management": "^4.0",
         "staudenmeir/belongs-to-through": "^2.5",
+        "staudenmeir/eloquent-has-many-deep": "^1.7",
         "symfony/http-client": "^7.1",
         "symfony/mailgun-mailer": "^7.1",
         "watheqalshowaiter/filament-sticky-table-header": "^1.0"

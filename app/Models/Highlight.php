@@ -48,5 +48,9 @@ class Highlight extends Model
         return $this->belongsToMany(SearchTerm::class);
     }
 
-
+    /** @return BelongsToMany<Statement, $this> */
+    public function summaryStatements(): BelongsToMany
+    {
+        return $this->belongsToMany(Statement::class);
+    }
 }
