@@ -52,7 +52,7 @@ class ListHighlights extends ListRecords
     {
         return $schema
             ->components([
-                Text::make('Filter By Priority Action'),
+
                 $this->getTabsContentComponent(),
                 RenderHook::make(PanelsRenderHook::RESOURCE_PAGES_LIST_RECORDS_TABLE_BEFORE),
                 EmbeddedTable::make(),

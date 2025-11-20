@@ -71,52 +71,6 @@ class HighlightsTable
                         $record->verified = true;
                         $record->save();
                     }),
-                Action::make('Add Summary Statement')
-                    ->visible(fn (Highlight $record) => $record->verified)
-                    ->fillForm(fn (Highlight $record) => [
-                        'selected_highlight' => [
-                            [
-                                'priority_actions' => $record->priorityActions->pluck('id')->join(', '),
-                                'extract' => $record->extract,
-                            ],
-                        ],
-                    ])
-                    ->schema(function (Highlight $record) {
-                        return [
-                            Shout::make('info')
-                                ->content('Highlighted extracts can be grouped and summarised into a single summary statement. The summary statements can then be included in the final report.')
-                                ->icon('heroicon-o-information-circle'),
-                            Repeater::make('selected_highlight')
-                                ->reorderable(false)
-                                ->addable(false)
-                                ->deletable(false)
-                                ->simple(Textarea::make('extract')->disabled()->autosize()),
-                            Shout::make('priority_action_info')
-                                ->visible(fn() => $record->priorityActions->count() === 1)
-                                ->content('This highlight is linked to Priority Action: '.$record->priorityActions->pluck('id')->join(', ').'. The summary statement will be assigned to this action.'),
-                            Select::make('priority_action_id')
-                                ->visible(fn() => $record->priorityActions->count() > 1)
-                                ->options($record->priorityActions->pluck('id', 'id')->toArray())
-                                ->label('Assign Priority Action')
-                                ->required(),
-                            Textarea::make('name')
-                                ->label('Enter Summary Statement')
-                                ->rows(3),
-                            Radio::make('type_id')
-                                ->options(Type::all()->pluck('name', 'id')->toArray())
-                                ->label('Statement Type')
-                                ->required(),
-                        ];
-                    })
-                    ->action(function ($record, array $data) {
-                         $statement = Statement::create([
-                            'name' => $data['name'],
-                            'type_id' => $data['type_id'],
-                            'priority_action_id' => $data['priority_action_id'],
-                        ]);
-
-                         $statement->highlights()->sync($record->id);
-                    }),
                 DeleteAction::make()
                     ->requiresConfirmation(),
             ])
