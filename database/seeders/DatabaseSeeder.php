@@ -26,6 +26,13 @@ class DatabaseSeeder extends Seeder
 
         if(env('APP_ENV') === 'local') {
             $this->call(TestSeeder::class);
-        }
+            $this->call(SearchTermsTableSeeder::class);
+        $this->call(PolicyDocumentsTableSeeder::class);
+        $this->call(StatementsTableSeeder::class);
+        $this->call(HighlightStatementTableSeeder::class);
+        $this->call(HighlightsTableSeeder::class);
+        $this->call(HighlightPriorityActionTableSeeder::class);
+        $this->call(HighlightSearchTermTableSeeder::class);
+    }
     }
 }
