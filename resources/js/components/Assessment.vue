@@ -267,6 +267,21 @@
                     </li>
                 </ul>
             </div>
+
+            <!-- Link highlight to 'type' -->
+            <div class="p-4">
+                <label class="block mb-2 font-semibold w-full"
+                    >How does this highlight link to the Priority Action(s) selected?</label
+                >
+                <select
+                    v-model="highlightTypeId"
+                    class="w-full border border-gray-300 rounded-md p-2"
+                >
+                    <option v-for="type in types" :key="type.id" :value="type.id">
+                        ( {{ type.score }} ) {{ type.name }}
+                    </option>
+                </select>
+            </div>
         </div>
         <div class="text-right py-4">
             <button
@@ -347,6 +362,7 @@ const loadDocumentContent = async (id: number): Promise<void> => {
 onMounted(async (): Promise<void> => {
     await loadDocumentContent(documentId.value);
     await loadRecommendations();
+    await loadTypes();
 
     updateFilteredHighlights();
     renderContent();
@@ -358,6 +374,7 @@ const {
     currentHighlightId,
     showModal,
     highlightPriorityActions,
+    highlightTypeId,
     confirmHighlight,
     focusCurrentHighlight,
     editHighlight,
@@ -619,6 +636,27 @@ const saveHighlightEdits = async (): Promise<void> => {
 
     if (success) {
         showModal.value = false;
+    }
+};
+
+interface Type {
+    id: string;
+    score: number;
+    name: string;
+}
+
+const types = ref<UnwrapRef<Type[]> | null>(null);
+
+const loadTypes = async (): Promise<void> => {
+    try {
+        const response = await fetch(`/types`);
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+        // types are not used directly here, but could be stored if needed
+        types.value = await response.json();
+    } catch (error) {
+        console.error("Error loading priority action types:", error);
     }
 };
 </script>

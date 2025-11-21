@@ -14,6 +14,7 @@ export interface Highlight {
     priority_actions: Array<string>;
     automatic?: boolean;
     verified?: boolean;
+    type_id: number;
 }
 
 export function useHighlights(documentId: Ref<number, number>) {
@@ -21,6 +22,7 @@ export function useHighlights(documentId: Ref<number, number>) {
     const currentHighlightId = ref<number | null>(null);
     const currentHighlight: Ref<Highlight> = ref<Highlight>(null);
     const highlightPriorityActions = ref<string[]>([]); // array of selected priority action IDs
+    const highlightTypeId = ref<number>(1); // default highlight type ID
 
     const showModal = ref<boolean>(false);
     const showHighlightsSidebar = ref<boolean>(false);
@@ -62,6 +64,7 @@ export function useHighlights(documentId: Ref<number, number>) {
             end_offset: end + offset,
             color: "yellow",
             priority_actions: highlightPriorityActions.value,
+            type_id: highlightTypeId.value
         };
 
         const newHighlightWithId: Highlight =
@@ -144,7 +147,8 @@ export function useHighlights(documentId: Ref<number, number>) {
             end_offset: currentHighlight.value.end_offset,
             color: 'yellow', // verified highlight color
             priority_actions: highlightPriorityActions.value,
-            verified: true // if the user is saving the highlight, it is considered verified
+            verified: true, // if the user is saving the highlight, it is considered verified
+            type_id: currentHighlight.value.type_id
         };
 
         console.log(highlightPriorityActions.value);
@@ -207,6 +211,7 @@ export function useHighlights(documentId: Ref<number, number>) {
         showModal,
         showHighlightsSidebar,
         highlightPriorityActions,
+        highlightTypeId,
         confirmHighlight,
         focusCurrentHighlight,
         editHighlight,

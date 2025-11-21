@@ -27,6 +27,7 @@ class HighlightsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->heading(fn($livewire) => $livewire->activeTab === 'all' ? 'All Highlights' : 'Highlights for Priority Action: '.$livewire->activeTab)
             ->paginationPageOptions([25, 50, 100, 200])
             ->defaultPaginationPageOption(50)
             ->groups([
