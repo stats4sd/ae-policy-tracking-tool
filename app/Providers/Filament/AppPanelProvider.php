@@ -81,6 +81,9 @@ class AppPanelProvider extends PanelProvider
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 return $builder
                     ->items([
+                        NavigationItem::make('0. Setup')
+                        ->icon('hergoicon-o-shield-check')
+                        ->url('/setup'),
                         ...PolicyDocumentResource::getNavigationItems(),
                         ...HighlightResource::getNavigationItems(),
                         ...AssessmentOverview::getNavigationItems(),
