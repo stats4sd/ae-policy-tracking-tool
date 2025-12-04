@@ -82,4 +82,12 @@ class Assessment extends Team implements HasName
     {
         return $this->title ?? $this->country->name;
     }
+
+    // Override Team model's invites relationship to use our Invite model, to enable email sending on invite creation
+
+    /** @return HasMany<Invite, $this> */
+    public function invites(): HasMany
+    {
+        return $this->hasMany(Invite::class, 'assessment_id', 'id');
+    }
 }

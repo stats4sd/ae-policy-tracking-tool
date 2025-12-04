@@ -3,10 +3,10 @@
 namespace App\Providers\Filament;
 
 use App\Filament\App\Pages\AssessmentOverview;
-use App\Filament\App\Resources\Highlights\HighlightResource;
-use App\Filament\App\Resources\PolicyDocuments\Pages\BulkUploadPage;
 use App\Filament\App\Pages\RegisterAssessment;
 use App\Filament\App\Pages\Review;
+use App\Filament\App\Pages\SetupPage;
+use App\Filament\App\Resources\Highlights\HighlightResource;
 use App\Filament\App\Resources\PolicyDocuments\PolicyDocumentResource;
 use App\Models\Assessment;
 use Filament\Http\Middleware\Authenticate;
@@ -81,9 +81,7 @@ class AppPanelProvider extends PanelProvider
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 return $builder
                     ->items([
-                        NavigationItem::make('0. Setup')
-                        ->icon('hergoicon-o-shield-check')
-                        ->url('/setup'),
+                        ...SetupPage::getNavigationItems(),
                         ...PolicyDocumentResource::getNavigationItems(),
                         ...HighlightResource::getNavigationItems(),
                         ...AssessmentOverview::getNavigationItems(),
