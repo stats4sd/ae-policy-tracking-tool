@@ -53,4 +53,10 @@ class Highlight extends Model
     {
         return $this->belongsToMany(Statement::class);
     }
+
+    /** @return BelongsTo<Type, $this> */
+    public function type(): BelongsTo
+    {
+        return $this->belongsTo(Type::class);
+    }
 }

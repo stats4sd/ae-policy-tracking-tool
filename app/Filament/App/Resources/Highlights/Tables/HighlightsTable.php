@@ -40,13 +40,23 @@ class HighlightsTable
             ->columns([
                 TextColumn::make('priorityActions.id')
                     ->label('Priority Action'),
+                TextColumn::make('searchTerms.phrase')
+                    ->badge()
+                    ->label('Auto-Matched keywords'),
+                TextColumn::make('type.score')
+                    ->badge()
+                    ->color(fn (Highlight $record) => match ($record->type->score ?? null) {
+                        null => 'secondary',
+                        2 => 'success',
+                        -1 => 'danger',
+                        default => 'info',
+                    })
+                    ->tooltip(fn (Highlight $record) => $record->type->name ?? 'No Score Assigned')
+                ->label('Score'),
                 TextColumn::make('extract')
                     ->searchable()
                     // macro setup in DefStudio\FilamentColumnLengthLimiter package
                     ->limitWithTooltip(),
-                TextColumn::make('searchTerms.phrase')
-                    ->badge()
-                    ->label('Auto-Matched keywords'),
                 IconColumn::make('verified')
                     ->boolean(),
             ])
