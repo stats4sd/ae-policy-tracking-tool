@@ -46,6 +46,7 @@ class PolicyDocumentController extends Controller
                         ->sortby('id')
                         ->pluck('id')
                         ->toArray(), // return only IDs for the Vue FormKit checkboxes.
+                    'type_id' => $highlight->type_id,
                 ];
             });
 

@@ -16,7 +16,7 @@
                         class="flex items-center justify-between text-white py-4 px-4"
                     >
                         <h5 class="text-lg font-semibold">
-                            Filter by Recommendations / Priority Actions
+                            Filter by Priority Actions
                         </h5>
                         <a
                             href="#"
@@ -71,6 +71,50 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Filter by Score -->
+                <div
+                    class="flex flex-col mb-4 min-w-[350px] bg-bright-title-block"
+                >
+                    <div
+                        class="flex items-center justify-between text-white py-4 px-4"
+                    >
+                        <h5 class="text-lg font-semibold">
+                            Filter by Highlight Score
+                        </h5>
+                    </div>
+                    <div
+                        class="flex flex-col justify-start bg-white items-center"
+                    >
+                        <div
+                            v-if="showTypeScoreSidebar"
+                            class="w-full cursor-pointer mt-2 p-4 hover:bg-[#e8e8e9] bg-gray-50"
+                        >
+                            <div
+                                class="p-2 rounded-md flex justify-between items-center"
+                            >
+                                <small class="text-gray-600">
+                                    <FormKit type="form" :actions="false">
+                                        <FormKit
+                                            type="checkbox"
+                                            label=""
+                                            :options="
+                                                types?.map(
+                                                    (type) => ({
+                                                        label: `( ${type.score} ) ${type.name}`,
+                                                        value: type.score,
+                                                    }),
+                                                ) ?? []
+                                            "
+                                            v-model="selectedTypeScore"
+                                        />
+                                    </FormKit>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Collapsible Highlights Card -->
                 <HighlightsSidebar
                     :highlights="filteredHighlights"
@@ -168,10 +212,6 @@
                     </button>
                     <button
                         @click="deleteHighlight(currentHighlight.id)"
-                        v-if="
-                            currentHighlight?.automatic &&
-                            !currentHighlight?.verified
-                        "
                         class="text-nowrap w-full text-xs px-4 py-2 theme_button !bg-red-600 hover:!bg-red-500"
                     >
                         Delete Highlight
@@ -216,6 +256,20 @@
                 recreate it.
             </div>
 
+            <!-- Link highlight to 'type' -->
+            <div class="p-4">
+
+                <select v-if="types" v-model="highlightTypeId" class="w-full bg-white border border-gray-300 rounded-md px-4 py-2">
+                    <option :value="null">Select Highlight Type</option>
+                    <option
+                        v-for="type in types"
+                        :key="type.id"
+                        :value="type.id"
+                    >
+                        ( {{ type.score }} ) {{ type.name }}
+                    </option>
+                </select>
+            </div>
             <!-- If no priority actions are selected, show all of them -->
             <div
                 v-if="selectedPriorityActions.length === 0"
@@ -251,6 +305,7 @@
                     </div>
                 </div>
             </div>
+
             <div v-else class="w-full bg-yellow-100 p-4 rounded-md mt-4">
                 <span class="font-bold">This highlight will be associated with the selected Priority
                 Actions:</span>
@@ -262,21 +317,6 @@
                         {{ actionId }}: {{ recommendations.find((rec) => rec.priority_actions.some((pa) => pa.id === actionId))?.priority_actions.find((pa) => pa.id === actionId)?.name }}
                     </li>
                 </ul>
-            </div>
-
-            <!-- Link highlight to 'type' -->
-            <div class="p-4">
-                <label class="block mb-2 font-semibold w-full"
-                    >How does this highlight link to the Priority Action(s) selected?</label
-                >
-                <select
-                    v-model="highlightTypeId"
-                    class="w-full border border-gray-300 rounded-md p-2"
-                >
-                    <option v-for="type in types" :key="type.id" :value="type.id">
-                        ( {{ type.score }} ) {{ type.name }}
-                    </option>
-                </select>
             </div>
         </div>
         <div class="text-right py-4">
@@ -424,6 +464,9 @@ watch(
     { immediate: true },
 );
 
+const showTypeScoreSidebar = ref<boolean>(true);
+const selectedTypeScore = ref<number[]>([]);
+
 // filter highlights by priority action
 const filteredHighlights = ref<Highlight[]>([]);
 
@@ -435,6 +478,13 @@ const updateFilteredHighlights = () => {
         return h.priority_actions.some((id) =>
             selectedPriorityActions.value.includes(id),
         );
+    });
+
+    filteredHighlights.value = highlights.value.filter((h) => {
+        if (selectedTypeScore.value.length === 0) {
+            return true;
+        }
+        return selectedTypeScore.value.includes(h.type_id) ;
     });
 };
 
@@ -611,7 +661,7 @@ watch(
 );
 
 watch(
-    [highlights, selectedPriorityActions],
+    [highlights, selectedPriorityActions, selectedTypeScore],
     () => {
         updateFilteredHighlights();
         renderContent();
@@ -636,7 +686,7 @@ const saveHighlightEdits = async (): Promise<void> => {
 };
 
 interface Type {
-    id: string;
+    id: number;
     score: number;
     name: string;
 }

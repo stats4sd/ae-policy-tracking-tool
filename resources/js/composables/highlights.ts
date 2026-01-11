@@ -30,7 +30,7 @@ export function useHighlights(documentId: Ref<number, number>) {
     const currentHighlightId = ref<number | null>(null);
     const currentHighlight: Ref<Highlight> = ref<Highlight>(null);
     const highlightPriorityActions = ref<string[]>([]); // array of selected priority action IDs
-    const highlightTypeId = ref<number>(1); // default highlight type ID
+    const highlightTypeId = ref<number| null>(null); // default highlight type ID
 
     const showModal = ref<boolean>(false);
     const showHighlightsSidebar = ref<boolean>(false);
@@ -141,10 +141,13 @@ export function useHighlights(documentId: Ref<number, number>) {
                 "updating priority actions form",
                 currentHighlight.value.priority_actions,
             );
+            console.log("updating type id form", currentHighlight.value.type_id)
             highlightPriorityActions.value =
                 currentHighlight.value.priority_actions;
+            highlightTypeId.value = currentHighlight.value.type_id;
         } else {
             highlightPriorityActions.value = [];
+            highlightTypeId.value = null;
         }
     });
 
@@ -157,10 +160,10 @@ export function useHighlights(documentId: Ref<number, number>) {
             end_offset: currentHighlight.value.end_offset,
             color: 'yellow', // verified highlight color
             search_terms: currentHighlight.value.search_terms,
-            serach_terms_list: currentHighlight.value.serach_terms_list,
+            search_terms_list: currentHighlight.value.search_terms_list,
             priority_actions: highlightPriorityActions.value,
-            verified: true, // if the user is saving the highlight, it is considered verified
-            type_id: currentHighlight.value.type_id
+            type_id: highlightTypeId.value, // if the user is saving the highlight, it is considered verified
+            verified: true,
         };
 
         console.log(highlightPriorityActions.value);

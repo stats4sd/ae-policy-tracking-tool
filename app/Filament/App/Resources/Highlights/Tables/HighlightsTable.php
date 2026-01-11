@@ -42,6 +42,7 @@ class HighlightsTable
                     ->label('Priority Action'),
                 TextColumn::make('extract')
                     ->searchable()
+                    // macro setup in DefStudio\FilamentColumnLengthLimiter package
                     ->limitWithTooltip(),
                 TextColumn::make('searchTerms.phrase')
                     ->badge()
@@ -59,7 +60,7 @@ class HighlightsTable
                     ->trueLabel('Only Verified')
                     ->falseLabel('Only Unverified'),
                 SelectFilter::make('searchTerms.phrase')
-                    ->label('Matched Autosearch Tearms')
+                    ->label('Matched Autosearch Terms')
                     ->relationship('searchTerms', 'phrase')
                     ->multiple(),
             ])

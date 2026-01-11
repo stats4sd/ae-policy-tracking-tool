@@ -52,14 +52,19 @@ class HighlightController extends Controller
             'verified' => 'boolean',
             'priority_actions' => 'array',
             'priority_actions.*' => 'exists:priority_actions,id',
+            'type_id' => 'nullable|exists:types,id',
         ]);
 
 
         if (isset($validated['verified'])) {
             $highlight->verified = $validated['verified'];
-            $highlight->save();
         }
 
+        if(isset($validated['type_id'])) {
+            $highlight->type_id = $validated['type_id'];
+        }
+
+        $highlight->save();
 
         $priorityActions = $validated['priority_actions'];
 
