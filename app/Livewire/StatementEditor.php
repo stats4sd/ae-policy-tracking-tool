@@ -2,30 +2,36 @@
 
 namespace App\Livewire;
 
-use Filament\Schemas\Schema;
-use Filament\Actions\Action;
-use App\Filament\Shared\Forms\Components\SimpleRepeaterWithTags;
-use App\Filament\Shared\Forms\Components\TextAreaWithTags;
-use App\Models\PolicyDocument;
 use App\Models\PriorityAction;
 use App\Models\Statement;
 use App\Models\Type;
+use DaveMills\FilamentTableInASchema\TableInSchema;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Facades\Filament;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Schemas\Components\Section;
+use Filament\Tables\Columns\Layout\Grid;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Grouping\Group;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Str;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
-class StatementEditor extends Component implements HasActions, HasForms
+class StatementEditor extends Component implements HasActions, HasForms, HasTable
 {
     use InteractsWithActions;
     use InteractsWithForms;
+    use InteractsWithTable;
 
     public Type $type;
 
@@ -42,7 +48,7 @@ class StatementEditor extends Component implements HasActions, HasForms
 
     public function mount(): void
     {
-        $this->form->fill($this->priorityAction->toArray());
+        // $this->form->fill($this->priorityAction->toArray());
     }
 
     public function render()
@@ -50,98 +56,75 @@ class StatementEditor extends Component implements HasActions, HasForms
         return view('livewire.statement-editor');
     }
 
-    public function form(Schema $schema): Schema
+    public function table(Table $table): Table
     {
-        return $schema
-            ->components([
-                SimpleRepeaterWithTags::make('statements')
-                    ->relationship(modifyQueryUsing: function (Builder $query) {
-                        $query->where('type_id', $this->type->id);
-                    })
-                    ->hiddenLabel()
-                    ->simple(
-                        TextareaWithTags::make('name')
-                            ->autosize()
-                            ->required()
-                            ->hiddenLabel()
-                            ->tags(function (TextAreaWithTags $component): array {
-
-                                // extract statement ID from state-path
-                                // statepath looks like data.statements.record-{id}.name
-                                $statement_id = collect(explode('.', $component->getStatePath()))
-                                    ->filter(fn ($part) => str_starts_with($part, 'record-'))
-                                    ->first();
-
-                                $statement_id = Str::replace('record-', '', $statement_id);
-                                $statement = Statement::find($statement_id);
-
-                                if ($statement) {
-                                    return $statement->policyDocuments->pluck('name')->toArray();
-                                }
-
-                                return [];
-
-                            }),
-                    )
-                    ->addActionLabel('Add Statement')
-                    ->deleteAction(fn (Action $action) => $action
-                        ->tooltip('Delete Statement')
-                        ->requiresConfirmation()
-                        ->size('xs')
-                        ->view(Action::LINK_VIEW)
-
-                    )
-                    ->extraItemActions([
-                        Action::make('link-to-policies')
-
-//                            ->hiddenLabel(false)
-                            ->view(Action::LINK_VIEW)
-                            ->size('xs')
-                            ->label('Policy Documents')
-                            ->icon('heroicon-o-link')
-                            ->tooltip('+ Link to Policy Document(s)')
-                            ->fillForm(function (array $arguments): array {
-                                $statement_id = explode('-', $arguments['item'])[1];
-                                $statement = Statement::find($statement_id);
-
-                                if ($statement) {
-                                    return [
-                                        'policyDocuments' => $statement->policyDocuments>pluck('id')->toArray(),
-                                    ];
-                                }
-
-                                return [];
-
-                            })
-                            ->schema([
-                                Select::make('policyDocuments')
-                                    ->multiple()
-                                    ->options(PolicyDocument::where('assessment_id', Filament::getTenant()->id)->get()->pluck('name', 'id')->toArray())
-                                    ->required(),
-                            ])
-                            ->action(function (array $arguments, array $data): void {
-
-                                // check the statement exists (argument should be in the format record-354)
-                                $statement_id = explode('-', $arguments['item'])[1];
-                                $statement = Statement::find($statement_id);
-
-                                if (! $statement) {
-                                    // create the statement so we can link it to the policy
-                                    $statement = Statement::create([
-                                        'assessment_id' => Filament::getTenant()->id,
-                                        'priority_action_id' => $this->priorityAction->id,
-                                        'type_id' => $this->type->id,
-                                        'name' => $this->data['statements'][$statement_id]['name'],
-                                    ]);
-                                }
-
-                                $statement->policyDocuments()->sync($data['policyDocuments']);
-
-                            }),
+        return $table
+            ->relationship(fn () => $this->priorityAction->statements()->where('type_id', $this->type->id))
+            ->paginated(false)
+            ->defaultGroup(Group::make('theme_id')
+                ->label('Theme')
+                ->getTitleFromRecordUsing(fn ($record) => $record->theme->name ?? 'No Theme')
+            )
+            ->columns([
+                Grid::make([
+                    'default' => 2,
+                ])
+                    ->schema([
+                        TextColumn::make('name')
+                            ->label('Statement')
+                            ->description(fn (Statement $record): string => 'Linked to '.$record->linked_policy_documents->count().' Policy Document(s)')
+                            ->wrap(),
                     ]),
             ])
-            ->statePath('data')
-            ->model($this->priorityAction);
+            ->recordActions([
+                EditAction::make()
+                    ->schema(fn (Statement $record) => [
+                        Section::make('Highlights')
+                            ->extraAttributes([
+                                'class' => 'compact-section',
+                            ])
+                            ->heading('Document Highlights Linked to This Statement')
+                            ->description('The highlights from policy documents that are linked to this statement are shown below. You can refer to these highlights when editing the statement to ensure it accurately reflects the content of the linked documents.')
+                            ->schema([
+                                TableInSchema::make()
+                                    ->table(fn (Table $table): Table => $table
+                                        ->paginated(false)
+                                        ->relationship(fn () => $record->highlights())
+                                        ->defaultGroup(Group::make('policy_document_id')
+                                            ->label('Policy Document')
+                                            ->getTitleFromRecordUsing(fn ($record) => $record->policyDocument->name ?? 'No Document')
+                                            ->collapsible()
+                                        )
+                                        ->columns([
+                                            Grid::make(1)
+                                                ->schema([
+                                                    TextColumn::make('extract')->label('Highlight')->wrap(),
+
+                                                ]),
+                                        ])
+
+                                    ),
+                            ])->columns(1),
+                        TextArea::make('name')
+                            ->label('Enter the statement'),
+                        Select::make('theme_id')
+                            ->label('Theme')
+                            ->relationship('theme', 'name', fn (Builder $query) => $query->where('assessment_id', Filament::getTenant()->id)->where('priority_action_id', $this->priorityAction->id))
+                            ->nullable(),
+                        Select::make('type_id')
+                            ->label('Type')
+                            ->default($this->type->id)
+                            ->relationship('type', 'name'),
+                    ])
+                    ->after(fn () => $this->dispatch('refreshStatementEditor')),
+                DeleteAction::make(),
+            ]);
+    }
+
+    #[On('refreshStatementEditor')]
+    public function refreshData()
+    {
+        $this->resetTable();
     }
 
     public function update(): void

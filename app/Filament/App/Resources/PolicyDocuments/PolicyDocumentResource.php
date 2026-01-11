@@ -8,6 +8,7 @@ use App\Filament\App\Resources\PolicyDocuments\Pages\EditPolicyDocument;
 use App\Filament\App\Resources\PolicyDocuments\Pages\ListPolicyDocuments;
 use App\Filament\App\Resources\PolicyDocuments\Pages\ReviewPolicyDocument;
 use App\Models\PolicyDocument;
+use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
 use Filament\Actions\DeleteAction;
@@ -19,6 +20,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\HtmlString;
@@ -27,7 +29,8 @@ class PolicyDocumentResource extends Resource
 {
     protected static ?string $model = PolicyDocument::class;
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-arrow-up';
+    protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedMagnifyingGlassPlus;
+    protected static string | BackedEnum | null $activeNavigationIcon = Heroicon::MagnifyingGlassPlus;
 
     protected static ?string $navigationLabel = '1. Search Documents';
 

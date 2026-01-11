@@ -6,15 +6,15 @@ use App\Filament\App\Clusters\Setup\SetupCluster;
 use App\Filament\App\Pages\AssessmentOverview;
 use App\Filament\App\Pages\RegisterAssessment;
 use App\Filament\App\Pages\Review;
-use App\Filament\App\Pages\SetupPage;
+use App\Filament\App\Pages\Summary;
 use App\Filament\App\Resources\Highlights\HighlightResource;
 use App\Filament\App\Resources\PolicyDocuments\PolicyDocumentResource;
 use App\Models\Assessment;
+use Filament\Actions\Action;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationBuilder;
-use Filament\Navigation\NavigationItem;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -86,18 +86,14 @@ class AppPanelProvider extends PanelProvider
                         ...PolicyDocumentResource::getNavigationItems(),
                         ...HighlightResource::getNavigationItems(),
                         ...AssessmentOverview::getNavigationItems(),
-                        ...Review::getNavigationItems(),
-                        NavigationItem::make('Admin Panel')
-                            ->icon('heroicon-o-shield-check')
-                            ->url('/admin')
-                            ->visible(function () {
-                                return auth()->user()->isAdmin();
-                            }),
-                        NavigationItem::make('Feedback Form')
-                            ->icon('heroicon-o-chat-bubble-oval-left-ellipsis')
-                            ->url('https://odk.stats4sd.org/-/single/tnBvd5N3wzFvqZigrV1gZ7CaLof0agi?st=laZ3QZZ5icr1DoKtm7KrKM0qUZCr52K81$1oXhEm5NjjKiaMVCrNeun9F2WBR1Kd'),
+                        ...Summary::getNavigationItems(),
                     ]);
             })
+            ->userMenuItems([
+                Action::make('Admin Panel')
+                    ->url('/admin')
+                    ->icon('heroicon-o-shield-check'),
+            ])
             ->topNavigation(true)
             ->viteTheme('resources/css/filament/app/theme.css')
             ->plugins([

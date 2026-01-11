@@ -49,7 +49,7 @@ class Highlight extends Model
     }
 
     /** @return BelongsToMany<Statement, $this> */
-    public function summaryStatements(): BelongsToMany
+    public function statements(): BelongsToMany
     {
         return $this->belongsToMany(Statement::class);
     }

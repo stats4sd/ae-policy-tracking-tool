@@ -8,6 +8,7 @@ use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Stats4sd\FilamentTeamManagement\Models\Team;
@@ -103,5 +104,11 @@ class Assessment extends Team implements HasName
     public function searchTerms(): HasMany
     {
         return $this->hasMany(SearchTerm::class);
+    }
+
+    /** @return HasManyThrough<Highlight, PolicyDocument, $this> */
+    public function highlights(): HasManyThrough
+    {
+        return $this->hasManyThrough(Highlight::class, PolicyDocument::class);
     }
 }
