@@ -39,7 +39,14 @@ class Summary extends Page
                         ->label('Export data to Excel')
                         ->action(function () {
 
-                            return Excel::download(new \App\Exports\AssessmentExport(Filament::getTenant()), 'assessment.xlsx');
+                            return Excel::download(new \App\Exports\AssessmentDataExport\AssessmentExport(Filament::getTenant()), 'assessment.xlsx');
+
+                        }),
+                    Action::make('export-document-summary')
+                        ->label('Export Document Summary')
+                        ->action(function () {
+
+                            return Excel::download(new \App\Exports\DocumentSummaryExport(Filament::getTenant()), 'document_summary.xlsx');
 
                         }),
 

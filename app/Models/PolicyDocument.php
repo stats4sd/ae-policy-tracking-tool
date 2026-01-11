@@ -7,6 +7,7 @@ use App\Jobs\PolicyDocumentExtractContent;
 use App\Models\Assessment;
 use App\Enums\TextDirection;
 use App\Models\PriorityAction;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\AssessmentPriorityAction;
@@ -81,6 +82,14 @@ class PolicyDocument extends Model implements HasMedia
         $this->processing();
 
         PolicyDocumentAutoSearch::dispatch($this);
+    }
+
+    /** @return Attribute<string, $this> */
+    public function yearString(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->year . ($this->end_year ? ' - ' . $this->end_year : ''),
+        );
     }
 
 }

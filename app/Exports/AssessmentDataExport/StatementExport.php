@@ -1,19 +1,18 @@
 <?php
 
-namespace App\Exports;
+namespace App\Exports\AssessmentDataExport;
 
+use App\Exports\ExportStyles;
 use App\Models\Assessment;
-use App\Models\PriorityAction;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class PriorityActionExport implements FromCollection, WithTitle, WithHeadings, WithStyles, WithColumnWidths, WithMapping
+class StatementExport implements FromCollection, WithTitle, WithHeadings, WithStyles, ShouldAutoSize, WithMapping
 {
     use ExportStyles;
 
@@ -21,13 +20,12 @@ class PriorityActionExport implements FromCollection, WithTitle, WithHeadings, W
     {
     }
 
-
     /**
     * @return \Illuminate\Support\Collection
     */
     public function collection()
     {
-        return PriorityAction::with(['statements', 'highlights', 'themes'])->get();
+        return $this->assessment->statements;
     }
 
         public function headings(): array
@@ -36,10 +34,10 @@ class PriorityActionExport implements FromCollection, WithTitle, WithHeadings, W
             'Assessment ID',
             'Assessment',
             'Priority Action',
-            'Priority Action Text',
-            '# Themes',
-            '# Statements',
-            '# Highlights',
+            'Type of Statement',
+            'Theme',
+            'Statement Text',
+            '# Supporting Highlights',
         ];
     }
 
@@ -47,36 +45,23 @@ class PriorityActionExport implements FromCollection, WithTitle, WithHeadings, W
     {
         return [
             $this->assessment->id,
-            $this->assessment->id,
-            $row->id,
+            $this->assessment->title,
+            $row->priorityAction->title,
+            $row->type->name,
+            $row->theme->name ?? 'N/A',
             $row->name,
-            $row->themes()->count(),
-            $row->statements()->count(),
             $row->highlights()->count(),
         ];
     }
 
     public function title(): string
     {
-        return 'Priority Actions';
+        return 'Summary Statements';
     }
 
 
     public function styles(Worksheet $sheet)
     {
         $sheet->getStyle('1')->applyFromArray($this->headingStyle());
-    }
-
-    public function columnWidths(): array
-    {
-        return [
-            'A' => 12,
-            'B' => 12,
-            'C' => 15,
-            'D' => 30,
-            'E' => 10,
-            'F' => 10,
-            'G' => 10,
-        ];
     }
 }

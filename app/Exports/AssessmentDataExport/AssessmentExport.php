@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Exports;
+namespace App\Exports\AssessmentDataExport;
 
 use App\Models\Assessment;
-use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
 class AssessmentExport implements WithMultipleSheets
