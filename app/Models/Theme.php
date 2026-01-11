@@ -25,4 +25,10 @@ class Theme extends Model
     {
         return $this->hasMany(Highlight::class);
     }
+
+    /** @return HasMany<Statement, $this> */
+    public function statements(): HasMany
+    {
+        return $this->hasMany(Statement::class);
+    }
 }

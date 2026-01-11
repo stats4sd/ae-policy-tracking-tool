@@ -59,4 +59,10 @@ class Highlight extends Model
     {
         return $this->belongsTo(Type::class);
     }
+
+    /** @return BelongsTo<Theme, $this> */
+    public function theme(): BelongsTo
+    {
+        return $this->belongsTo(Theme::class);
+    }
 }

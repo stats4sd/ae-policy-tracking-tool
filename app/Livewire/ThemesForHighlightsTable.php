@@ -16,6 +16,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class ThemesForHighlightsTable extends Component implements HasActions, HasSchemas, HasTable
@@ -33,7 +34,8 @@ class ThemesForHighlightsTable extends Component implements HasActions, HasSchem
             ->relationship(fn () => $this->priorityAction->themes())
             ->columns([
                 TextColumn::make('name')->label('Theme Name')->wrap(),
-                TextColumn::make('highlights_count')->counts('highlights')->label('Number of Highlights'),
+                TextColumn::make('highlights_count')->counts('highlights')->label('# of Highlights'),
+                TextColumn::make('statements_count')->counts('statements')->label('# of Summary Statements'),
             ])
             ->headerActions([
                 CreateAction::make()
@@ -56,5 +58,11 @@ class ThemesForHighlightsTable extends Component implements HasActions, HasSchem
     public function render()
     {
         return view('livewire.themes-for-highlights-table');
+    }
+
+    #[On('refreshTable')]
+    public function reloadTable()
+    {
+        $this->resetTable();
     }
 }

@@ -65,6 +65,14 @@ class ListHighlights extends ListRecords
         return $tabs;
     }
 
+    public function updatedActiveTab(): void
+    {
+        parent::updatedActiveTab();
+        $this->resetTable();
+        $this->removeTableFilters();
+        $this->js('window.location.reload()');
+    }
+
     public function content(Schema $schema): Schema
     {
         return $schema

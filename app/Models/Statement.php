@@ -68,4 +68,10 @@ class Statement extends Model
         return $this->belongsToMany(Highlight::class);
     }
 
+    /** @return BelongsTo<Theme, $this> */
+    public function theme(): BelongsTo
+    {
+        return $this->belongsTo(Theme::class);
+    }
+
 }
