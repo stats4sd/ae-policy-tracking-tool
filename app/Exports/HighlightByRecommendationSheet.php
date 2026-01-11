@@ -46,7 +46,7 @@ class HighlightByRecommendationSheet implements FromCollection, WithHeadings, Wi
                 'priority_action' => $priorityAction,
                 'type' => $highlight->type,
                 'policyDocument' => $highlight->policyDocument,
-                'extract' => $highlight->extract,
+                'extract' => $highlight->formatted_extract,
                 'automatic' => $highlight->automatic,
                 'theme' => $highlight->theme,
             ]);

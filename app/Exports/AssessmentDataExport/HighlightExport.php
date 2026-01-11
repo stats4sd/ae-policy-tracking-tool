@@ -45,7 +45,7 @@ class HighlightExport implements FromCollection, WithHeadings, WithMapping, With
         return [
             $row->policyDocument->name,
             $row->priorityActions()->pluck('priority_actions.id')->join(', '),
-            $row->extract,
+            $row->formatted_extract,
             $row->automatic ? 'Yes' : 'No',
             $row->theme?->name,
             $row->statements()->count(),
