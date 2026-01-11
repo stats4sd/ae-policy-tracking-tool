@@ -31,25 +31,32 @@ class Summary extends Page
                     ->type('info')
                     ->content('This summary page is currently under development and will be available in a future release. Currently, you may export the assessment data below.'),
                 Actions::make([
-                    Action::make('export-pdf')
-                        ->label('Export as PDF'),
-//                        ->url(route('export.pdf'))
-//                        ->openInNewTab(),//
                     Action::make('export-excel')
                         ->label('Export data to Excel')
                         ->action(function () {
 
-                            return Excel::download(new \App\Exports\AssessmentDataExport\AssessmentExport(Filament::getTenant()), 'assessment.xlsx');
+                            $filename = Filament::getTenant()->title.' - export.xlsx';
+
+                            return Excel::download(new \App\Exports\AssessmentDataExport\AssessmentExport(Filament::getTenant()), $filename);
 
                         }),
                     Action::make('export-document-summary')
-                        ->label('Export Document Summary')
+                        ->label('Export Document Summary By Recommendation')
                         ->action(function () {
 
-                            return Excel::download(new \App\Exports\DocumentSummaryExport(Filament::getTenant()), 'document_summary.xlsx');
+                            $filename = Filament::getTenant()->title.' - document summary.docx';
 
+                            return Excel::download(new \App\Exports\DocumentSummaryExport\DocumentSummaryExport(Filament::getTenant()), $filename);
                         }),
 
+                    Action::make('export-highlights')
+                        ->label('Export Highlights')
+                        ->action(function () {
+
+                            $filename = Filament::getTenant()->title.' - highlights.xlsx';
+
+                            return Excel::download(new \App\Exports\HighlightByRecommendationExport(Filament::getTenant()), $filename);
+                        }),
                 ]),
             ]);
     }

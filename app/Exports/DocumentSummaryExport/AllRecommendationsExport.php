@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Exports;
+namespace App\Exports\DocumentSummaryExport;
 
+use App\Exports\ExportStyles;
 use App\Models\Assessment;
 use App\Models\Recommendation;
 use App\Models\Type;

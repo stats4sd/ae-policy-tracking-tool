@@ -43,14 +43,12 @@ class HighlightExport implements FromCollection, WithHeadings, WithMapping, With
     public function map($row): array
     {
         return [
-            $this->assessment->id,
-            $this->assessment->title,
             $row->policyDocument->name,
+            $row->priorityActions()->pluck('priority_actions.id')->join(', '),
             $row->extract,
             $row->automatic ? 'Yes' : 'No',
             $row->theme?->name,
             $row->statements()->count(),
-            $row->priorityActions()->pluck('priority_actions.id')->join(', '),
         ];
     }
 
