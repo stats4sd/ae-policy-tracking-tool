@@ -11,10 +11,18 @@ export interface Highlight {
     start_offset: number;
     end_offset: number;
     color: string;
+    search_terms: Array<SearchTerm>;
+    search_terms_list: string;
     priority_actions: Array<string>;
     automatic?: boolean;
     verified?: boolean;
     type_id: number;
+}
+
+export interface SearchTerm {
+    id: number;
+    phrase: string;
+    priority_action_id: string,
 }
 
 export function useHighlights(documentId: Ref<number, number>) {
@@ -64,6 +72,8 @@ export function useHighlights(documentId: Ref<number, number>) {
             end_offset: end + offset,
             color: "yellow",
             priority_actions: highlightPriorityActions.value,
+            search_terms_list: "",
+            search_terms: [],
             type_id: highlightTypeId.value
         };
 
@@ -146,6 +156,8 @@ export function useHighlights(documentId: Ref<number, number>) {
             start_offset: currentHighlight.value.start_offset,
             end_offset: currentHighlight.value.end_offset,
             color: 'yellow', // verified highlight color
+            search_terms: currentHighlight.value.search_terms,
+            serach_terms_list: currentHighlight.value.serach_terms_list,
             priority_actions: highlightPriorityActions.value,
             verified: true, // if the user is saving the highlight, it is considered verified
             type_id: currentHighlight.value.type_id

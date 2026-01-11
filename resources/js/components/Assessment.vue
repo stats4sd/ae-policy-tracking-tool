@@ -2,10 +2,10 @@
     <div class="px-2 py-2">
         <div class="xl:flex">
             <!--    sidebar -->
-            <div class="hidden xl:block flex-grow max-w-[35vw] mr-8 h-[80vh] overflow-scroll">
+            <div class="hidden xl:block max-w-[35vw] mr-8 h-[80vh] overflow-scroll">
                 <!-- Recommendations / Priority Actions Filter -->
                 <div
-                    class="flex flex-col mb-2 min-w-96"
+                    class="flex flex-col mb-2 min-w-[350px]"
                     :class="
                         selectedPriorityActions.length > 0
                             ? 'border-2 border-yellow-400 bg-yellow-800'
@@ -58,10 +58,7 @@
                                             :options="
                                                 recommendation.priority_actions.map(
                                                     (action) => ({
-                                                        label:
-                                                            action.id +
-                                                            ': ' +
-                                                            action.name,
+                                                        label: action.code_and_short_name,
                                                         value: action.id,
                                                     }),
                                                 )
@@ -82,13 +79,13 @@
                     @delete-highlight="deleteHighlight"
                 />
             </div>
-            <div class="flex-grow">
+            <div class="grow lg:max-w-[65vw]">
                 <div class="w-full flex items-center" ref="contentAndSearch">
                     <input
                         v-model.lazy="searchQuery"
                         type="text"
                         placeholder="Full Text Search..."
-                        class="w-full bg-gray-100 border-0 px-4 py-2 rounded-xl mb-4 flex-grow-1"
+                        class="w-full bg-gray-100 border-0 px-4 py-2 rounded-xl mb-4 grow-1"
                         @keydown.tab.prevent="nextSearch"
                         @keydown.shift.tab.prevent="prevSearch"
                     />
@@ -134,7 +131,7 @@
         v-on:close="showModal = false"
     >
         <div class="w-full py-4 px-8 text-left rounded-md flex">
-            <div class="flex-grow">
+            <div class="grow">
                 <h3 class="font-bold">
                     <span
                         v-if="
@@ -211,8 +208,7 @@
                 "
                 class="w-full bg-gray-100 p-4 rounded-md mt-4"
             >
-                This highlight was automatically created from the search terms
-                for one or more Priority Actions. It will not appear in the
+                This highlight was automatically created from the search term(s): <b> {{ currentHighlight.search_terms_list }}</b>. It will not appear in the
                 final results until you confirm or delete it.
             </div>
             <div v-else class="w-full bg-gray-100 p-4 rounded-md mt-4">
@@ -330,7 +326,7 @@ import { useTextSelection } from "@/composables/selectText.ts";
 import { usePriorityActions } from "@/composables/priorityActions.ts";
 import HighlightsSidebar from "@/components/HighlightsSidebar.vue";
 
-import { type Highlight } from "@/composables/highlights.ts";
+import { type Highlight, type SearchTerm } from "@/composables/highlights.ts";
 
 interface Props {
     documentId: number;

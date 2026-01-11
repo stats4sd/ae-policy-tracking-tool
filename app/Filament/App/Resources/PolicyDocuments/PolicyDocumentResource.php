@@ -21,6 +21,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\HtmlString;
 
 class PolicyDocumentResource extends Resource
 {
@@ -75,15 +76,13 @@ class PolicyDocumentResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->searchable(),
-                TextColumn::make('comments')
-                    ->limit(200)
+                    ->wrap()
                     ->searchable(),
                 TextColumn::make('automatic_highlights_count')
-                    ->label('# Automatic Search results')
+                    ->label(fn() => new HtmlString('# Automatic <br/>Search results'))
                     ->counts('automaticHighlights'),
                 TextColumn::make('verified_highlights_count')
-                    ->label('# Verified Highlights')
+                    ->label(fn() => new HtmlString('# Verified<br/> Highlights'))
                     ->counts('verifiedHighlights'),
 
             ])
@@ -92,9 +91,9 @@ class PolicyDocumentResource extends Resource
             ])
             ->recordActions([
                 Action::make('review')
-                    ->label('Review Highlights')
+                    ->label('Search & Highlight')
                     ->url(fn (PolicyDocument $record): string => static::getUrl('review', ['record' => $record]))
-                    ->icon('heroicon-o-eye'),
+                    ->icon('heroicon-o-magnifying-glass'),
                 EditAction::make(),
                 DeleteAction::make()
                     ->requiresConfirmation()

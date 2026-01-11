@@ -83,6 +83,9 @@ class PolicyDocumentAutoSearch implements ShouldQueue
 
                         // attach highlight to priority action
                         $priorityAction->highlights()->syncWithoutDetaching([$highlight->id]);
+
+                        // attach highlight to the search term
+                        $highlight->searchTerms()->syncWithoutDetaching([$searchTerm->id]);
                     }
                 }
             }

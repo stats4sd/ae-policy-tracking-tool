@@ -3,14 +3,17 @@
         <div
             class="mb-4 flex items-center mt-4 text-white px-4 justify-between"
         >
-            <h5 class="text-lg font-semibold">Highlights</h5>
-<!--            <a-->
-<!--                href="#"-->
-<!--                @click="showHighlightsSidebar = !showHighlightsSidebar"-->
-<!--                class="text-sm hover:underline cursor-pointer"-->
-<!--            >-->
-<!--                {{ showHighlightsSidebar ? "Hide" : "Show" }}-->
-<!--            </a>-->
+            <div class="flex justify-between w-full">
+                <h5 class="text-lg font-semibold">Highlights</h5>
+                <div class="badge badge-info">{{ highlights.length }} entries found</div>
+            </div>
+            <!--            <a-->
+            <!--                href="#"-->
+            <!--                @click="showHighlightsSidebar = !showHighlightsSidebar"-->
+            <!--                class="text-sm hover:underline cursor-pointer"-->
+            <!--            >-->
+            <!--                {{ showHighlightsSidebar ? "Hide" : "Show" }}-->
+            <!--            </a>-->
         </div>
 
         <div
@@ -21,15 +24,22 @@
                 v-for="highlight in highlights"
                 :key="highlight.start_offset"
                 class="mt-2 p-2 w-full cursor-pointer"
-                :class="highlight.automatic ? 'hover:bg-blue-100 bg-blue-50' : `hover:bg-[#e8e8e9] bg-gray-50`"
-                @click="currentHighlightId = highlight.id;"
+                :class="
+                    highlight.automatic
+                        ? 'hover:bg-blue-100 bg-blue-50'
+                        : `hover:bg-[#e8e8e9] bg-gray-50`
+                "
+                @click="currentHighlightId = highlight.id"
             >
                 <div
                     class="p-2 rounded-md flex justify-between items-center text-sm"
                 >
                     <div>
-                        <span v-if="highlight.automatic" class="text-blue-600 font-semibold"
-                            >[AUTO]</span>
+                        <span
+                            v-if="highlight.automatic"
+                            class="text-blue-600 font-semibold"
+                            >[AUTO]</span
+                        >
                         "{{
                             highlight.extract?.length > 50
                                 ? highlight.extract.slice(0, 100) + "..."

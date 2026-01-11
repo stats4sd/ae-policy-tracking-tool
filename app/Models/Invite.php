@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use App\Mail\InviteUserToAssessment;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Notification;
 
 class Invite extends \Stats4sd\FilamentTeamManagement\Models\Invite
 {
@@ -24,7 +24,7 @@ class Invite extends \Stats4sd\FilamentTeamManagement\Models\Invite
 
             // show notification after sending invitation email to user
             // Note, this doesn't work for back-end or queued tasks, only for synchronous front-end operations
-            \Filament\Notifications\Notification::make()
+            Notification::make()
                 ->success()
                 ->title('Invitation Sent')
                 ->body('An email invitation has been successfully sent to '.$invite->email)

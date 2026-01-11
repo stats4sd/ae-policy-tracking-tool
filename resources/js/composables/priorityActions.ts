@@ -7,6 +7,7 @@ export function usePriorityActions() {
         id: string;
         name: string;
         recommendation_id: number;
+        code_and_short_name: string;
     }
 
     interface Recommendation {

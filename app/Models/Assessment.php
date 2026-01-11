@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Mail\InviteUserToAssessment;
-use Carbon\Carbon;
 use Filament\Models\Contracts\HasName;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,11 +15,20 @@ use Stats4sd\FilamentTeamManagement\Models\Team;
 // # Assessments are used as the tenant: users can join specific assessments, and the entire front-end is scoped to a specific assessment. Admin users should be able to access all assessments; other users may have access to one or multiple based on specific assignments.
 class Assessment extends Team implements HasName
 {
-    protected static function booted()
+    protected static function booted(): void
     {
         static::creating(function ($query) {
+            // set default status to 'In Progress' on creation
             $query->status = 'In Progress';
-            $query->title = $query->country->name.' '.Carbon::now()->year;
+        });
+
+        static::created(function (self $assessment) {
+
+            ray('Assessment created - adding default search terms');
+
+            // automatically give the assessment all the DefaultSearchTerms as new SearchTerm entries
+            $defaultTerms = DefaultSearchTerm::select(['phrase', 'priority_action_id'])->get()->toArray();
+            $assessment->searchTerms()->createMany($defaultTerms);
         });
     }
 
@@ -89,5 +97,11 @@ class Assessment extends Team implements HasName
     public function invites(): HasMany
     {
         return $this->hasMany(Invite::class, 'assessment_id', 'id');
+    }
+
+    /** @return HasMany<SearchTerm, $this> */
+    public function searchTerms(): HasMany
+    {
+        return $this->hasMany(SearchTerm::class);
     }
 }

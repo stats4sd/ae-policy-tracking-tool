@@ -13,7 +13,16 @@ return new class extends Migration
     {
         Schema::create('default_search_terms', function (Blueprint $table) {
             $table->id();
+            $table->string('priority_action_id');
+            // TODO: add _and_ support
+            $table->string('phrase');
             $table->timestamps();
+
+            $table->foreign('priority_action_id')->references('id')->on('priority_actions');
+        });
+
+        Schema::table('search_terms', function (Blueprint $table) {
+            $table->foreignId('assessment_id')->constrained();
         });
     }
 

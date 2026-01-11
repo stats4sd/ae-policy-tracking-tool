@@ -10,8 +10,9 @@
     "require": {
         "php": "^8.2",
         "althinect/filament-spatie-roles-permissions": "3.x-dev",
+        "dave-mills/filament-table-in-a-schema": "dev-main",
         "defstudio/filament-column-length-limiter": "^4.0",
-        "filament/filament": "^4.0",
+        "filament/filament": "^4.3.1",
         "filament/spatie-laravel-media-library-plugin": "^4.0",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^11.0",
@@ -86,5 +87,14 @@
         }
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "repositories": {
+        "dave-mills/filament-table-in-a-schema": {
+            "type": "path",
+            "url": "./packages/filament-table-in-a-schema",
+            "options": {
+                "symlink": true
+            }
+        }
+    }
 }
