@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
-class SearchTermsTableSeeder extends Seeder
+class DefaultSearchTermsSeeder extends Seeder
 {
 
     /**
@@ -14,12 +14,12 @@ class SearchTermsTableSeeder extends Seeder
      */
     public function run()
     {
-        
 
-        \DB::table('search_terms')->delete();
-        
-        \DB::table('search_terms')->insert(array (
-            0 => 
+
+        \DB::table('default_search_terms')->delete();
+
+        \DB::table('default_search_terms')->insert(array (
+            0 =>
             array (
                 'id' => 13,
                 'priority_action_id' => '1.1',
@@ -27,7 +27,7 @@ class SearchTermsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            1 => 
+            1 =>
             array (
                 'id' => 14,
                 'priority_action_id' => '1.1',
@@ -35,7 +35,7 @@ class SearchTermsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            2 => 
+            2 =>
             array (
                 'id' => 15,
                 'priority_action_id' => '1.1',
@@ -43,7 +43,7 @@ class SearchTermsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            3 => 
+            3 =>
             array (
                 'id' => 16,
                 'priority_action_id' => '1.2',
@@ -51,7 +51,7 @@ class SearchTermsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            4 => 
+            4 =>
             array (
                 'id' => 17,
                 'priority_action_id' => '1.2',
@@ -59,7 +59,7 @@ class SearchTermsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            5 => 
+            5 =>
             array (
                 'id' => 18,
                 'priority_action_id' => '1.2',
@@ -67,7 +67,7 @@ class SearchTermsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            6 => 
+            6 =>
             array (
                 'id' => 19,
                 'priority_action_id' => '1.3',
@@ -75,7 +75,7 @@ class SearchTermsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            7 => 
+            7 =>
             array (
                 'id' => 20,
                 'priority_action_id' => '1.3',
@@ -83,7 +83,7 @@ class SearchTermsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            8 => 
+            8 =>
             array (
                 'id' => 21,
                 'priority_action_id' => '1.3',
@@ -91,7 +91,7 @@ class SearchTermsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            9 => 
+            9 =>
             array (
                 'id' => 22,
                 'priority_action_id' => '1.4',
@@ -99,7 +99,7 @@ class SearchTermsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            10 => 
+            10 =>
             array (
                 'id' => 23,
                 'priority_action_id' => '1.4',
@@ -107,7 +107,7 @@ class SearchTermsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            11 => 
+            11 =>
             array (
                 'id' => 24,
                 'priority_action_id' => '1.4',
@@ -116,7 +116,7 @@ class SearchTermsTableSeeder extends Seeder
                 'updated_at' => NULL,
             ),
         ));
-        
-        
+
+
     }
 }

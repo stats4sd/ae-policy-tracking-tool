@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-//        Schema::create('themes', function (Blueprint $table) {
-//            $table->id();
-//            $table->foreignId('assessment_id')->constrained();
-//            $table->string('priority_action_id')->constrained();
-//            $table->string('name');
-//            $table->timestamps();
-//        });
+        Schema::create('themes', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('assessment_id')->constrained();
+            $table->string('priority_action_id')->constrained();
+            $table->string('name');
+            $table->timestamps();
+        });
     }
 
     /**

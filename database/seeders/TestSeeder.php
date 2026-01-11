@@ -33,9 +33,9 @@ class TestSeeder extends Seeder
             'name' => 'Kenya',
         ]);
 
-        // Question: when running command "php artisan migrate:fresh --seed", 
+        // Question: when running command "php artisan migrate:fresh --seed",
         // error occurred as below statement tries to insert record to teams table.
-        // 
+        //
         // I did below checking:
         // 1. check staging database, it does not have "teams" table
         // 2. Assessment model does not specify table name explicitly
@@ -45,12 +45,14 @@ class TestSeeder extends Seeder
             'country_id' => $country->id,
             'status' => 'In Progress',
             'finalised_at' => null,
+            'title' => 'Test Assessment 1',
         ]);
 
         $assessment2 = Assessment::create([
             'country_id' => $country2->id,
             'status' => 'In Progress',
             'finalised_at' => null,
+            'title' => 'Test Assessment 2',
         ]);
 
         $this->call(StatementSeeder::class);
