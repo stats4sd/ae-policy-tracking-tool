@@ -32,6 +32,7 @@ class PriorityActionResource extends Resource
                     ->disabledOn('edit'),
                 Forms\Components\Textarea::make('name')
                     ->rows(4),
+                Forms\Components\TextInput::make('short_name'),
             ]);
     }
 
@@ -41,6 +42,7 @@ class PriorityActionResource extends Resource
             ->columns([
                 TextColumn::make('id')->sortable(),
                 TextColumn::make('name')->wrap(),
+                TextColumn::make('short_name')->wrap(),
             ])
             ->filters([
                 //

@@ -21,7 +21,8 @@ class HighlightResource extends Resource
     protected static ?string $model = Highlight::class;
 
     protected static ?string $navigationLabel = "2. Review Highlights";
-    protected static string | BackedEnum | null $navigationIcon = "heroicon-o-check-badge";
+    protected static string | BackedEnum | null $navigationIcon = Heroicon::OutlinedCheckBadge;
+    protected static string | BackedEnum | null $activeNavigationIcon = Heroicon::CheckBadge;
 
     protected static ?string $recordTitleAttribute = 'extract';
 

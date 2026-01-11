@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -49,8 +50,40 @@ class Highlight extends Model
     }
 
     /** @return BelongsToMany<Statement, $this> */
-    public function summaryStatements(): BelongsToMany
+    public function statements(): BelongsToMany
     {
         return $this->belongsToMany(Statement::class);
+    }
+
+    /** @return BelongsTo<Type, $this> */
+    public function type(): BelongsTo
+    {
+        return $this->belongsTo(Type::class);
+    }
+
+    /** @return BelongsTo<Theme, $this> */
+    public function theme(): BelongsTo
+    {
+        return $this->belongsTo(Theme::class);
+    }
+
+
+    /** @return Attribute */
+    public function formattedExtract(): Attribute
+    {
+        return new Attribute(
+            get: function () {
+                $extract = $this->extract;
+
+                // Replace newlines with spaces
+                $extract = str_replace("\n", ' ', $extract);
+                $extract = str_replace("\r", ' ', $extract);
+
+                // Replace multiple spaces with a single space
+                $extract = preg_replace('/\s+/', ' ', $extract);
+
+                return trim($extract);
+            },
+        );
     }
 }

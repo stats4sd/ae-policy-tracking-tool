@@ -28,6 +28,7 @@ class HighlightRequest extends FormRequest
             'start_offset' => 'required|integer',
             'end_offset' => 'required|integer',
             'color' => 'required|string',
+            'type_id' => 'nullable|integer|exists:types,id',
         ];
     }
 }

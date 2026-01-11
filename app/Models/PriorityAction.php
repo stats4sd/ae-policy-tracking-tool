@@ -2,16 +2,15 @@
 
 namespace App\Models;
 
-use App\Models\PolicyDocument;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PriorityAction extends Model
 {
     protected $keyType = 'string';
+
     public $incrementing = false;
 
     public function recommendation(): BelongsTo
@@ -33,5 +32,11 @@ class PriorityAction extends Model
     public function searchTerms(): HasMany
     {
         return $this->hasMany(SearchTerm::class);
+    }
+
+    /** @return HasMany<Theme, $this> */
+    public function themes(): HasMany
+    {
+        return $this->hasMany(Theme::class);
     }
 }

@@ -2,10 +2,10 @@
     <div class="px-2 py-2">
         <div class="xl:flex">
             <!--    sidebar -->
-            <div class="hidden xl:block flex-grow max-w-[35vw] mr-8 h-[80vh] overflow-scroll">
+            <div class="hidden xl:block max-w-[35vw] mr-8 h-[80vh] overflow-scroll">
                 <!-- Recommendations / Priority Actions Filter -->
                 <div
-                    class="flex flex-col mb-2 min-w-96"
+                    class="flex flex-col mb-2 min-w-[350px]"
                     :class="
                         selectedPriorityActions.length > 0
                             ? 'border-2 border-yellow-400 bg-yellow-800'
@@ -16,7 +16,7 @@
                         class="flex items-center justify-between text-white py-4 px-4"
                     >
                         <h5 class="text-lg font-semibold">
-                            Filter by Recommendations / Priority Actions
+                            Filter by Priority Actions
                         </h5>
                         <a
                             href="#"
@@ -58,10 +58,7 @@
                                             :options="
                                                 recommendation.priority_actions.map(
                                                     (action) => ({
-                                                        label:
-                                                            action.id +
-                                                            ': ' +
-                                                            action.name,
+                                                        label: action.code_and_short_name,
                                                         value: action.id,
                                                     }),
                                                 )
@@ -74,6 +71,50 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Filter by Score -->
+                <div
+                    class="flex flex-col mb-4 min-w-[350px] bg-bright-title-block"
+                >
+                    <div
+                        class="flex items-center justify-between text-white py-4 px-4"
+                    >
+                        <h5 class="text-lg font-semibold">
+                            Filter by Highlight Score
+                        </h5>
+                    </div>
+                    <div
+                        class="flex flex-col justify-start bg-white items-center"
+                    >
+                        <div
+                            v-if="showTypeScoreSidebar"
+                            class="w-full cursor-pointer mt-2 p-4 hover:bg-[#e8e8e9] bg-gray-50"
+                        >
+                            <div
+                                class="p-2 rounded-md flex justify-between items-center"
+                            >
+                                <small class="text-gray-600">
+                                    <FormKit type="form" :actions="false">
+                                        <FormKit
+                                            type="checkbox"
+                                            label=""
+                                            :options="
+                                                types?.map(
+                                                    (type) => ({
+                                                        label: `( ${type.score} ) ${type.name}`,
+                                                        value: type.score,
+                                                    }),
+                                                ) ?? []
+                                            "
+                                            v-model="selectedTypeScore"
+                                        />
+                                    </FormKit>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Collapsible Highlights Card -->
                 <HighlightsSidebar
                     :highlights="filteredHighlights"
@@ -82,13 +123,13 @@
                     @delete-highlight="deleteHighlight"
                 />
             </div>
-            <div class="flex-grow">
+            <div class="grow lg:max-w-[65vw]">
                 <div class="w-full flex items-center" ref="contentAndSearch">
                     <input
                         v-model.lazy="searchQuery"
                         type="text"
                         placeholder="Full Text Search..."
-                        class="w-full bg-gray-100 border-0 px-4 py-2 rounded-xl mb-4 flex-grow-1"
+                        class="w-full bg-gray-100 border-0 px-4 py-2 rounded-xl mb-4 grow-1"
                         @keydown.tab.prevent="nextSearch"
                         @keydown.shift.tab.prevent="prevSearch"
                     />
@@ -134,7 +175,7 @@
         v-on:close="showModal = false"
     >
         <div class="w-full py-4 px-8 text-left rounded-md flex">
-            <div class="flex-grow">
+            <div class="grow">
                 <h3 class="font-bold">
                     <span
                         v-if="
@@ -171,10 +212,6 @@
                     </button>
                     <button
                         @click="deleteHighlight(currentHighlight.id)"
-                        v-if="
-                            currentHighlight?.automatic &&
-                            !currentHighlight?.verified
-                        "
                         class="text-nowrap w-full text-xs px-4 py-2 theme_button !bg-red-600 hover:!bg-red-500"
                     >
                         Delete Highlight
@@ -211,8 +248,7 @@
                 "
                 class="w-full bg-gray-100 p-4 rounded-md mt-4"
             >
-                This highlight was automatically created from the search terms
-                for one or more Priority Actions. It will not appear in the
+                This highlight was automatically created from the search term(s): <b> {{ currentHighlight.search_terms_list }}</b>. It will not appear in the
                 final results until you confirm or delete it.
             </div>
             <div v-else class="w-full bg-gray-100 p-4 rounded-md mt-4">
@@ -220,6 +256,20 @@
                 recreate it.
             </div>
 
+            <!-- Link highlight to 'type' -->
+            <div class="p-4">
+
+                <select v-if="types" v-model="highlightTypeId" class="w-full bg-white border border-gray-300 rounded-md px-4 py-2">
+                    <option :value="null">Select Highlight Type</option>
+                    <option
+                        v-for="type in types"
+                        :key="type.id"
+                        :value="type.id"
+                    >
+                        ( {{ type.score }} ) {{ type.name }}
+                    </option>
+                </select>
+            </div>
             <!-- If no priority actions are selected, show all of them -->
             <div
                 v-if="selectedPriorityActions.length === 0"
@@ -255,6 +305,7 @@
                     </div>
                 </div>
             </div>
+
             <div v-else class="w-full bg-yellow-100 p-4 rounded-md mt-4">
                 <span class="font-bold">This highlight will be associated with the selected Priority
                 Actions:</span>
@@ -315,7 +366,7 @@ import { useTextSelection } from "@/composables/selectText.ts";
 import { usePriorityActions } from "@/composables/priorityActions.ts";
 import HighlightsSidebar from "@/components/HighlightsSidebar.vue";
 
-import { type Highlight } from "@/composables/highlights.ts";
+import { type Highlight, type SearchTerm } from "@/composables/highlights.ts";
 
 interface Props {
     documentId: number;
@@ -347,6 +398,7 @@ const loadDocumentContent = async (id: number): Promise<void> => {
 onMounted(async (): Promise<void> => {
     await loadDocumentContent(documentId.value);
     await loadRecommendations();
+    await loadTypes();
 
     updateFilteredHighlights();
     renderContent();
@@ -358,6 +410,7 @@ const {
     currentHighlightId,
     showModal,
     highlightPriorityActions,
+    highlightTypeId,
     confirmHighlight,
     focusCurrentHighlight,
     editHighlight,
@@ -411,6 +464,9 @@ watch(
     { immediate: true },
 );
 
+const showTypeScoreSidebar = ref<boolean>(true);
+const selectedTypeScore = ref<number[]>([]);
+
 // filter highlights by priority action
 const filteredHighlights = ref<Highlight[]>([]);
 
@@ -422,6 +478,13 @@ const updateFilteredHighlights = () => {
         return h.priority_actions.some((id) =>
             selectedPriorityActions.value.includes(id),
         );
+    });
+
+    filteredHighlights.value = highlights.value.filter((h) => {
+        if (selectedTypeScore.value.length === 0) {
+            return true;
+        }
+        return selectedTypeScore.value.includes(h.type_id) ;
     });
 };
 
@@ -598,7 +661,7 @@ watch(
 );
 
 watch(
-    [highlights, selectedPriorityActions],
+    [highlights, selectedPriorityActions, selectedTypeScore],
     () => {
         updateFilteredHighlights();
         renderContent();
@@ -619,6 +682,27 @@ const saveHighlightEdits = async (): Promise<void> => {
 
     if (success) {
         showModal.value = false;
+    }
+};
+
+interface Type {
+    id: number;
+    score: number;
+    name: string;
+}
+
+const types = ref<UnwrapRef<Type[]> | null>(null);
+
+const loadTypes = async (): Promise<void> => {
+    try {
+        const response = await fetch(`/types`);
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+        // types are not used directly here, but could be stored if needed
+        types.value = await response.json();
+    } catch (error) {
+        console.error("Error loading priority action types:", error);
     }
 };
 </script>

@@ -1,8 +1,8 @@
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
 
 
-@source '../../../../app/Filament';
-@source '../../../../resources/views/filament';
+@source '../../../../app/';
+@source '../../../../resources/views/';
 @source '../../../../resources/js/components';
 
 @theme {
@@ -70,4 +70,12 @@
 
 .formkit-inner {
     @apply pe-2;
+}
+
+.compact-section .fi-section-content {
+    @apply p-0!;
+}
+
+.compact-section .fi-section-content .fi-ta-ctn {
+    @apply rounded-none!;
 }

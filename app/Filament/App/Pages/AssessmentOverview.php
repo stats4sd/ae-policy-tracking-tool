@@ -7,6 +7,7 @@ use App\Models\AssessmentPriorityAction;
 use App\Models\PriorityAction;
 use App\Models\Recommendation;
 use App\Services\HelperService;
+use BackedEnum;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
@@ -14,6 +15,7 @@ use Filament\Facades\Filament;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Pages\Page;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\Layout\Panel;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
@@ -31,8 +33,9 @@ class AssessmentOverview extends Page
 
     protected string $view = 'filament.app.pages.assessment-overview';
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
-    protected static ?string $navigationLabel = 'Country Status';
+    protected static string | \BackedEnum | null $navigationIcon = Heroicon::OutlinedDocumentText;
+    protected static string | BackedEnum | null $activeNavigationIcon = Heroicon::DocumentText;
+    protected static ?string $navigationLabel = '3. Review Statements';
 
     public ?Assessment $assessment;
     public ?Collection $statementsByType;

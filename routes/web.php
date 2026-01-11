@@ -28,4 +28,8 @@ Route::group(
             'index', 'show',
         ]);
 
+        Route::apiResource('types', \App\Http\Controllers\TypeController::class)->only([
+            'index',
+        ]);
+
     });

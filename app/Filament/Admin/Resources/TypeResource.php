@@ -2,27 +2,25 @@
 
 namespace App\Filament\Admin\Resources;
 
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\TextInput;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Actions\EditAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\CreateAction;
-use App\Filament\Admin\Resources\TypeResource\Pages\ListTypes;
 use App\Filament\Admin\Resources\TypeResource\Pages\CreateType;
 use App\Filament\Admin\Resources\TypeResource\Pages\EditType;
+use App\Filament\Admin\Resources\TypeResource\Pages\ListTypes;
 use App\Models\Type;
-use Filament\Forms;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class TypeResource extends Resource
 {
     protected static ?string $model = Type::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationLabel = 'Statement Types';
 
@@ -31,6 +29,11 @@ class TypeResource extends Resource
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->required(),
+                TextInput::make('score')
+                    ->numeric()
+                    ->default(0)
+                    ->required(),
             ]);
     }
 
@@ -39,6 +42,7 @@ class TypeResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')->wrap(),
+                TextColumn::make('score')->label('Score'),
             ])
             ->filters([
                 //

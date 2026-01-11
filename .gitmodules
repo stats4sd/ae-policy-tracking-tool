@@ -1,0 +1,3 @@
+[submodule "packages/filament-table-in-a-schema"]
+	path = packages/filament-table-in-a-schema
+	url = git@github.com:dave-mills/filament-table-in-a-schema.git
