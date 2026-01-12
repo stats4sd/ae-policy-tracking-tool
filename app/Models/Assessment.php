@@ -25,8 +25,6 @@ class Assessment extends Team implements HasName
 
         static::created(function (self $assessment) {
 
-            ray('Assessment created - adding default search terms');
-
             // automatically give the assessment all the DefaultSearchTerms as new SearchTerm entries
             $defaultTerms = DefaultSearchTerm::select(['phrase', 'priority_action_id'])->get()->toArray();
             $assessment->searchTerms()->createMany($defaultTerms);
