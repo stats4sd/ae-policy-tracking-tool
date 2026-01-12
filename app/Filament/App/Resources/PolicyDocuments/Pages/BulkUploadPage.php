@@ -18,6 +18,7 @@ use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 use Filament\Support\Exceptions\Halt;
+use Illuminate\Support\Str;
 
 class BulkUploadPage extends ListRecords implements HasSchemas, HasActions
 {
@@ -95,6 +96,7 @@ class BulkUploadPage extends ListRecords implements HasSchemas, HasActions
                 $policyDocument = PolicyDocument::create([
                     'assessment_id' => Filament::getTenant()->id,
                     'name' => $document->getClientOriginalName(),
+                    'short_title' => Str::limit($document->getClientOriginalName(), 150),
                 ]);
 
                 // add the uploaded file to policy document model
