@@ -30,7 +30,8 @@ class PolicyDocumentResource extends Resource
     protected static ?string $model = PolicyDocument::class;
 
     protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedMagnifyingGlassPlus;
-    protected static string | BackedEnum | null $activeNavigationIcon = Heroicon::MagnifyingGlassPlus;
+
+    protected static string|BackedEnum|null $activeNavigationIcon = Heroicon::MagnifyingGlassPlus;
 
     protected static ?string $navigationLabel = '1. Search Documents';
 
@@ -42,9 +43,17 @@ class PolicyDocumentResource extends Resource
                     ->columnSpan(1)
                     ->schema([
                         TextInput::make('name')
+                            ->label('Enter the full name of the document')
                             ->required()
                             ->maxLength(400),
+                        TextInput::make('short_title')
+                            ->label('Enter a short title for easy reference')
+                            ->helperText('This will be used to identify the document in lists and summaries.')
+                            ->required()
+                            ->maxLength(200),
                         Textarea::make('comments')
+                            ->label('Additional Comments')
+                            ->helperText('Any additional information about the document that may be relevant to the assessment.')
                             ->rows(5),
                     ]),
 
@@ -82,10 +91,10 @@ class PolicyDocumentResource extends Resource
                     ->wrap()
                     ->searchable(),
                 TextColumn::make('automatic_highlights_count')
-                    ->label(fn() => new HtmlString('# Automatic <br/>Search results'))
+                    ->label(fn () => new HtmlString('# Automatic <br/>Search results'))
                     ->counts('automaticHighlights'),
                 TextColumn::make('verified_highlights_count')
-                    ->label(fn() => new HtmlString('# Verified<br/> Highlights'))
+                    ->label(fn () => new HtmlString('# Verified<br/> Highlights'))
                     ->counts('verifiedHighlights'),
 
             ])
