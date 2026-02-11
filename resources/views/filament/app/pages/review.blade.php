@@ -86,7 +86,7 @@
                             <super>1</super>
                             UNEP, 2016. Food Systems and Natural Resources.
                             <a
-                                href="https://https://wedocs.unep.org/20.500.11822/7592">https://wedocs.unep.org/20.500.11822/7592</a>.
+                                    href="https://https://wedocs.unep.org/20.500.11822/7592">https://wedocs.unep.org/20.500.11822/7592</a>.
                         </p>
                         <p class="text-sm text-gray-800">
                             <super>2</super>
@@ -120,7 +120,7 @@
                 </div>
 
                 <div
-                    class="bg-white border-x border-x-gray-300 border-b border-b-gray-300 pl-10 pr-6 lg:px-24 pt-8 pb-10">
+                        class="bg-white border-x border-x-gray-300 border-b border-b-gray-300 pl-10 pr-6 lg:px-24 pt-8 pb-10">
 
                     <div class="border-b-4 border-b-dark-title-block flex flex-col gap-4 pb-8">
                         <h4 class="text-lg">EMBEDDED PRINCIPLES</h4>
@@ -138,7 +138,7 @@
                                 <p class="font-light text-sm">{{ $priorityAction->name }}</p>
                             </div>
                             <div class="col-span-12 lg:col-span-9 space-y-6 text-sm">
-                                @foreach (\App\Models\Type::all() as $type)
+                                @foreach (\App\Models\Score::all() as $type)
                                     <div class="grid grid-cols-12">
                                         <div class="col-span-6 lg:col-span-9 space-y-2">
                                             <h4 @class([

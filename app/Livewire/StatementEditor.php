@@ -3,8 +3,8 @@
 namespace App\Livewire;
 
 use App\Models\PriorityAction;
+use App\Models\Score;
 use App\Models\Statement;
-use App\Models\Type;
 use DaveMills\FilamentTableInASchema\TableInSchema;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -33,7 +33,7 @@ class StatementEditor extends Component implements HasActions, HasForms, HasTabl
     use InteractsWithForms;
     use InteractsWithTable;
 
-    public Type $type;
+    public Score $type;
 
     public Collection $statements;
 

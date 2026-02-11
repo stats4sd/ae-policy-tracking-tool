@@ -7,7 +7,7 @@ use App\Models\Assessment;
 use App\Models\PolicyDocument;
 use App\Models\PriorityAction;
 use App\Models\Recommendation;
-use App\Models\Type;
+use App\Models\Score;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -28,7 +28,7 @@ class RecommendationExport implements FromCollection, ShouldAutoSize, WithHeadin
     public function collection(): Collection
     {
         // get list of each Priority Action x Type
-        $types = Type::all();
+        $types = Score::all();
         $documents = $this->assessment->policyDocuments;
 
         return $this->recommendation->priorityActions

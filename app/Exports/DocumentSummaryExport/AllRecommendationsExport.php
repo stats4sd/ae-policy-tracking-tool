@@ -6,7 +6,7 @@ use App\Exports\ExportStyles;
 use App\Models\Assessment;
 use App\Models\PolicyDocument;
 use App\Models\Recommendation;
-use App\Models\Type;
+use App\Models\Score;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -26,12 +26,12 @@ class AllRecommendationsExport implements FromCollection, ShouldAutoSize, WithHe
 
     public function collection(): Collection
     {
-        $types = Type::all();
+        $types = Score::all();
         $recommendations = Recommendation::all();
         $documents = $this->assessment->policyDocuments;
 
         return $recommendations->flatMap(function ($recommendation) use ($types, $documents) {
-            return $types->map(function (Type $type) use ($recommendation, $documents) {
+            return $types->map(function (Score $type) use ($recommendation, $documents) {
                 $documentCountRows = $documents->mapWithKeys(function (PolicyDocument $doc) use ($recommendation, $type) {
                     return [
                         $doc->highlights()

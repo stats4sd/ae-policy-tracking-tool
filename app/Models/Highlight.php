@@ -55,10 +55,10 @@ class Highlight extends Model
         return $this->belongsToMany(Statement::class);
     }
 
-    /** @return BelongsTo<Type, $this> */
+    /** @return BelongsTo<Score, $this> */
     public function type(): BelongsTo
     {
-        return $this->belongsTo(Type::class);
+        return $this->belongsTo(Score::class);
     }
 
     /** @return BelongsTo<Theme, $this> */
@@ -67,8 +67,6 @@ class Highlight extends Model
         return $this->belongsTo(Theme::class);
     }
 
-
-    /** @return Attribute */
     public function formattedExtract(): Attribute
     {
         return new Attribute(
