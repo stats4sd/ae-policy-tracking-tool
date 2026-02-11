@@ -39,7 +39,7 @@ class RecommendationExport implements FromCollection, ShouldAutoSize, WithHeadin
                         return [
                             $doc->short_title => $doc->highlights()
                                 ->whereHas('priorityActions', fn ($query) => $query->where('priority_actions.id', $pa->id))
-                                ->whereHas('type', fn ($query) => $query->where('types.id', $type->id))
+                                ->whereHas('score', fn ($query) => $query->where('types.id', $type->id))
                                 ->count(),
                         ];
                     });

@@ -36,7 +36,7 @@ class AllRecommendationsExport implements FromCollection, ShouldAutoSize, WithHe
                     return [
                         $doc->highlights()
                             ->whereHas('priorityActions', fn ($query) => $query->where('priority_actions.recommendation_id', $recommendation->id))
-                            ->whereHas('type', fn ($query) => $query->where('types.id', $type->id))
+                            ->whereHas('score', fn ($query) => $query->where('types.id', $type->id))
                             ->count(),
                     ];
                 });

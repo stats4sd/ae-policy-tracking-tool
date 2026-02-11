@@ -56,7 +56,7 @@ class Highlight extends Model
     }
 
     /** @return BelongsTo<Score, $this> */
-    public function type(): BelongsTo
+    public function score(): BelongsTo
     {
         return $this->belongsTo(Score::class);
     }

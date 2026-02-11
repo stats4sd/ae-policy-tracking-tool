@@ -53,7 +53,7 @@ class HighlightsTable
                     ->toggleable()
                     ->badge()
                     ->label('keywords'),
-                TextColumn::make('type.score')
+                TextColumn::make('score.score')
                     ->toggleable()
                     ->badge()
                     ->color(fn (Highlight $record) => match ($record->type->score ?? null) {
