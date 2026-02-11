@@ -4,8 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\Assessment;
 use App\Models\PriorityAction;
+use App\Models\Score;
 use App\Models\Statement;
-use App\Models\Type;
 use Illuminate\Database\Seeder;
 
 class StatementSeeder extends Seeder
@@ -17,7 +17,7 @@ class StatementSeeder extends Seeder
     {
         Statement::destroy(Statement::all()->pluck('id')->toArray());
 
-        $types = Type::all();
+        $types = Score::all();
 
         foreach (Assessment::all() as $assessment) {
 

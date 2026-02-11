@@ -4,8 +4,8 @@ namespace App\Filament\App\Resources\Highlights\Tables;
 
 use App\Filament\App\Resources\Highlights\Pages\ListHighlights;
 use App\Models\Highlight;
+use App\Models\Score;
 use App\Models\Statement;
-use App\Models\Type;
 use Awcodes\Shout\Components\Shout;
 use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
@@ -184,7 +184,7 @@ class HighlightsTable
                             ->rows(3),
 
                         Radio::make('type_id')
-                            ->options(Type::all()->mapWithKeys(fn (Type $type) => [$type->id => '( '.$type->score.' ) '.$type->name])->toArray())
+                            ->options(Score::all()->mapWithKeys(fn (Score $type) => [$type->id => '( '.$type->score.' ) '.$type->name])->toArray())
                             ->label('How does this statement link to the priority action? (Select the most appropriate type)')
                             ->required(),
                     ])

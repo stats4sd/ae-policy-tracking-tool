@@ -5,13 +5,13 @@ namespace App\Providers\Filament;
 use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
 use Althinect\FilamentSpatieRolesPermissions\Resources\PermissionResource;
 use Althinect\FilamentSpatieRolesPermissions\Resources\RoleResource;
-use App\Filament\Admin\Resources\AePrincipleResource;
-use App\Filament\Admin\Resources\AssessmentResource;
-use App\Filament\Admin\Resources\CountryResource;
-use App\Filament\Admin\Resources\PriorityActionResource;
-use App\Filament\Admin\Resources\RecommendationResource;
-use App\Filament\Admin\Resources\TypeResource;
-use App\Filament\Admin\Resources\UserResource;
+use App\Filament\Admin\Resources\AePrinciples\AePrincipleResource;
+use App\Filament\Admin\Resources\Assessments\AssessmentResource;
+use App\Filament\Admin\Resources\Countries\CountryResource;
+use App\Filament\Admin\Resources\PriorityActions\PriorityActionResource;
+use App\Filament\Admin\Resources\Recommendations\RecommendationResource;
+use App\Filament\Admin\Resources\Scores\ScoreResource;
+use App\Filament\Admin\Resources\Users\UserResource;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationBuilder;
@@ -78,7 +78,7 @@ class AdminPanelProvider extends PanelProvider
                                 ...AePrincipleResource::getNavigationItems(),
                                 ...RecommendationResource::getNavigationItems(),
                                 ...PriorityActionResource::getNavigationItems(),
-                                ...TypeResource::getNavigationItems(),
+                                ...ScoreResource::getNavigationItems(),
                                 ...CountryResource::getNavigationItems(),
                             ]),
                         NavigationGroup::make('User Management')

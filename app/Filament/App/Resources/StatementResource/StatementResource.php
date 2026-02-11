@@ -4,8 +4,8 @@ namespace App\Filament\App\Resources\StatementResource;
 
 use App\Filament\App\Resources\StatementResource\Pages\EditStatement;
 use App\Filament\App\Resources\StatementResource\RelationManagers\EvidenceRelationManager;
+use App\Models\Score;
 use App\Models\Statement;
-use App\Models\Type;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Resources\Resource;
@@ -24,7 +24,7 @@ class StatementResource extends Resource
             ->components([
                 Select::make('type_id')
                     ->label('Type')
-                    ->options(Type::all()->pluck('name', 'id')->toArray())
+                    ->options(Score::all()->pluck('name', 'id')->toArray())
                     ->required(),
                 Textarea::make('name')
                     ->rows(4)

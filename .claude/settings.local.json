@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:filamentphp.com)",
+      "Bash(git mv:*)",
+      "Bash(vendor/bin/pint:*)",
+      "Bash(php artisan route:list:*)"
+    ]
+  }
+}

@@ -41,6 +41,7 @@ class Statement extends Model
             },
         );
     }
+
     public function priorityAction(): BelongsTo
     {
         return $this->belongsTo(PriorityAction::class);
@@ -53,7 +54,7 @@ class Statement extends Model
 
     public function type(): BelongsTo
     {
-        return $this->belongsTo(Type::class);
+        return $this->belongsTo(Score::class);
     }
 
     public function aePrinciples(): BelongsToMany
