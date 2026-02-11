@@ -90,12 +90,12 @@ class PolicyDocumentResource extends Resource
                 TextColumn::make('name')
                     ->wrap()
                     ->searchable(),
-                TextColumn::make('automatic_highlights_count')
+                TextColumn::make('automatic_extracts_count')
                     ->label(fn () => new HtmlString('# Automatic <br/>Search results'))
-                    ->counts('automaticHighlights'),
-                TextColumn::make('verified_highlights_count')
-                    ->label(fn () => new HtmlString('# Verified<br/> Highlights'))
-                    ->counts('verifiedHighlights'),
+                    ->counts('automaticExtracts'),
+                TextColumn::make('verified_extracts_count')
+                    ->label(fn () => new HtmlString('# Verified<br/> Extracts'))
+                    ->counts('verifiedExtracts'),
 
             ])
             ->filters([
@@ -103,18 +103,18 @@ class PolicyDocumentResource extends Resource
             ])
             ->recordActions([
                 Action::make('review')
-                    ->label('Search & Highlight')
+                    ->label('Search & Find Extracts')
                     ->url(fn (PolicyDocument $record): string => static::getUrl('review', ['record' => $record]))
                     ->icon('heroicon-o-magnifying-glass'),
                 EditAction::make(),
                 DeleteAction::make()
                     ->requiresConfirmation()
-                    ->modalDescription('Any highlights and extracts will be permanently deleted. Do not do this unless you have uploaded the wrong document and need to remove it from the assessment.'),
+                    ->modalDescription('Any extracts and linked data will be permanently deleted. Do not do this unless you have uploaded the wrong document and need to remove it from the assessment.'),
             ])
             ->toolbarActions([
                 BulkAction::make('redo_search')
                     ->label('Re-run auto search')
-                    ->tooltip('Re-runs the automatic search for all selected documents. Any existing, unverified highlights will be deleted and new ones will be created. This may take some time depending on the number of documents selected.')
+                    ->tooltip('Re-runs the automatic search for all selected documents. Any existing, unverified extracts will be deleted and new ones will be created. This may take some time depending on the number of documents selected.')
                     ->action(function (BulkAction $action, \Illuminate\Support\Collection $selectedRecords) {
                         foreach ($selectedRecords as $record) {
                             $record->runAutomaticSearch();

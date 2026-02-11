@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Models\Highlight;
+use App\Models\Extract;
 use App\Models\PolicyDocument;
 use Filament\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -43,7 +43,7 @@ class PolicyDocumentAutoSearch implements ShouldQueue
                     dump('found at offset:'.$offset);
                 }
 
-                // if matches found, create highlights with start_offset and end_offset
+                // if matches found, create extracts with start_offset and end_offset
                 if (count($matches) > 0) {
                     foreach ($matches as $matchPos) {
                         $startOffset = $matchPos;
@@ -69,8 +69,8 @@ class PolicyDocumentAutoSearch implements ShouldQueue
 
                         dump('contextual extract: '.$extract.' (start: '.$startOffset.', end: '.$endOffset.')');
 
-                        // check if highlight already exists (including soft deleted entries, to avoid re-creating entries that were manually deleted)
-                        $highlight = Highlight::withTrashed()
+                        // check if extract already exists (including soft deleted entries, to avoid re-creating entries that were manually deleted)
+                        $extract = Extract::withTrashed()
                             ->updateOrCreate([
                                 'policy_document_id' => $this->policyDocument->id,
                                 'start_offset' => $startOffset,
@@ -80,11 +80,11 @@ class PolicyDocumentAutoSearch implements ShouldQueue
                                 'color' => 'lightblue',
                             ]);
 
-                        // attach highlight to priority action
-                        $priorityAction->highlights()->syncWithoutDetaching([$highlight->id]);
+                        // attach extract to priority action
+                        $priorityAction->extracts()->syncWithoutDetaching([$extract->id]);
 
-                        // attach highlight to the search term
-                        $highlight->searchTerms()->syncWithoutDetaching([$searchTerm->id]);
+                        // attach extract to the search term
+                        $extract->searchTerms()->syncWithoutDetaching([$searchTerm->id]);
                     }
                 }
             }

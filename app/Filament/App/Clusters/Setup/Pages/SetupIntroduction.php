@@ -33,7 +33,7 @@ class SetupIntroduction extends Page
                         <ul class='list-disc list-inside'>
                         <li><b>Assessment Details:</b> Review the key metadata about the assessment.</li>
                         <li><b>Team Members:</b> Invite any additional team members to collaborate on the assessment.</li>
-                        <li><b>Search Terms:</b> Review the search terms that will be used for automatic highlighting of the documents you upload during the assessment.</li>
+                        <li><b>Search Terms:</b> Review the search terms that will be used for automatic searching of the documents you upload during the assessment.</li>
 </ul>
 
 

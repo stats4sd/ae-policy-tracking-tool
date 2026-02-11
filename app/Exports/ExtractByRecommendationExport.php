@@ -6,7 +6,7 @@ use App\Models\Assessment;
 use App\Models\Recommendation;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
-class HighlightByRecommendationExport implements WithMultipleSheets
+class ExtractByRecommendationExport implements WithMultipleSheets
 {
     public function __construct(public Assessment $assessment) {}
 
@@ -16,7 +16,7 @@ class HighlightByRecommendationExport implements WithMultipleSheets
         $recommendations = Recommendation::all();
 
         foreach ($recommendations as $recommendation) {
-            $sheets[] = new HighlightByRecommendationSheet($this->assessment, $recommendation);
+            $sheets[] = new ExtractByRecommendationSheet($this->assessment, $recommendation);
         }
 
         return $sheets;

@@ -31,13 +31,13 @@ class Statement extends Model
         return Attribute::make(
             get: function () {
                 $directLinks = $this->policyDocuments;
-                $highlightLinks = PolicyDocument::whereHas('highlights', function ($query) {
+                $extractLinks = PolicyDocument::whereHas('extracts', function ($query) {
                     $query->whereHas('statements', function ($query) {
                         $query->where('statements.id', $this->id);
                     });
                 })->get();
 
-                return $directLinks->merge($highlightLinks)->unique('id');
+                return $directLinks->merge($extractLinks)->unique('id');
             },
         );
     }
@@ -68,10 +68,10 @@ class Statement extends Model
         return $this->belongsToMany(PolicyDocument::class);
     }
 
-    /** @return BelongsToMany<Highlight, $this> */
-    public function highlights(): BelongsToMany
+    /** @return BelongsToMany<Extract, $this> */
+    public function extracts(): BelongsToMany
     {
-        return $this->belongsToMany(Highlight::class);
+        return $this->belongsToMany(Extract::class);
     }
 
     /** @return BelongsTo<Theme, $this> */

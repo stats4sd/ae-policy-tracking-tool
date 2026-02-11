@@ -33,7 +33,7 @@ class PolicyDocumentExport implements FromCollection, ShouldAutoSize, WithHeadin
             $this->assessment->title,
             $row->name,
             $row->comments,
-            $row->highlights()->count(),
+            $row->extracts()->count(),
             $row->statements()->count(),
         ];
     }
@@ -45,7 +45,7 @@ class PolicyDocumentExport implements FromCollection, ShouldAutoSize, WithHeadin
             'Assessment',
             'Name',
             'Comments',
-            '# Highlights',
+            '# Extracts',
             '# Statements',
         ];
     }

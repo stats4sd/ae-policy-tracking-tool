@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\App\Resources\Highlights\Schemas;
+namespace App\Filament\App\Resources\Extracts\Schemas;
 
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -8,7 +8,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
-class HighlightForm
+class ExtractForm
 {
     public static function configure(Schema $schema): Schema
     {

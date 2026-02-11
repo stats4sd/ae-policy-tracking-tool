@@ -33,10 +33,10 @@ class SearchTerm extends Model
     }
 
 
-    /** @return BelongsToMany<Highlight, $this> */
-    public function highlights(): BelongsToMany
+    /** @return BelongsToMany<Extract, $this> */
+    public function extracts(): BelongsToMany
     {
-        return $this->belongsToMany(Highlight::class);
+        return $this->belongsToMany(Extract::class);
     }
 
 

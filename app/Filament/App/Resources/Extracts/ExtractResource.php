@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Filament\App\Resources\Highlights;
+namespace App\Filament\App\Resources\Extracts;
 
-use App\Filament\App\Resources\Highlights\Pages\ListHighlights;
-use App\Filament\App\Resources\Highlights\Schemas\HighlightForm;
-use App\Filament\App\Resources\Highlights\Tables\HighlightsTable;
-use App\Models\Highlight;
+use App\Filament\App\Resources\Extracts\Pages\ListExtracts;
+use App\Filament\App\Resources\Extracts\Schemas\ExtractForm;
+use App\Filament\App\Resources\Extracts\Tables\ExtractTable;
+use App\Models\Extract;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -14,11 +14,11 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class HighlightResource extends Resource
+class ExtractResource extends Resource
 {
-    protected static ?string $model = Highlight::class;
+    protected static ?string $model = Extract::class;
 
-    protected static ?string $navigationLabel = '2. Review Highlights';
+    protected static ?string $navigationLabel = '2. Review Extracts';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCheckBadge;
 
@@ -28,12 +28,12 @@ class HighlightResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return HighlightForm::configure($schema);
+        return ExtractForm::configure($schema);
     }
 
     public static function table(Table $table): Table
     {
-        return HighlightsTable::configure($table);
+        return ExtractTable::configure($table);
     }
 
     public static function getRelations(): array
@@ -46,7 +46,7 @@ class HighlightResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListHighlights::route('/'),
+            'index' => ListExtracts::route('/'),
         ];
     }
 

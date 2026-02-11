@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Assessment;
+use App\Models\Extract;
 use App\Models\PriorityAction;
 use App\Models\Recommendation;
 use Illuminate\Database\Eloquent\Collection;
@@ -16,7 +17,7 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class HighlightByRecommendationSheet implements FromCollection, WithColumnWidths, WithHeadings, WithMapping, WithStrictNullComparison, WithStyles, WithTitle
+class ExtractByRecommendationSheet implements FromCollection, WithColumnWidths, WithHeadings, WithMapping, WithStrictNullComparison, WithStyles, WithTitle
 {
     use ExportStyles;
 
@@ -25,7 +26,7 @@ class HighlightByRecommendationSheet implements FromCollection, WithColumnWidths
     public function __construct(public Assessment $assessment, public Recommendation $recommendation)
     {
         $this->priorityActions = PriorityAction::where('recommendation_id', $recommendation->id)
-            ->with(['highlights.type', 'highlights.policyDocument', 'highlights.theme'])
+            ->with(['extracts.type', 'extracts.policyDocument', 'extracts.theme'])
             ->get();
     }
 
@@ -34,20 +35,20 @@ class HighlightByRecommendationSheet implements FromCollection, WithColumnWidths
      */
     public function collection()
     {
-        return $this->priorityActions->flatMap(fn ($pa) => $this->getHighlightsForPriorityAction($pa));
+        return $this->priorityActions->flatMap(fn ($pa) => $this->getExtractsForPriorityAction($pa));
     }
 
-    public function getHighlightsForPriorityAction(PriorityAction $priorityAction): SupportCollection
+    public function getExtractsForPriorityAction(PriorityAction $priorityAction): SupportCollection
     {
-        return $priorityAction->highlights
-            ->filter(fn ($highlight) => $highlight->policyDocument->assessment_id === $this->assessment->id)
-            ->map(fn ($highlight) => [
+        return $priorityAction->extracts
+            ->filter(fn (Extract $extract) => $extract->policyDocument->assessment_id === $this->assessment->id)
+            ->map(fn (Extract $extract) => [
                 'priority_action' => $priorityAction,
-                'type' => $highlight->type,
-                'policyDocument' => $highlight->policyDocument,
-                'extract' => $highlight->formatted_extract,
-                'automatic' => $highlight->automatic,
-                'theme' => $highlight->theme,
+                'type' => $extract->type,
+                'policyDocument' => $extract->policyDocument,
+                'extract' => $extract->formatted_extract,
+                'automatic' => $extract->automatic,
+                'theme' => $extract->theme,
             ]);
     }
 
@@ -65,8 +66,8 @@ class HighlightByRecommendationSheet implements FromCollection, WithColumnWidths
 
     public function map($row): array
     {
-        // row is an array due to the way we constructed it in getHighlightsForPriorityAction
-        // did this to make sure we get 1 row per priority_action x highlight.
+        // row is an array due to the way we constructed it in getExtractsForPriorityAction
+        // did this to make sure we get 1 row per priority_action x extract.
 
         return [
             $row['priority_action']->code_and_short_name,
@@ -89,7 +90,7 @@ class HighlightByRecommendationSheet implements FromCollection, WithColumnWidths
 
     public function title(): string
     {
-        return 'Highlights for '.$this->recommendation->code_and_short_title;
+        return 'Extracts for '.$this->recommendation->code_and_short_title;
     }
 
     public function columnWidths(): array

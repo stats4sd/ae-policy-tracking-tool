@@ -23,9 +23,9 @@ class PriorityAction extends Model
         return $this->hasMany(Statement::class);
     }
 
-    public function highlights(): BelongsToMany
+    public function extracts(): BelongsToMany
     {
-        return $this->belongsToMany(Highlight::class);
+        return $this->belongsToMany(Extract::class);
     }
 
     /** @return HasMany<SearchTerm, $this> */

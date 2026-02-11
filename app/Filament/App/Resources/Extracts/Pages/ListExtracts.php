@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\App\Resources\Highlights\Pages;
+namespace App\Filament\App\Resources\Extracts\Pages;
 
-use App\Filament\App\Resources\Highlights\HighlightResource;
-use App\Livewire\ThemesForHighlightsTable;
+use App\Filament\App\Resources\Extracts\ExtractResource;
+use App\Livewire\ThemesForExtractsTable;
 use App\Models\PriorityAction;
 use App\Models\Theme;
 use Filament\Actions\Action;
@@ -20,9 +20,9 @@ use Filament\Schemas\Schema;
 use Filament\Support\Enums\Width;
 use Filament\View\PanelsRenderHook;
 
-class ListHighlights extends ListRecords
+class ListExtracts extends ListRecords
 {
-    protected static string $resource = HighlightResource::class;
+    protected static string $resource = ExtractResource::class;
 
     protected Width|string|null $maxContentWidth = 'full';
 
@@ -54,8 +54,8 @@ class ListHighlights extends ListRecords
             $tabs[$priorityAction->id] = Tab::make()
                 ->label($priorityAction->id)
                 ->schema([
-                    Livewire::make(ThemesForHighlightsTable::class, ['priorityAction' => $priorityAction])
-                        ->key('themes-for-highlights-table-'.$priorityAction->id),
+                    Livewire::make(ThemesForExtractsTable::class, ['priorityAction' => $priorityAction])
+                        ->key('themes-for-extracts-table-'.$priorityAction->id),
                 ])
                 ->modifyQueryUsing(fn ($query) => $query->whereHas('priorityActions', function ($q) use ($priorityAction) {
                     $q->where('priority_action_id', $priorityAction->id);

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\App\Resources\Highlights\Tables;
+namespace App\Filament\App\Resources\Extracts\Tables;
 
-use App\Filament\App\Resources\Highlights\Pages\ListHighlights;
-use App\Models\Highlight;
+use App\Filament\App\Resources\Extracts\Pages\ListExtracts;
+use App\Models\Extract;
 use App\Models\Score;
 use App\Models\Statement;
 use Awcodes\Shout\Components\Shout;
@@ -26,12 +26,12 @@ use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
 
-class HighlightsTable
+class ExtractTable
 {
     public static function configure(Table $table): Table
     {
         return $table
-            ->heading(fn ($livewire) => $livewire->activeTab === 'all' ? 'All Highlights' : 'Highlights for Priority Action: '.$livewire->activeTab)
+            ->heading(fn ($livewire) => $livewire->activeTab === 'all' ? 'All Extracts' : 'Extracts for Priority Action: '.$livewire->activeTab)
             ->paginationPageOptions([25, 50, 100, 200])
             ->defaultPaginationPageOption(50)
             ->columns([
@@ -39,7 +39,7 @@ class HighlightsTable
                     ->searchable()
                     // macro setup in DefStudio\FilamentColumnLengthLimiter package
                     ->limitWithTooltip()
-                    ->description(fn (Highlight $record) => 'From: '.$record->policyDocument->name ?? 'No Document')
+                    ->description(fn (Extract $record) => 'From: '.$record->policyDocument->name ?? 'No Document')
                     ->label('Highlighted Extract'),
                 TextColumn::make('priorityActions.id')
                     ->toggleable()
@@ -56,13 +56,13 @@ class HighlightsTable
                 TextColumn::make('score.score')
                     ->toggleable()
                     ->badge()
-                    ->color(fn (Highlight $record) => match ($record->type->score ?? null) {
+                    ->color(fn (Extract $record) => match ($record->type->score ?? null) {
                         null => 'secondary',
                         2 => 'success',
                         -1 => 'danger',
                         default => 'info',
                     })
-                    ->tooltip(fn (Highlight $record) => $record->type->name ?? 'No Score Assigned')
+                    ->tooltip(fn (Extract $record) => $record->type->name ?? 'No Score Assigned')
                     ->label('Score'),
 
                 IconColumn::make('verified')
@@ -75,7 +75,7 @@ class HighlightsTable
             ->filters([
                 TernaryFilter::make('verified')
 //                    ->default(true)
-                    ->label('Show Verified Highlights')
+                    ->label('Show Verified Extracts')
                     ->trueLabel('Only Verified')
                     ->falseLabel('Only Unverified'),
                 SelectFilter::make('searchTerms.phrase')
@@ -101,11 +101,11 @@ class HighlightsTable
 
             ])
             ->recordActions([
-                Action::make('Verify Highlight')
-                    ->visible(fn (Highlight $record) => ! $record->verified)
+                Action::make('Verify Extract')
+                    ->visible(fn (Extract $record) => ! $record->verified)
                     ->requiresConfirmation()
-                    ->modalDescription('This highlight was created by an automated search. Are you sure you want to verify it as relevant to this assessment?')
-                    ->action(function (Highlight $record) {
+                    ->modalDescription('This extract was created by an automated search. Are you sure you want to verify it as relevant to this assessment?')
+                    ->action(function (Extract $record) {
                         $record->verified = true;
                         $record->save();
                     }),
@@ -117,7 +117,7 @@ class HighlightsTable
                     ->fillForm(function (Collection $selectedRecords) {
                         // TODO: organise selected highlights by source document
                         return [
-                            'selected_highlights' => $selectedRecords->map(fn ($record) => $record->extract)->toArray(),
+                            'selected_extracts' => $selectedRecords->map(fn ($record) => $record->extract)->toArray(),
                             'default_priority_action_id' => $selectedRecords->flatMap->priorityActions->first()->id ?? null,
                         ];
                     })
@@ -125,25 +125,25 @@ class HighlightsTable
                         Shout::make('info')
                             ->content('Highlighted extracts can be grouped and summarised into a single summary statement. The summary statements can then be included in the final report.')
                             ->icon('heroicon-o-information-circle'),
-                        Repeater::make('selected_highlights')
+                        Repeater::make('selected_extracts')
                             ->reorderable(false)
                             ->addable(false)
                             ->deletable(false)
                             ->simple(Textarea::make('extract')->disabled()->autosize()),
 
-                        // If all the highlights are for a single priority action, show a read-only field with that action id
+                        // If all the extracts are for a single priority action, show a read-only field with that action id
                         Shout::make('priority_action_info')
                             ->visible(fn () => $selectedRecords->flatMap->priorityActions->unique('id')->count() === 1)
-                            ->content(fn () => 'All selected highlights are linked to Priority Action: '.$selectedRecords->flatMap->priorityActions->first()->id.'. The summary statement will be assigned to this action.'),
+                            ->content(fn () => 'All selected extracts are linked to Priority Action: '.$selectedRecords->flatMap->priorityActions->first()->id.'. The summary statement will be assigned to this action.'),
 
-                        // If the highlights are for multiple priority actions, show a select to choose which one to assign the statement to
+                        // If the extracts are for multiple priority actions, show a select to choose which one to assign the statement to
                         Select::make('priority_action_id')
                             ->visible(fn () => $selectedRecords->flatMap->priorityActions->unique('id')->count() > 1)
                             ->options($selectedRecords->flatMap->priorityActions->unique('id')->pluck('id', 'id')->toArray())
                             ->label('Assign Priority Action')
                             ->required(),
 
-                        // If all highlights are for a single priority action, set a hidden field with that action id
+                        // If all extracts are for a single priority action, set a hidden field with that action id
                         Hidden::make('default_priority_action_id'),
 
                         Select::make('theme_id')
@@ -161,7 +161,7 @@ class HighlightsTable
                             ->createOptionForm([
                                 TextInput::make('name')->required()->label('Enter the new theme'),
                             ])
-                            ->createOptionUsing(function (array $data, Get $get, ListHighlights $livewire) {
+                            ->createOptionUsing(function (array $data, Get $get, ListExtracts $livewire) {
 
                                 $priorityActionId = $get('default_priority_action_id') ?? $get('priority_action_id');
 
@@ -188,7 +188,7 @@ class HighlightsTable
                             ->label('How does this statement link to the priority action? (Select the most appropriate type)')
                             ->required(),
                     ])
-                    ->action(function (Collection $selectedRecords, array $data, ListHighlights $livewire) {
+                    ->action(function (Collection $selectedRecords, array $data, ListExtracts $livewire) {
 
                         $priorityActionId = $data['priority_action_id'] ?? $data['default_priority_action_id'];
 
@@ -199,7 +199,7 @@ class HighlightsTable
                             'theme_id' => $data['theme_id'],
                         ]);
 
-                        $statement->highlights()->sync($selectedRecords->pluck('id'));
+                        $statement->extracts()->sync($selectedRecords->pluck('id'));
 
                         $livewire->dispatch('refreshTable');
 
@@ -207,7 +207,7 @@ class HighlightsTable
                 BulkAction::make('Assign to Theme')
                     ->schema(fn (Collection $selectedRecords) => [
                         Shout::make('info')
-                            ->content('Link the selected highlights to a theme. This will help organise highlights and summary statements under relevant themes for reporting.')
+                            ->content('Link the selected extracts to a theme. This will help organise highlights and summary statements under relevant themes for reporting.')
                             ->icon('heroicon-o-information-circle'),
                         Select::make('theme_id')
                             ->relationship('theme', 'name', function ($query) use ($selectedRecords) {
@@ -222,7 +222,7 @@ class HighlightsTable
                             ->createOptionForm([
                                 TextInput::make('name')->required()->label('Enter the new theme'),
                             ])
-                            ->createOptionUsing(function (array $data, Get $get, ListHighlights $livewire) {
+                            ->createOptionUsing(function (array $data, Get $get, ListExtracts $livewire) {
 
                                 $priorityActionId = $get('default_priority_action_id') ?? $get('priority_action_id');
 
@@ -238,11 +238,11 @@ class HighlightsTable
                             })
                             ->label('Select Theme to Assign'),
                     ])
-                    ->action(function (Collection $selectedRecords, array $data, ListHighlights $livewire) {
+                    ->action(function (Collection $selectedRecords, array $data, ListExtracts $livewire) {
 
-                        foreach ($selectedRecords as $highlight) {
-                            $highlight->theme_id = $data['theme_id'];
-                            $highlight->save();
+                        foreach ($selectedRecords as $extract) {
+                            $extract->theme_id = $data['theme_id'];
+                            $extract->save();
                         }
 
                         $livewire->dispatch('refreshTable');

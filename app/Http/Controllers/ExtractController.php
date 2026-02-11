@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\HighlightRequest;
-use App\Models\Highlight;
+use App\Http\Requests\ExtractRequest;
+use App\Models\Extract;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class HighlightController extends Controller
+class ExtractController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,24 +20,24 @@ class HighlightController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(HighlightRequest $request): JsonResponse
+    public function store(ExtractRequest $request): JsonResponse
     {
         $validated = $request->validated();
 
-        $highlight = Highlight::create($validated);
+        $extract = Extract::create($validated);
 
         $priorityActions = $request->input('priority_actions', []);
         if (! empty($priorityActions)) {
-            $highlight->priorityActions()->attach($priorityActions);
+            $extract->priorityActions()->attach($priorityActions);
         }
 
-        return response()->json($highlight, 201);
+        return response()->json($extract, 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Highlight $highlight)
+    public function show(Extract $extract)
     {
         //
     }
@@ -45,7 +45,7 @@ class HighlightController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Highlight $highlight): JsonResponse
+    public function update(Request $request, Extract $extract): JsonResponse
     {
         // check priority actions exist
         $validated = $request->validate([
@@ -56,32 +56,32 @@ class HighlightController extends Controller
         ]);
 
         if (isset($validated['verified'])) {
-            $highlight->verified = $validated['verified'];
+            $extract->verified = $validated['verified'];
         }
 
         if (isset($validated['type_id'])) {
-            $highlight->type_id = $validated['type_id'];
+            $extract->type_id = $validated['type_id'];
         }
 
-        $highlight->save();
+        $extract->save();
 
         $priorityActions = $validated['priority_actions'];
 
         if (! empty($priorityActions)) {
-            $highlight->priorityActions()->sync($priorityActions);
+            $extract->priorityActions()->sync($priorityActions);
         } else {
-            $highlight->priorityActions()->detach();
+            $extract->priorityActions()->detach();
         }
 
-        return response()->json($highlight, 200);
+        return response()->json($extract, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Highlight $highlight)
+    public function destroy(Extract $extract)
     {
-        $highlight->delete();
+        $extract->delete();
 
         return response()->json(null, 204);
     }

@@ -18,9 +18,9 @@ Route::group(
         Route::get('/policy-documents/{document}/content', [\App\Http\Controllers\PolicyDocumentController::class, 'getContent'])
             ->name('policy-document.content');
 
-        Route::get('/policy-documents/{document}/highlights', [\App\Http\Controllers\PolicyDocumentController::class, 'getHighlights']);
+        Route::get('/policy-documents/{document}/extracts', [\App\Http\Controllers\PolicyDocumentController::class, 'getExtracts']);
 
-        Route::apiResource('highlights', \App\Http\Controllers\HighlightController::class)->only([
+        Route::apiResource('extracts', \App\Http\Controllers\ExtractController::class)->only([
             'store', 'update', 'destroy',
         ]);
 

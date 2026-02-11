@@ -79,17 +79,17 @@ class StatementEditor extends Component implements HasActions, HasForms, HasTabl
             ->recordActions([
                 EditAction::make()
                     ->schema(fn (Statement $record) => [
-                        Section::make('Highlights')
+                        Section::make('Extracts')
                             ->extraAttributes([
                                 'class' => 'compact-section',
                             ])
-                            ->heading('Document Highlights Linked to This Statement')
-                            ->description('The highlights from policy documents that are linked to this statement are shown below. You can refer to these highlights when editing the statement to ensure it accurately reflects the content of the linked documents.')
+                            ->heading('Document Extracts Linked to This Statement')
+                            ->description('The extracts from policy documents that are linked to this statement are shown below. You can refer to these when editing the statement to ensure it accurately reflects the content of the linked documents.')
                             ->schema([
                                 TableInSchema::make()
                                     ->table(fn (Table $table): Table => $table
                                         ->paginated(false)
-                                        ->relationship(fn () => $record->highlights())
+                                        ->relationship(fn () => $record->extracts())
                                         ->defaultGroup(Group::make('policy_document_id')
                                             ->label('Policy Document')
                                             ->getTitleFromRecordUsing(fn ($record) => $record->policyDocument->name ?? 'No Document')
@@ -98,7 +98,7 @@ class StatementEditor extends Component implements HasActions, HasForms, HasTabl
                                         ->columns([
                                             Grid::make(1)
                                                 ->schema([
-                                                    TextColumn::make('extract')->label('Highlight')->wrap(),
+                                                    TextColumn::make('extract')->label('Extract')->wrap(),
 
                                                 ]),
                                         ])

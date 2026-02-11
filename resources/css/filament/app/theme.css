@@ -46,11 +46,11 @@
     background-color: rgba(30, 144, 255, 0.35);
 }
 
-.highlight-current {
+.extract-current {
     outline: 2px solid #ff5500;;
 }
 
-.doc-highlight { /* highlights set inline for color */
+.doc-extract { /* extracts set inline for color */
 }
 
 .theme_button {

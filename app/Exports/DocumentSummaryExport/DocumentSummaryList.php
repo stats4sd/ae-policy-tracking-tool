@@ -32,7 +32,7 @@ class DocumentSummaryList implements FromCollection, WithHeadings, WithMapping, 
             'Document Short name',
             'Year(s)',
             'Comments',
-            'Number of Highlights',
+            'Number of Extracts',
             'Number of Statements',
         ];
     }
@@ -44,7 +44,7 @@ class DocumentSummaryList implements FromCollection, WithHeadings, WithMapping, 
             $row->short_title,
             $row->year_string,
             $row->comments,
-            $row->highlights()->count(),
+            $row->extracts()->count(),
             $row->statements()->count(),
         ];
     }

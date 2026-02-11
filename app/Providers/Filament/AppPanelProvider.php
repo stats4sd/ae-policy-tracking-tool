@@ -7,7 +7,7 @@ use App\Filament\App\Pages\AssessmentOverview;
 use App\Filament\App\Pages\RegisterAssessment;
 use App\Filament\App\Pages\Review;
 use App\Filament\App\Pages\Summary;
-use App\Filament\App\Resources\Highlights\HighlightResource;
+use App\Filament\App\Resources\Extracts\ExtractResource;
 use App\Filament\App\Resources\PolicyDocuments\PolicyDocumentResource;
 use App\Models\Assessment;
 use Filament\Actions\Action;
@@ -84,7 +84,7 @@ class AppPanelProvider extends PanelProvider
                     ->items([
                         ...SetupCluster::getNavigationItems(),
                         ...PolicyDocumentResource::getNavigationItems(),
-                        ...HighlightResource::getNavigationItems(),
+                        ...ExtractResource::getNavigationItems(),
                         ...AssessmentOverview::getNavigationItems(),
                         ...Summary::getNavigationItems(),
                     ]);

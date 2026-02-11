@@ -37,7 +37,7 @@ class RecommendationExport implements FromCollection, ShouldAutoSize, WithHeadin
 
                     $documentCountRows = $documents->mapWithKeys(function (PolicyDocument $doc) use ($pa, $type) {
                         return [
-                            $doc->short_title => $doc->highlights()
+                            $doc->short_title => $doc->extracts()
                                 ->whereHas('priorityActions', fn ($query) => $query->where('priority_actions.id', $pa->id))
                                 ->whereHas('score', fn ($query) => $query->where('types.id', $type->id))
                                 ->count(),

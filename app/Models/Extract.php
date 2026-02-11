@@ -10,18 +10,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Znck\Eloquent\Relations\BelongsToThrough;
 
-class Highlight extends Model
+class Extract extends Model
 {
     use SoftDeletes;
     use \Znck\Eloquent\Traits\BelongsToThrough;
 
     protected static function booted()
     {
-        // Always order highlights by start_offset within a policy document
+        // Always order extracts by start_offset within a policy document
         static::addGlobalScope(function (Builder $query) {
             $query
-                ->orderBy('highlights.policy_document_id', 'asc')
-                ->orderBy('highlights.start_offset', 'asc');
+                ->orderBy('extracts.policy_document_id', 'asc')
+                ->orderBy('extracts.start_offset', 'asc');
         });
     }
 

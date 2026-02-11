@@ -35,7 +35,7 @@ class StatementExport implements FromCollection, ShouldAutoSize, WithHeadings, W
             'Type of Statement',
             'Theme',
             'Statement Text',
-            '# Supporting Highlights',
+            '# Supporting Extracts',
         ];
     }
 
@@ -48,7 +48,7 @@ class StatementExport implements FromCollection, ShouldAutoSize, WithHeadings, W
             $row->type->name,
             $row->theme->name ?? 'N/A',
             $row->name,
-            $row->highlights()->count(),
+            $row->extracts()->count(),
         ];
     }
 
