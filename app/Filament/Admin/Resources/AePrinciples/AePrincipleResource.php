@@ -2,7 +2,6 @@
 
 namespace App\Filament\Admin\Resources\AePrinciples;
 
-use App\Filament\Admin\Resources\AePrinciples\Pages\EditAePrinciple;
 use App\Filament\Admin\Resources\AePrinciples\Pages\ListAePrinciples;
 use App\Models\AePrinciple;
 use Filament\Actions\BulkActionGroup;
@@ -34,6 +33,7 @@ class AePrincipleResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->paginated(false)
             ->columns([
                 TextColumn::make('name'),
             ])
@@ -64,8 +64,6 @@ class AePrincipleResource extends Resource
     {
         return [
             'index' => ListAePrinciples::route('/'),
-            // 'create' => Pages\CreateAePrinciple::route('/create'),
-            'edit' => EditAePrinciple::route('/{record}/edit'),
         ];
     }
 }

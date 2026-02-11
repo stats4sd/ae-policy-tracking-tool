@@ -2,8 +2,8 @@
 
 namespace App\Filament\Admin\Resources\PriorityActions;
 
-use App\Filament\Admin\Resources\PriorityActions\Pages\EditPriorityAction;
 use App\Filament\Admin\Resources\PriorityActions\Pages\ListPriorityActions;
+use App\Filament\Admin\Resources\PriorityActions\Pages\ViewPriorityAction;
 use App\Filament\Admin\Resources\PriorityActions\RelationManagers\SearchTermsRelationManager;
 use App\Models\PriorityAction;
 use Filament\Actions\BulkActionGroup;
@@ -11,7 +11,9 @@ use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -30,9 +32,25 @@ class PriorityActionResource extends Resource
                 Forms\Components\TextInput::make('id')
                     ->label('ID')
                     ->disabledOn('edit'),
-                Forms\Components\Textarea::make('name')
-                    ->rows(4),
                 Forms\Components\TextInput::make('short_name'),
+                Forms\Components\Textarea::make('name')
+                    ->label('Long Name / Description')
+                    ->rows(4),
+            ]);
+    }
+
+    // Add an infolist method to display the long name/description when viewing a record
+    public static function infolist(Schema $schema): Schema
+    {
+        return $schema
+            ->columns(1)
+            ->components([
+                Section::make('Details')
+                    ->schema([
+                        TextEntry::make('id')->label('ID')->inlineLabel(),
+                        TextEntry::make('short_name')->label('Short Name')->inlineLabel(),
+                        TextEntry::make('name')->label('Description')->inlineLabel(),
+                    ]),
             ]);
     }
 
@@ -71,7 +89,7 @@ class PriorityActionResource extends Resource
     {
         return [
             'index' => ListPriorityActions::route('/'),
-            'edit' => EditPriorityAction::route('/{record}/edit'),
+            'view' => ViewPriorityAction::route('/{record}'),
         ];
     }
 }

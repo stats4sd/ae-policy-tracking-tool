@@ -11,7 +11,9 @@ class AdminDashboard extends Page
 {
     protected static string $routePath = '/';
 
-    protected static string | BackedEnum | null $navigationIcon = Heroicon::Cog6Tooth;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::Cog6Tooth;
+
+    protected static ?string $title = 'Tool Administration';
 
     public static function getRoutePath(Panel $panel): string
     {

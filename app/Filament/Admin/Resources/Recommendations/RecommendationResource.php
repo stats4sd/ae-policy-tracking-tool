@@ -2,14 +2,17 @@
 
 namespace App\Filament\Admin\Resources\Recommendations;
 
-use App\Filament\Admin\Resources\Recommendations\Pages\EditRecommendation;
 use App\Filament\Admin\Resources\Recommendations\Pages\ListRecommendations;
+use App\Filament\Admin\Resources\Recommendations\Pages\ViewRecommendation;
+use App\Filament\Admin\Resources\Recommendations\RelationManagers\PriorityActionsRelationManager;
 use App\Models\Recommendation;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Textarea;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
@@ -30,17 +33,28 @@ class RecommendationResource extends Resource
             ]);
     }
 
+    public static function infolist(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                TextEntry::make('name')->label('Description'),
+            ]);
+    }
+
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('id'),
-                TextColumn::make('name')->wrap(),
+                TextColumn::make('code'),
+                TextColumn::make('short_title'),
+                TextColumn::make('priorityActions.id')
+                    ->badge(),
             ])
             ->filters([
                 //
             ])
             ->recordActions([
+                ViewAction::make(),
                 EditAction::make(),
             ])
             ->toolbarActions([
@@ -56,7 +70,7 @@ class RecommendationResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            PriorityActionsRelationManager::class,
         ];
     }
 
@@ -64,8 +78,7 @@ class RecommendationResource extends Resource
     {
         return [
             'index' => ListRecommendations::route('/'),
-            // 'create' => Pages\CreateRecommendation::route('/create'),
-            'edit' => EditRecommendation::route('/{record}/edit'),
+            'view' => ViewRecommendation::route('/{record}/view'),
         ];
     }
 }

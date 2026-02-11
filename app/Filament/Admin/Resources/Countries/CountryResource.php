@@ -2,8 +2,6 @@
 
 namespace App\Filament\Admin\Resources\Countries;
 
-use App\Filament\Admin\Resources\Countries\Pages\CreateCountry;
-use App\Filament\Admin\Resources\Countries\Pages\EditCountry;
 use App\Filament\Admin\Resources\Countries\Pages\ListCountries;
 use App\Models\Country;
 use Filament\Actions\CreateAction;
@@ -60,8 +58,6 @@ class CountryResource extends Resource
     {
         return [
             'index' => ListCountries::route('/'),
-            'create' => CreateCountry::route('/create'),
-            'edit' => EditCountry::route('/{record}/edit'),
         ];
     }
 }
