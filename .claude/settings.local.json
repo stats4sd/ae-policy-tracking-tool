@@ -4,7 +4,10 @@
       "WebFetch(domain:filamentphp.com)",
       "Bash(git mv:*)",
       "Bash(vendor/bin/pint:*)",
-      "Bash(php artisan route:list:*)"
+      "Bash(php artisan route:list:*)",
+      "Bash(while read dir)",
+      "Bash(do find \"$dir\" -name \"*View*.php\")",
+      "Bash(done)"
     ]
   }
 }

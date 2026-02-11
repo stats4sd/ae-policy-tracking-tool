@@ -22,7 +22,7 @@ class ScoreResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationLabel = 'Highlight Scores';
+    protected static ?string $navigationLabel = 'Scoring';
 
     public static function form(Schema $schema): Schema
     {

@@ -10,6 +10,13 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Schemas\Components\EmbeddedTable;
+use Filament\Schemas\Components\RenderHook;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Text;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
+use Filament\View\PanelsRenderHook;
 
 class ListUsers extends ListRecords
 {
@@ -48,5 +55,26 @@ class ListUsers extends ListRecords
 
         $user = auth()->user();
         $user->sendInvites($data['users']);
+    }
+
+    public function getInfoPanel(): Section
+    {
+        return Section::make('Information')
+            ->icon(Heroicon::InformationCircle)
+            ->schema([
+                Text::make('Manage users and their roles. You can invite new users or create them directly, and assign them to assessments.'),
+            ]);
+    }
+
+    public function content(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                $this->getTabsContentComponent(),
+                RenderHook::make(PanelsRenderHook::RESOURCE_PAGES_LIST_RECORDS_TABLE_BEFORE),
+                $this->getInfoPanel(),
+                EmbeddedTable::make(),
+                RenderHook::make(PanelsRenderHook::RESOURCE_PAGES_LIST_RECORDS_TABLE_AFTER),
+            ]);
     }
 }

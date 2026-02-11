@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
 use Althinect\FilamentSpatieRolesPermissions\Resources\PermissionResource;
 use Althinect\FilamentSpatieRolesPermissions\Resources\RoleResource;
+use App\Filament\Admin\Pages\AdminDashboard;
 use App\Filament\Admin\Resources\AePrinciples\AePrincipleResource;
 use App\Filament\Admin\Resources\Assessments\AssessmentResource;
 use App\Filament\Admin\Resources\Countries\CountryResource;
@@ -17,7 +18,6 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
-use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Widgets\AccountWidget;
@@ -46,9 +46,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\\Filament\\Admin\\Resources')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\\Filament\\Admin\\Pages')
-            ->pages([
-                Dashboard::class,
-            ])
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\\Filament\\Admin\\Widgets')
             ->widgets([
                 AccountWidget::class,
@@ -69,9 +66,12 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 return $builder
-                    ->item(NavigationItem::make('Return to Tool')
-                        ->url('/')
-                        ->icon('heroicon-o-arrow-left'))
+                    ->items([
+                        NavigationItem::make('Return to Tool')
+                            ->url('/')
+                            ->icon('heroicon-o-arrow-left'),
+                        ...AdminDashboard::getNavigationItems(),
+                    ])
                     ->groups([
                         NavigationGroup::make('Lookup Lists')
                             ->items([

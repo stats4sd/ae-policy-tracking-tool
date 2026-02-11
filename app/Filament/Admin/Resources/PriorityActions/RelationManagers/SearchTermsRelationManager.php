@@ -20,6 +20,11 @@ class SearchTermsRelationManager extends RelationManager
 {
     protected static string $relationship = 'searchTerms';
 
+    public function isReadOnly(): bool
+    {
+        return false;
+    }
+
     public function form(Schema $schema): Schema
     {
         return $schema
