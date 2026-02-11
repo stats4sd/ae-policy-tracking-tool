@@ -33,8 +33,6 @@ class StatementEditor extends Component implements HasActions, HasForms, HasTabl
     use InteractsWithForms;
     use InteractsWithTable;
 
-    public Score $type;
-
     public Collection $statements;
 
     public PriorityAction $priorityAction;
@@ -59,7 +57,7 @@ class StatementEditor extends Component implements HasActions, HasForms, HasTabl
     public function table(Table $table): Table
     {
         return $table
-            ->relationship(fn () => $this->priorityAction->statements()->where('type_id', $this->type->id))
+            ->relationship(fn () => $this->priorityAction->statements())
             ->paginated(false)
             ->defaultGroup(Group::make('theme_id')
                 ->label('Theme')
@@ -111,10 +109,6 @@ class StatementEditor extends Component implements HasActions, HasForms, HasTabl
                             ->label('Theme')
                             ->relationship('theme', 'name', fn (Builder $query) => $query->where('assessment_id', Filament::getTenant()->id)->where('priority_action_id', $this->priorityAction->id))
                             ->nullable(),
-                        Select::make('type_id')
-                            ->label('Type')
-                            ->default($this->type->id)
-                            ->relationship('type', 'name'),
                     ])
                     ->after(fn () => $this->dispatch('refreshStatementEditor')),
                 DeleteAction::make(),
@@ -135,7 +129,6 @@ class StatementEditor extends Component implements HasActions, HasForms, HasTabl
 
             // if the statement doesn't already exist; add the type_id and create the entry
             if (! isset($statement['id'])) {
-                $statement['type_id'] = $this->type->id;
                 $statement['assessment_id'] = Filament::getTenant()->id;
 
                 $this->priorityAction->statements()->create($statement);
