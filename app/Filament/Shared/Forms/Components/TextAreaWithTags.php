@@ -9,8 +9,7 @@ class TextAreaWithTags extends Textarea
 {
     protected string $view = 'filament.shared.forms.components.text-area-with-tags';
 
-    protected array | Closure | null $tags = [];
-
+    protected array|Closure|null $tags = [];
 
     public function tags(array|Closure|null $tags): static
     {
@@ -19,10 +18,8 @@ class TextAreaWithTags extends Textarea
         return $this;
     }
 
-
     public function getTags(): array
     {
         return $this->evaluate($this->tags);
     }
-
 }

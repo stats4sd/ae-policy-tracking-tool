@@ -9,8 +9,6 @@ use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Resources\Pages\ListRecords;
@@ -20,14 +18,12 @@ use Filament\Schemas\Schema;
 use Filament\Support\Exceptions\Halt;
 use Illuminate\Support\Str;
 
-class BulkUploadPage extends ListRecords implements HasSchemas, HasActions
+class BulkUploadPage extends ListRecords implements HasActions, HasSchemas
 {
-    use InteractsWithSchemas;
     use InteractsWithActions;
-
+    use InteractsWithSchemas;
 
     protected static string $resource = PolicyDocumentResource::class;
-
 
     // declare array to store submitted form data
     public ?array $data = [];
@@ -124,7 +120,7 @@ class BulkUploadPage extends ListRecords implements HasSchemas, HasActions
             // show notification
             Notification::make()
                 ->success()
-                ->title($numberOfFiles . ' file uploaded and ' . $numberOfFiles . ' policy documents created')
+                ->title($numberOfFiles.' file uploaded and '.$numberOfFiles.' policy documents created')
                 ->send();
 
         } catch (Halt $exception) {

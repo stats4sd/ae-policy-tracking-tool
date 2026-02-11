@@ -3,15 +3,11 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Mail\InviteUserToAssessment;
-use Filament\Notifications\Notification;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends \Stats4sd\FilamentTeamManagement\Models\User
@@ -49,7 +45,7 @@ class User extends \Stats4sd\FilamentTeamManagement\Models\User
 
     public function getTenants(Panel $panel): Collection
     {
-        if($this->isAdmin()) {
+        if ($this->isAdmin()) {
             return Assessment::all();
         }
 

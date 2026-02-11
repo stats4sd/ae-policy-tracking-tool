@@ -44,7 +44,7 @@ class Summary extends Page
                         ->label('Export Document Summary By Recommendation')
                         ->action(function () {
 
-                            $filename = Filament::getTenant()->title.' - document summary.docx';
+                            $filename = Filament::getTenant()->title.' - document summary.xlsx';
 
                             return Excel::download(new \App\Exports\DocumentSummaryExport\DocumentSummaryExport(Filament::getTenant()), $filename);
                         }),

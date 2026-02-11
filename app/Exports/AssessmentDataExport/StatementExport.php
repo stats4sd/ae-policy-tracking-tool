@@ -12,23 +12,21 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class StatementExport implements FromCollection, WithTitle, WithHeadings, WithStyles, ShouldAutoSize, WithMapping
+class StatementExport implements FromCollection, ShouldAutoSize, WithHeadings, WithMapping, WithStyles, WithTitle
 {
     use ExportStyles;
 
-    public function __construct(public Assessment $assessment)
-    {
-    }
+    public function __construct(public Assessment $assessment) {}
 
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return \Illuminate\Support\Collection
+     */
     public function collection()
     {
         return $this->assessment->statements;
     }
 
-        public function headings(): array
+    public function headings(): array
     {
         return [
             'Assessment ID',
@@ -58,7 +56,6 @@ class StatementExport implements FromCollection, WithTitle, WithHeadings, WithSt
     {
         return 'Summary Statements';
     }
-
 
     public function styles(Worksheet $sheet)
     {

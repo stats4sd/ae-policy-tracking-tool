@@ -2,12 +2,10 @@
 
 namespace App\Filament\Admin\Resources\PriorityActionResource\Pages;
 
-use Filament\Actions\DeleteAction;
 use App\Filament\Admin\Resources\PriorityActionResource;
-use Filament\Actions;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Contracts\View\View;
 
 class EditPriorityAction extends EditRecord
 {
@@ -15,7 +13,7 @@ class EditPriorityAction extends EditRecord
 
     public function getHeading(): string|Htmlable
     {
-        return 'Priority Action ' . $this->getRecord()->id;
+        return 'Priority Action '.$this->getRecord()->id;
     }
 
     protected function getRedirectUrl(): string

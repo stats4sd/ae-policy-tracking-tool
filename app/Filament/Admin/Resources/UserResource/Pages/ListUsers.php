@@ -2,12 +2,10 @@
 
 namespace App\Filament\Admin\Resources\UserResource\Pages;
 
+use App\Filament\Admin\Resources\UserResource;
+use Awcodes\Shout\Components\Shout;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
-use App\Filament\Admin\Resources\UserResource;
-use App\Models\User;
-use Awcodes\Shout\Components\Shout;
-use Filament\Actions;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -40,7 +38,7 @@ class ListUsers extends ListRecords
                         ->reorderable(false)
                         ->addActionLabel('Add Another Email Address'),
                 ])
-                ->action(fn(array $data, ListRecords $livewire) => $this->handleInvitation($data)),
+                ->action(fn (array $data, ListRecords $livewire) => $this->handleInvitation($data)),
             CreateAction::make(),
         ];
     }

@@ -23,7 +23,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
-use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
 
@@ -66,7 +65,6 @@ class HighlightsTable
                     ->tooltip(fn (Highlight $record) => $record->type->name ?? 'No Score Assigned')
                     ->label('Score'),
 
-
                 IconColumn::make('verified')
                     ->toggleable()
                     ->boolean(),
@@ -85,9 +83,9 @@ class HighlightsTable
                     ->relationship('searchTerms', 'phrase')
                     ->multiple(),
                 SelectFilter::make('policy_document_id')
-                ->label('Source Document')
-                ->relationship('policyDocument', 'name')
-                ->multiple(),
+                    ->label('Source Document')
+                    ->relationship('policyDocument', 'name')
+                    ->multiple(),
                 SelectFilter::make('theme_id')
                     ->label('Theme')
                     ->relationship('theme', 'name', function ($query, $livewire) {
@@ -100,7 +98,6 @@ class HighlightsTable
 
                     })
                     ->multiple(),
-
 
             ])
             ->recordActions([

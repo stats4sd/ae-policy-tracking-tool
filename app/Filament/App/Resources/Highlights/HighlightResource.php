@@ -2,8 +2,6 @@
 
 namespace App\Filament\App\Resources\Highlights;
 
-use App\Filament\App\Resources\Highlights\Pages\CreateHighlight;
-use App\Filament\App\Resources\Highlights\Pages\EditHighlight;
 use App\Filament\App\Resources\Highlights\Pages\ListHighlights;
 use App\Filament\App\Resources\Highlights\Schemas\HighlightForm;
 use App\Filament\App\Resources\Highlights\Tables\HighlightsTable;
@@ -20,9 +18,11 @@ class HighlightResource extends Resource
 {
     protected static ?string $model = Highlight::class;
 
-    protected static ?string $navigationLabel = "2. Review Highlights";
-    protected static string | BackedEnum | null $navigationIcon = Heroicon::OutlinedCheckBadge;
-    protected static string | BackedEnum | null $activeNavigationIcon = Heroicon::CheckBadge;
+    protected static ?string $navigationLabel = '2. Review Highlights';
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCheckBadge;
+
+    protected static string|BackedEnum|null $activeNavigationIcon = Heroicon::CheckBadge;
 
     protected static ?string $recordTitleAttribute = 'extract';
 

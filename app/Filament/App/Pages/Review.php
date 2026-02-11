@@ -11,13 +11,14 @@ use Illuminate\Database\Eloquent\Collection;
 
 class Review extends Page
 {
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
+
     protected string $view = 'filament.app.pages.review';
 
     protected ?string $heading = 'PREVIEW REPORT';
 
-
     public ?Assessment $assessment;
+
     public ?Collection $recommendations;
 
     public function __construct()
@@ -41,5 +42,4 @@ class Review extends Page
                 ->modalSubmitAction(false),
         ];
     }
-
 }

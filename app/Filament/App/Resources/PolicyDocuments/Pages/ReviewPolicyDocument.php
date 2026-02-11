@@ -2,10 +2,10 @@
 
 namespace App\Filament\App\Resources\PolicyDocuments\Pages;
 
-use Filament\Support\Enums\Width;
 use App\Filament\App\Resources\PolicyDocuments\PolicyDocumentResource;
 use App\Models\PolicyDocument;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Support\Enums\Width;
 use Illuminate\Contracts\Support\Htmlable;
 
 class ReviewPolicyDocument extends ViewRecord

@@ -2,25 +2,21 @@
 
 namespace App\Filament\Admin\Resources;
 
-use Filament\Schemas\Components\Form;
-use Filament\Schemas\Schema;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Actions\EditAction;
+use App\Filament\Admin\Resources\UserResource\Pages\ListUsers;
+use App\Models\User;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use App\Filament\Admin\Resources\UserResource\Pages\ListUsers;
-use App\Filament\Admin\Resources\UserResource\Pages;
-use App\Models\User;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Tables;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class UserResource extends \Stats4sd\FilamentTeamManagement\Filament\Admin\Resources\Users\UserResource
 {
     protected static ?string $model = User::class;
-
 
     public static function form(Schema $schema): Schema
     {

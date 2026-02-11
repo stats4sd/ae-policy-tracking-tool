@@ -13,24 +13,21 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class PriorityActionExport implements FromCollection, WithTitle, WithHeadings, WithStyles, WithColumnWidths, WithMapping
+class PriorityActionExport implements FromCollection, WithColumnWidths, WithHeadings, WithMapping, WithStyles, WithTitle
 {
     use ExportStyles;
 
-    public function __construct(public Assessment $assessment)
-    {
-    }
-
+    public function __construct(public Assessment $assessment) {}
 
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return \Illuminate\Support\Collection
+     */
     public function collection()
     {
         return PriorityAction::with(['statements', 'highlights', 'themes'])->get();
     }
 
-        public function headings(): array
+    public function headings(): array
     {
         return [
             'Assessment ID',
@@ -60,7 +57,6 @@ class PriorityActionExport implements FromCollection, WithTitle, WithHeadings, W
     {
         return 'Priority Actions';
     }
-
 
     public function styles(Worksheet $sheet)
     {

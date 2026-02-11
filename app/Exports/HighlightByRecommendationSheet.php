@@ -8,7 +8,6 @@ use App\Models\Recommendation;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Collection as SupportCollection;
 use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -17,7 +16,7 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class HighlightByRecommendationSheet implements FromCollection, WithHeadings, WithMapping, WithStrictNullComparison, WithStyles, WithTitle, WithColumnWidths
+class HighlightByRecommendationSheet implements FromCollection, WithColumnWidths, WithHeadings, WithMapping, WithStrictNullComparison, WithStyles, WithTitle
 {
     use ExportStyles;
 

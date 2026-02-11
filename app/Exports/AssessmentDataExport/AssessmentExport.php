@@ -7,10 +7,7 @@ use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
 class AssessmentExport implements WithMultipleSheets
 {
-
-    public function __construct(public Assessment $assessment)
-    {
-    }
+    public function __construct(public Assessment $assessment) {}
 
     public function sheets(): array
     {

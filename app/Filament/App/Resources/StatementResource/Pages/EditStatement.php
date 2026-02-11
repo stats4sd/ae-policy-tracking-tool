@@ -2,12 +2,10 @@
 
 namespace App\Filament\App\Resources\StatementResource\Pages;
 
-use Filament\Actions\Action;
 use App\Filament\Admin\Resources\AssessmentResource;
 use App\Filament\App\Resources\AssessmentPriorityActionResource;
-use App\Filament\App\Resources\CountryResource;
 use App\Filament\App\Resources\StatementResource\StatementResource;
-use Filament\Actions;
+use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 
@@ -23,14 +21,14 @@ class EditStatement extends EditRecord
 
         $statement = $this->getRecord();
 
-        $breadcrumbs[AssessmentResource::getUrl('view', ['record' => $statement->assessmentPriorityAction->assessment])] = $statement->assessmentPriorityAction->assessment->country->name . ' ' . substr($statement->assessmentPriorityAction->assessment->created_at,0,stripos($statement->assessmentPriorityAction->assessment->created_at," "));
+        $breadcrumbs[AssessmentResource::getUrl('view', ['record' => $statement->assessmentPriorityAction->assessment])] = $statement->assessmentPriorityAction->assessment->country->name.' '.substr($statement->assessmentPriorityAction->assessment->created_at, 0, stripos($statement->assessmentPriorityAction->assessment->created_at, ' '));
 
-        $breadcrumbs[AssessmentPriorityActionResource::getUrl('view', ['record' => $statement->assessmentPriorityAction])] = 'Priority Action ' . $statement->assessmentPriorityAction->priority_action_id;
+        $breadcrumbs[AssessmentPriorityActionResource::getUrl('view', ['record' => $statement->assessmentPriorityAction])] = 'Priority Action '.$statement->assessmentPriorityAction->priority_action_id;
 
         return $breadcrumbs;
     }
 
-     protected function getHeaderActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Action::make('delete_statement')
@@ -41,10 +39,10 @@ class EditStatement extends EditRecord
                     $this->redirectRoute('filament.app.resources.assessment-priority-actions.view', ['record' => $assessment_priority_action_id]);
                 })
                 ->successNotification(
-                   Notification::make()
+                    Notification::make()
                         ->success()
                         ->title('Statement deleted')
-                )
+                ),
         ];
     }
 }

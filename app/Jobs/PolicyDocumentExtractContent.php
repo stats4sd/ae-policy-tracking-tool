@@ -3,9 +3,9 @@
 namespace App\Jobs;
 
 use App\Models\PolicyDocument;
-use Spatie\PdfToText\Pdf;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Spatie\PdfToText\Pdf;
 
 class PolicyDocumentExtractContent implements ShouldQueue
 {

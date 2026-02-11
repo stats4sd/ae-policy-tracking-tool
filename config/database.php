@@ -41,14 +41,14 @@ return [
             'database' => env('DB_DATABASE', database_path('database.sqlite')),
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
-                        'busy_timeout' => null,
+            'busy_timeout' => null,
             'journal_mode' => null,
             'synchronous' => null,
         ],
 
         'mysql' => [
             'driver' => 'mysql',
-                        'url' => env('DB_URL'),
+            'url' => env('DB_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'laravel'),

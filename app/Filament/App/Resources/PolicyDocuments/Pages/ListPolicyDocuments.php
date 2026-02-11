@@ -2,9 +2,9 @@
 
 namespace App\Filament\App\Resources\PolicyDocuments\Pages;
 
-use Filament\Actions\CreateAction;
 use App\Filament\App\Resources\PolicyDocuments\PolicyDocumentResource;
 use Filament\Actions;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListPolicyDocuments extends ListRecords
@@ -12,8 +12,8 @@ class ListPolicyDocuments extends ListRecords
     protected static string $resource = PolicyDocumentResource::class;
 
     protected ?string $heading = 'Policies Reviewed During this Assessment';
-    protected ?string $subheading = 'During the assessment, this list should be updated with all the documents that have been reviewed. Individual statements should be linked to the relevant documents.';
 
+    protected ?string $subheading = 'During the assessment, this list should be updated with all the documents that have been reviewed. Individual statements should be linked to the relevant documents.';
 
     protected function getHeaderActions(): array
     {
@@ -23,8 +23,8 @@ class ListPolicyDocuments extends ListRecords
                 ->url(PolicyDocumentResource::getUrl('bulk-upload'))
                 ->icon('heroicon-o-arrow-up-on-square'),
             CreateAction::make()
-            ->label('Add New')
-            ->icon('heroicon-o-plus'),
+                ->label('Add New')
+                ->icon('heroicon-o-plus'),
         ];
     }
 }

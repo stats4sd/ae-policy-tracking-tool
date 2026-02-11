@@ -2,8 +2,6 @@
 
 namespace App\Filament\App\Clusters\Setup\Resources\SearchTerms;
 
-use App\Filament\App\Clusters\Setup\Resources\SearchTerms\Pages\CreateSearchTerm;
-use App\Filament\App\Clusters\Setup\Resources\SearchTerms\Pages\EditSearchTerm;
 use App\Filament\App\Clusters\Setup\Resources\SearchTerms\Pages\ListSearchTerms;
 use App\Filament\App\Clusters\Setup\Resources\SearchTerms\Schemas\SearchTermForm;
 use App\Filament\App\Clusters\Setup\Resources\SearchTerms\Tables\SearchTermsTable;
@@ -22,6 +20,7 @@ class SearchTermResource extends Resource
     protected static ?string $model = SearchTerm::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMagnifyingGlassPlus;
+
     protected static ?int $navigationSort = 2;
 
     protected static ?string $recordTitleAttribute = 'phrase';

@@ -12,7 +12,7 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class HighlightExport implements FromCollection, WithHeadings, WithMapping, WithStyles, WithTitle, WithColumnWidths
+class HighlightExport implements FromCollection, WithColumnWidths, WithHeadings, WithMapping, WithStyles, WithTitle
 {
     use ExportStyles;
 

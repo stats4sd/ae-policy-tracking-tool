@@ -2,10 +2,10 @@
 
 namespace App\Enums;
 
-use Filament\Support\Contracts\HasLabel;
 use Filament\Support\Contracts\HasDescription;
+use Filament\Support\Contracts\HasLabel;
 
-enum TextDirection: string implements HasLabel, HasDescription
+enum TextDirection: string implements HasDescription, HasLabel
 {
     // define string values
     case LEFT_TO_RIGHT = 'left_to_right';

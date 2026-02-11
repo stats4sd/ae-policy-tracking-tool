@@ -11,17 +11,15 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class DocumentSummaryList implements FromCollection, WithHeadings, WithTitle, WithStyles, WithMapping
+class DocumentSummaryList implements FromCollection, WithHeadings, WithMapping, WithStyles, WithTitle
 {
     use ExportStyles;
 
-    public function __construct(public Assessment $assessment)
-    {
-    }
+    public function __construct(public Assessment $assessment) {}
 
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return \Illuminate\Support\Collection
+     */
     public function collection()
     {
         return $this->assessment->policyDocuments;

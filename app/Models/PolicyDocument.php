@@ -2,20 +2,15 @@
 
 namespace App\Models;
 
-use App\Jobs\PolicyDocumentAutoSearch;
-use App\Jobs\PolicyDocumentExtractContent;
-use App\Models\Assessment;
 use App\Enums\TextDirection;
-use App\Models\PriorityAction;
+use App\Jobs\PolicyDocumentAutoSearch;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\AssessmentPriorityAction;
-use Spatie\MediaLibrary\InteractsWithMedia;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 class PolicyDocument extends Model implements HasMedia
 {
@@ -61,19 +56,18 @@ class PolicyDocument extends Model implements HasMedia
             ->orWhere('automatic', false);
     }
 
-
     public function processing(): void
     {
-//        $this->update([
-//            'processing' => true,
-//        ]);
+        //        $this->update([
+        //            'processing' => true,
+        //        ]);
     }
 
     public function stopProcessing()
     {
-//        $this->update([
-//            'processing' => false,
-//        ]);
+        //        $this->update([
+        //            'processing' => false,
+        //        ]);
     }
 
     public function runAutomaticSearch()
@@ -88,8 +82,7 @@ class PolicyDocument extends Model implements HasMedia
     public function yearString(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->year . ($this->end_year ? ' - ' . $this->end_year : ''),
+            get: fn () => $this->year.($this->end_year ? ' - '.$this->end_year : ''),
         );
     }
-
 }

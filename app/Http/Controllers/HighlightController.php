@@ -55,12 +55,11 @@ class HighlightController extends Controller
             'type_id' => 'nullable|exists:types,id',
         ]);
 
-
         if (isset($validated['verified'])) {
             $highlight->verified = $validated['verified'];
         }
 
-        if(isset($validated['type_id'])) {
+        if (isset($validated['type_id'])) {
             $highlight->type_id = $validated['type_id'];
         }
 

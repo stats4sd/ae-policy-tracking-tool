@@ -11,17 +11,15 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class AssessmentSummaryExport implements FromCollection, WithHeadings, WithTitle, WithStyles, ShouldAutoSize
+class AssessmentSummaryExport implements FromCollection, ShouldAutoSize, WithHeadings, WithStyles, WithTitle
 {
     use ExportStyles;
 
-    public function __construct(public Assessment $assessment)
-    {
-    }
+    public function __construct(public Assessment $assessment) {}
 
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return \Illuminate\Support\Collection
+     */
     public function collection()
     {
         return collect([
@@ -52,7 +50,6 @@ class AssessmentSummaryExport implements FromCollection, WithHeadings, WithTitle
     {
         return 'Assessment Summary';
     }
-
 
     public function styles(Worksheet $sheet)
     {
