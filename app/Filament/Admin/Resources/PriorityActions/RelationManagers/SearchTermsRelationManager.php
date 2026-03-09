@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\PriorityActions\RelationManagers;
 
+use App\Models\Language;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -12,9 +13,6 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-
 
 class SearchTermsRelationManager extends RelationManager
 {
@@ -27,21 +25,32 @@ class SearchTermsRelationManager extends RelationManager
 
     public function form(Schema $schema): Schema
     {
-        return $schema
-            ->schema([
-                Forms\Components\TextInput::make('phrase')
-                    ->required()
-                    ->maxLength(255),
-            ]);
+        $languages = Language::all();
+
+        $inputs = $languages->map(function ($language) use ($languages) {
+            return Forms\Components\TextInput::make('phrase.'.$language->id)
+                ->label($language->getTranslation('name', 'en'))
+                ->required($language->id === $languages->first()->id)
+                ->maxLength(255);
+        });
+
+        return $schema->schema($inputs->toArray())
+            ->columns(1);
     }
 
     public function table(Table $table): Table
     {
+        $languages = Language::all();
+
+        $columns = $languages->map(function ($language) {
+            return Tables\Columns\TextColumn::make('phrase_'.$language->id)
+                ->label($language->getTranslation('name', 'en'))
+                ->getStateUsing(fn ($record) => $record->getTranslation('phrase', $language->id, useFallbackLocale: false));
+        });
+
         return $table
             ->recordTitleAttribute('phrase')
-            ->columns([
-                Tables\Columns\TextColumn::make('phrase'),
-            ])
+            ->columns($columns->toArray())
             ->filters([
                 //
             ])

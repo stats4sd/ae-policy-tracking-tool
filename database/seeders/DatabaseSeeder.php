@@ -24,9 +24,10 @@ class DatabaseSeeder extends Seeder
         $this->call(PriorityActionsTableSeeder::class);
         $this->call(ScoresTableSeeder::class);
         $this->call(DefaultSearchTermsSeeder::class);
+        $this->call(LanguagesTableSeeder::class);
 
-        if(env('APP_ENV') === 'local') {
+        if (env('APP_ENV') === 'local') {
             $this->call(TestSeeder::class);
-    }
+        }
     }
 }

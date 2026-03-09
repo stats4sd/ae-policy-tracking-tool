@@ -85,4 +85,11 @@ class PolicyDocument extends Model implements HasMedia
             get: fn () => $this->year.($this->end_year ? ' - '.$this->end_year : ''),
         );
     }
+
+    // by default, the policy document is in the default language of the assessment, but this can be overridden, for example if most documents are in French and only a few in English.
+    /** @return BelongsTo<Language, $this> */
+    public function language(): BelongsTo
+    {
+        return $this->belongsTo(Language::class);
+    }
 }

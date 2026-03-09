@@ -67,6 +67,15 @@ class AssessmentDetails extends Page
                         ->preload()
                         ->required()
                         ->columnSpan(1),
+                    Select::make('language_id')
+                        ->relationship('language', 'name')
+                        ->label('Language')
+                        ->createOptionForm([
+                            TextInput::make('id')->label('Enter the 2-letter ISO code for the language')
+                                ->unique()
+                                ->required(),
+                            TextInput::make('name')->label('Language Name')->required(),
+                        ]),
                     TextInput::make('year')
                         ->label('Year of the Assessment')
                         ->helperText('If the assessment is being conducted over multiple years, enter the starting year.')
