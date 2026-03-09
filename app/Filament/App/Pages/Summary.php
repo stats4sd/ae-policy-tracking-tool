@@ -49,13 +49,13 @@ class Summary extends Page
                             return Excel::download(new \App\Exports\DocumentSummaryExport\DocumentSummaryExport(Filament::getTenant()), $filename);
                         }),
 
-                    Action::make('export-highlights')
-                        ->label('Export Highlights')
+                    Action::make('export-extracts')
+                        ->label('Export Extracts')
                         ->action(function () {
 
-                            $filename = Filament::getTenant()->title.' - highlights.xlsx';
+                            $filename = Filament::getTenant()->title.' - extracts.xlsx';
 
-                            return Excel::download(new \App\Exports\HighlightByRecommendationExport(Filament::getTenant()), $filename);
+                            return Excel::download(new \App\Exports\ExtractByRecommendationExport(Filament::getTenant()), $filename);
                         }),
                 ]),
             ]);

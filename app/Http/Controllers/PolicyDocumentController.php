@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Extract;
 use App\Models\PolicyDocument;
 use Illuminate\Http\JsonResponse;
 
@@ -12,21 +13,21 @@ class PolicyDocumentController extends Controller
         return $document->content;
     }
 
-    public function getHighlights(PolicyDocument $document): JsonResponse
+    public function getExtracts(PolicyDocument $document): JsonResponse
     {
-        $highlights = $document->highlights()
+        $extracts = $document->extracts()
             ->with(['priorityActions.recommendation', 'searchTerms'])
-            ->get()->map(function ($highlight) {
+            ->get()->map(function (Extract $extract) {
                 return [
-                    'id' => $highlight->id,
-                    'policy_document_id' => $highlight->policy_document_id,
-                    'extract' => $highlight->extract,
-                    'start_offset' => $highlight->start_offset,
-                    'end_offset' => $highlight->end_offset,
-                    'color' => $highlight->color,
-                    'automatic' => $highlight->automatic,
-                    'verified' => $highlight->verified,
-                    'search_terms' => $highlight->searchTerms
+                    'id' => $extract->id,
+                    'policy_document_id' => $extract->policy_document_id,
+                    'extract' => $extract->extract,
+                    'start_offset' => $extract->start_offset,
+                    'end_offset' => $extract->end_offset,
+                    'color' => $extract->color,
+                    'automatic' => $extract->automatic,
+                    'verified' => $extract->verified,
+                    'search_terms' => $extract->searchTerms
                         ->sortby('id')
                         ->map(function ($term) {
                             return [
@@ -36,20 +37,20 @@ class PolicyDocumentController extends Controller
                             ];
                         })
                         ->toArray(),
-                    'search_terms_list' => $highlight->searchTerms
+                    'search_terms_list' => $extract->searchTerms
                         ->sortby('id')
                         ->pluck('phrase')
                         ->unique()
                         // join phrases with comma and 'and' as the last separator
                         ->join(', ', ' and '),
-                    'priority_actions' => $highlight->priorityActions
+                    'priority_actions' => $extract->priorityActions
                         ->sortby('id')
                         ->pluck('id')
                         ->toArray(), // return only IDs for the Vue FormKit checkboxes.
-                    'type_id' => $highlight->type_id,
+                    'type_id' => $extract->type_id,
                 ];
             });
 
-        return response()->json($highlights);
+        return response()->json($extracts);
     }
 }

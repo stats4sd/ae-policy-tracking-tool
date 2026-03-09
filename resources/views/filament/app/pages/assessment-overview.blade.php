@@ -20,16 +20,13 @@
                         :collapsible="true"
                         :collapsed="!$loop->first"
                 >
-                    <div class="space-y-8">
-                        @foreach(\App\Models\Score::all() as $type)
+                    <div class="px-0 py-0">
                             <livewire:statement-editor
-                                    :statements="$action->statements->where('type_id', $type->id)"
+                                    :statements="$action->statements"
                                     :priority-action="$action"
-                                    :type="$type"
-                                    :wire:key='"{$action->id}_{$type->id}"'
+                                    :wire:key='"{$action->id}_statement_editor"'
                                     :first="$loop->first"
                             />
-                        @endforeach
                     </div>
                 </x-filament::section>
             @endforeach

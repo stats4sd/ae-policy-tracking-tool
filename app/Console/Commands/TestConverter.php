@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Highlight;
+use App\Models\Extract;
 use App\Models\PolicyDocument;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;

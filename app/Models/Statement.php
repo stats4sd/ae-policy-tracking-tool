@@ -20,24 +20,24 @@ class Statement extends Model
 
         static::addGlobalScope('assessment', function ($query) {
             if (Filament::hasTenancy() && Filament::getTenant()) {
-                $query->where('assessment_id', Filament::getTenant()->id);
+                $query->where('assessment_id', Filament::getTenant()->getKey());
             }
         });
     }
 
-    /** @return Attribute<Collection<PolicyDocument>> */
+    /** @return Attribute<Collection<PolicyDocument>, never> */
     public function linkedPolicyDocuments(): Attribute
     {
         return Attribute::make(
             get: function () {
                 $directLinks = $this->policyDocuments;
-                $highlightLinks = PolicyDocument::whereHas('highlights', function ($query) {
+                $extractLinks = PolicyDocument::whereHas('extracts', function ($query) {
                     $query->whereHas('statements', function ($query) {
                         $query->where('statements.id', $this->id);
                     });
                 })->get();
 
-                return $directLinks->merge($highlightLinks)->unique('id');
+                return $directLinks->merge($extractLinks)->unique('id');
             },
         );
     }
@@ -52,11 +52,6 @@ class Statement extends Model
         return $this->belongsTo(Assessment::class);
     }
 
-    public function type(): BelongsTo
-    {
-        return $this->belongsTo(Score::class);
-    }
-
     public function aePrinciples(): BelongsToMany
     {
         return $this->belongsToMany(AePrinciple::class);
@@ -68,10 +63,10 @@ class Statement extends Model
         return $this->belongsToMany(PolicyDocument::class);
     }
 
-    /** @return BelongsToMany<Highlight, $this> */
-    public function highlights(): BelongsToMany
+    /** @return BelongsToMany<Extract, $this> */
+    public function extracts(): BelongsToMany
     {
-        return $this->belongsToMany(Highlight::class);
+        return $this->belongsToMany(Extract::class);
     }
 
     /** @return BelongsTo<Theme, $this> */

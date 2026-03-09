@@ -34,9 +34,9 @@ class AllRecommendationsExport implements FromCollection, ShouldAutoSize, WithHe
             return $types->map(function (Score $type) use ($recommendation, $documents) {
                 $documentCountRows = $documents->mapWithKeys(function (PolicyDocument $doc) use ($recommendation, $type) {
                     return [
-                        $doc->highlights()
+                        $doc->extracts()
                             ->whereHas('priorityActions', fn ($query) => $query->where('priority_actions.recommendation_id', $recommendation->id))
-                            ->whereHas('type', fn ($query) => $query->where('types.id', $type->id))
+                            ->whereHas('score', fn ($query) => $query->where('types.id', $type->id))
                             ->count(),
                     ];
                 });

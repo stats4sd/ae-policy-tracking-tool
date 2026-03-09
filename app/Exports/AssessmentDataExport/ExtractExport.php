@@ -12,7 +12,7 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class HighlightExport implements FromCollection, WithColumnWidths, WithHeadings, WithMapping, WithStyles, WithTitle
+class ExtractExport implements FromCollection, WithColumnWidths, WithHeadings, WithMapping, WithStyles, WithTitle
 {
     use ExportStyles;
 
@@ -23,7 +23,7 @@ class HighlightExport implements FromCollection, WithColumnWidths, WithHeadings,
      */
     public function collection()
     {
-        return $this->assessment->highlights;
+        return $this->assessment->extracts;
     }
 
     public function headings(): array
@@ -54,7 +54,7 @@ class HighlightExport implements FromCollection, WithColumnWidths, WithHeadings,
 
     public function title(): string
     {
-        return 'Document Highlights';
+        return 'Document Extracts';
     }
 
     public function styles(Worksheet $sheet)

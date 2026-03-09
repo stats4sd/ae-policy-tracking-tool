@@ -104,9 +104,9 @@ class Assessment extends Team implements HasName
         return $this->hasMany(SearchTerm::class);
     }
 
-    /** @return HasManyThrough<Highlight, PolicyDocument, $this> */
-    public function highlights(): HasManyThrough
+    /** @return HasManyThrough<Extract, PolicyDocument, $this> */
+    public function extracts(): HasManyThrough
     {
-        return $this->hasManyThrough(Highlight::class, PolicyDocument::class);
+        return $this->hasManyThrough(Extract::class, PolicyDocument::class);
     }
 }

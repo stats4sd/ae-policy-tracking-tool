@@ -20,10 +20,10 @@ class Theme extends Model
         return $this->belongsTo(PriorityAction::class);
     }
 
-    /** @return HasMany<Highlight, $this> */
-    public function highlights(): HasMany
+    /** @return HasMany<Extract, $this> */
+    public function extracts(): HasMany
     {
-        return $this->hasMany(Highlight::class);
+        return $this->hasMany(Extract::class);
     }
 
     /** @return HasMany<Statement, $this> */

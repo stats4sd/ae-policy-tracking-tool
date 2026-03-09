@@ -33,8 +33,6 @@ class StatementEditor extends Component implements HasActions, HasForms, HasTabl
     use InteractsWithForms;
     use InteractsWithTable;
 
-    public Score $type;
-
     public Collection $statements;
 
     public PriorityAction $priorityAction;
@@ -59,7 +57,7 @@ class StatementEditor extends Component implements HasActions, HasForms, HasTabl
     public function table(Table $table): Table
     {
         return $table
-            ->relationship(fn () => $this->priorityAction->statements()->where('type_id', $this->type->id))
+            ->relationship(fn () => $this->priorityAction->statements())
             ->paginated(false)
             ->defaultGroup(Group::make('theme_id')
                 ->label('Theme')
@@ -79,17 +77,17 @@ class StatementEditor extends Component implements HasActions, HasForms, HasTabl
             ->recordActions([
                 EditAction::make()
                     ->schema(fn (Statement $record) => [
-                        Section::make('Highlights')
+                        Section::make('Extracts')
                             ->extraAttributes([
                                 'class' => 'compact-section',
                             ])
-                            ->heading('Document Highlights Linked to This Statement')
-                            ->description('The highlights from policy documents that are linked to this statement are shown below. You can refer to these highlights when editing the statement to ensure it accurately reflects the content of the linked documents.')
+                            ->heading('Document Extracts Linked to This Statement')
+                            ->description('The extracts from policy documents that are linked to this statement are shown below. You can refer to these when editing the statement to ensure it accurately reflects the content of the linked documents.')
                             ->schema([
                                 TableInSchema::make()
                                     ->table(fn (Table $table): Table => $table
                                         ->paginated(false)
-                                        ->relationship(fn () => $record->highlights())
+                                        ->relationship(fn () => $record->extracts())
                                         ->defaultGroup(Group::make('policy_document_id')
                                             ->label('Policy Document')
                                             ->getTitleFromRecordUsing(fn ($record) => $record->policyDocument->name ?? 'No Document')
@@ -98,7 +96,7 @@ class StatementEditor extends Component implements HasActions, HasForms, HasTabl
                                         ->columns([
                                             Grid::make(1)
                                                 ->schema([
-                                                    TextColumn::make('extract')->label('Highlight')->wrap(),
+                                                    TextColumn::make('extract')->label('Extract')->wrap(),
 
                                                 ]),
                                         ])
@@ -111,10 +109,6 @@ class StatementEditor extends Component implements HasActions, HasForms, HasTabl
                             ->label('Theme')
                             ->relationship('theme', 'name', fn (Builder $query) => $query->where('assessment_id', Filament::getTenant()->id)->where('priority_action_id', $this->priorityAction->id))
                             ->nullable(),
-                        Select::make('type_id')
-                            ->label('Type')
-                            ->default($this->type->id)
-                            ->relationship('type', 'name'),
                     ])
                     ->after(fn () => $this->dispatch('refreshStatementEditor')),
                 DeleteAction::make(),
@@ -135,7 +129,6 @@ class StatementEditor extends Component implements HasActions, HasForms, HasTabl
 
             // if the statement doesn't already exist; add the type_id and create the entry
             if (! isset($statement['id'])) {
-                $statement['type_id'] = $this->type->id;
                 $statement['assessment_id'] = Filament::getTenant()->id;
 
                 $this->priorityAction->statements()->create($statement);

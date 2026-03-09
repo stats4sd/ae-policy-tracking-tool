@@ -8,17 +8,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Score extends Model
 {
-    /** @return HasMany<Statement, $this> */
-    public function statements(): HasMany
+    /** @return HasMany<Extract, $this> */
+    public function extracts(): HasMany
     {
-        return $this->hasMany(Statement::class);
-    }
-
-
-    /** @return HasMany<Highlight, $this> */
-    public function highlights(): HasMany
-    {
-        return $this->hasMany(Highlight::class);
+        return $this->hasMany(Extract::class);
     }
 
 }

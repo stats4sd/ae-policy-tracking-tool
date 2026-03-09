@@ -80,7 +80,7 @@
                         class="flex items-center justify-between text-white py-4 px-4"
                     >
                         <h5 class="text-lg font-semibold">
-                            Filter by Highlight Score
+                            Filter by Extract Score
                         </h5>
                     </div>
                     <div
@@ -115,12 +115,12 @@
                     </div>
                 </div>
 
-                <!-- Collapsible Highlights Card -->
-                <HighlightsSidebar
-                    :highlights="filteredHighlights"
-                    v-model:currentHighlightId="currentHighlightId"
-                    @edit-highlight="editHighlight"
-                    @delete-highlight="deleteHighlight"
+                <!-- Collapsible Extracts Card -->
+                <ExtractsSidebar
+                    :extracts="filteredExtracts"
+                    v-model:currentExtractId="currentExtractId"
+                    @edit-extract="editExtract"
+                    @delete-extract="deleteExtract"
                 />
             </div>
             <div class="grow lg:max-w-[65vw]">
@@ -147,7 +147,7 @@
                     <div
                         class="bg-yellow-100 text-yellow-800 text-sm px-4 py-2 rounded-md my-2"
                     >
-                        Filtering highlights by selected Priority Actions:
+                        Filtering extracts by selected Priority Actions:
                         <b>{{ selectedPriorityActions.join(", ") }}</b>
 
                         <br />To clear the filter, deselect all Priority Actions
@@ -169,9 +169,9 @@
     </div>
 
     <!-- Modal for text selection -->
-    <HighlightModal
+    <ExtractModal
         v-if="showModal"
-        :title="currentHighlight ? 'Edit Highlight' : 'Save New Highlight'"
+        :title="currentExtract ? 'Edit Extract' : 'Save New Extract'"
         v-on:close="showModal = false"
     >
         <div class="w-full py-4 px-8 text-left rounded-md flex">
@@ -179,8 +179,8 @@
                 <h3 class="font-bold">
                     <span
                         v-if="
-                            currentHighlight?.automatic &&
-                            currentHighlight?.verified
+                            currentExtract?.automatic &&
+                            currentExtract?.verified
                         "
                         class="text-blue-600"
                         >[Auto]</span
@@ -189,8 +189,8 @@
                 </h3>
                 <div class="border-l-2 text-base border-black pl-6 mx-8 mt-6">
                     "{{
-                        currentHighlight
-                            ? currentHighlight.extract
+                        currentExtract
+                            ? currentExtract.extract
                             : currentSelection
                               ? currentSelection.toString()
                               : ""
@@ -200,28 +200,28 @@
             <div class="text-right py-4 flex align-top justify-start">
                 <div class="flex flex-col space-y-2">
                     <button
-                        @click="saveHighlightEdits"
+                        @click="saveExtractEdits"
                         class="text-nowrap w-full text-xs mr-2 px-4 py-2 theme_button"
                     >
                         {{
-                            currentHighlight?.verified ||
-                            !currentHighlight?.automatic
-                                ? "Save Highlight"
-                                : "Confirm Highlight"
+                            currentExtract?.verified ||
+                            !currentExtract?.automatic
+                                ? "Save Extract"
+                                : "Confirm Extract"
                         }}
                     </button>
                     <button
-                        @click="deleteHighlight(currentHighlight.id)"
+                        @click="deleteExtract(currentExtract.id)"
                         class="text-nowrap w-full text-xs px-4 py-2 theme_button !bg-red-600 hover:!bg-red-500"
                     >
-                        Delete Highlight
+                        Delete Extract
                     </button>
                 </div>
             </div>
         </div>
         <div class="p-4">
             <div
-                v-if="!currentHighlight"
+                v-if="!currentExtract"
                 class="w-full bg-gray-100 p-4 rounded-md mt-4"
             >
                 <label class="block mb-4 font-semibold"
@@ -244,23 +244,23 @@
             </div>
             <div
                 v-else-if="
-                    currentHighlight.automatic && !currentHighlight.verified
+                    currentExtract.automatic && !currentExtract.verified
                 "
                 class="w-full bg-gray-100 p-4 rounded-md mt-4"
             >
-                This highlight was automatically created from the search term(s): <b> {{ currentHighlight.search_terms_list }}</b>. It will not appear in the
+                This extract was automatically created from the search term(s): <b> {{ currentExtract.search_terms_list }}</b>. It will not appear in the
                 final results until you confirm or delete it.
             </div>
             <div v-else class="w-full bg-gray-100 p-4 rounded-md mt-4">
-                To change the selected text, please delete this highlight and
+                To change the selected text, please delete this extract and
                 recreate it.
             </div>
 
-            <!-- Link highlight to 'type' -->
+            <!-- Link extract to 'type' -->
             <div class="p-4">
 
-                <select v-if="types" v-model="highlightTypeId" class="w-full bg-white border border-gray-300 rounded-md px-4 py-2">
-                    <option :value="null">Select Highlight Type</option>
+                <select v-if="types" v-model="extractTypeId" class="w-full bg-white border border-gray-300 rounded-md px-4 py-2">
+                    <option :value="null">Select Extract Type</option>
                     <option
                         v-for="type in types"
                         :key="type.id"
@@ -276,7 +276,7 @@
                 class="w-full bg-gray-100 p-4 rounded-md mt-4 space-y-4"
             >
                 <label class="block mb-4 font-semibold w-full"
-                    >Add Priority Actions to this highlight</label
+                    >Add Priority Actions to this extract</label
                 >
 
                 <div
@@ -299,7 +299,7 @@
                                         }),
                                     )
                                 "
-                                v-model="highlightPriorityActions"
+                                v-model="extractPriorityActions"
                             />
                         </FormKit>
                     </div>
@@ -307,7 +307,7 @@
             </div>
 
             <div v-else class="w-full bg-yellow-100 p-4 rounded-md mt-4">
-                <span class="font-bold">This highlight will be associated with the selected Priority
+                <span class="font-bold">This extract will be associated with the selected Priority
                 Actions:</span>
                 <ul class="list-none list-inside mt-2 text-center">
                     <li
@@ -327,26 +327,26 @@
                 Cancel
             </button>
             <button
-                @click="deleteHighlight(currentHighlight.id)"
+                @click="deleteExtract(currentExtract.id)"
                 v-if="
-                    currentHighlight?.automatic && !currentHighlight?.verified
+                    currentExtract?.automatic && !currentExtract?.verified
                 "
                 class="mr-2 text-nowrap text-xs px-4 py-2 theme_button !bg-red-600 hover:!bg-red-500"
             >
-                Delete Highlight
+                Delete Extract
             </button>
             <button
-                @click="saveHighlightEdits"
+                @click="saveExtractEdits"
                 class="text-nowrap text-xs mr-2 px-4 py-2 theme_button"
             >
                 {{
-                    currentHighlight?.verified || !currentHighlight?.automatic
-                        ? "Save Highlight"
-                        : "Confirm Highlight"
+                    currentExtract?.verified || !currentExtract?.automatic
+                        ? "Save Extract"
+                        : "Confirm Extract"
                 }}
             </button>
         </div>
-    </HighlightModal>
+    </ExtractModal>
 </template>
 
 <script setup lang="ts">
@@ -359,14 +359,14 @@ import {
     watch,
 } from "vue";
 
-import HighlightModal from "./HighlightModal.vue";
-import { useHighlights } from "@/composables/highlights.ts";
+import ExtractModal from "./ExtractModal.vue";
+import { useExtracts } from "@/composables/extracts.ts";
 import { useLiveSearch } from "@/composables/liveSearch.ts";
 import { useTextSelection } from "@/composables/selectText.ts";
 import { usePriorityActions } from "@/composables/priorityActions.ts";
-import HighlightsSidebar from "@/components/HighlightsSidebar.vue";
+import ExtractsSidebar from "@/components/ExtractsSidebar.vue";
 
-import { type Highlight, type SearchTerm } from "@/composables/highlights.ts";
+import { type Extract, type SearchTerm } from "@/composables/extracts.ts";
 
 interface Props {
     documentId: number;
@@ -400,23 +400,23 @@ onMounted(async (): Promise<void> => {
     await loadRecommendations();
     await loadTypes();
 
-    updateFilteredHighlights();
+    updateFilteredExtracts();
     renderContent();
 });
 
 const {
-    highlights,
-    currentHighlight,
-    currentHighlightId,
+    extracts,
+    currentExtract,
+    currentExtractId,
     showModal,
-    highlightPriorityActions,
-    highlightTypeId,
-    confirmHighlight,
-    focusCurrentHighlight,
-    editHighlight,
-    saveHighlight,
-    deleteHighlight,
-} = useHighlights(documentId);
+    extractPriorityActions,
+    extractTypeId,
+    confirmExtract,
+    focusCurrentExtract,
+    editExtract,
+    saveExtract,
+    deleteExtract,
+} = useExtracts(documentId);
 
 const {
     searchQuery,
@@ -445,16 +445,16 @@ watch(
     () => {
         if (currentSelection.value) {
             showModal.value = true;
-            currentHighlight.value = null;
-            currentHighlightId.value = null;
+            currentExtract.value = null;
+            currentExtractId.value = null;
 
             // if priority actions are selected for filtering, pre-fill the form
             if (selectedPriorityActions.value) {
-                highlightPriorityActions.value = [
+                extractPriorityActions.value = [
                     ...selectedPriorityActions.value,
                 ];
             } else {
-                highlightPriorityActions.value = [];
+                extractPriorityActions.value = [];
             }
         } else {
             // no selection
@@ -467,11 +467,11 @@ watch(
 const showTypeScoreSidebar = ref<boolean>(true);
 const selectedTypeScore = ref<number[]>([]);
 
-// filter highlights by priority action
-const filteredHighlights = ref<Highlight[]>([]);
+// filter extracts by priority action
+const filteredExtracts = ref<Extract[]>([]);
 
-const updateFilteredHighlights = () => {
-    filteredHighlights.value = highlights.value.filter((h) => {
+const updateFilteredExtracts = () => {
+    filteredExtracts.value = extracts.value.filter((h) => {
         if (selectedPriorityActions.value.length === 0) {
             return true;
         }
@@ -480,7 +480,7 @@ const updateFilteredHighlights = () => {
         );
     });
 
-    filteredHighlights.value = highlights.value.filter((h) => {
+    filteredExtracts.value = extracts.value.filter((h) => {
         if (selectedTypeScore.value.length === 0) {
             return true;
         }
@@ -492,7 +492,7 @@ const updateFilteredHighlights = () => {
 const escapeHtml = (s: string) =>
     s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-// Render combined HTML from documentContent, applying highlights and search spans.
+// Render combined HTML from documentContent, applying extracts and search spans.
 // Every plain-text chunk is wrapped with a span[data-offset] so selection offset logic can locate base offset.
 const renderContent = (): void => {
     const text = documentContent.value || "";
@@ -500,17 +500,17 @@ const renderContent = (): void => {
         pos: number;
         kind: "h_start" | "h_end" | "s_start" | "s_end";
         id: number;
-        highlightId?: number | null;
+        extractId?: number | null;
         color?: string;
     }[] = [];
 
-    // highlight events
-    filteredHighlights.value.forEach((h, idx) => {
+    // extract events
+    filteredExtracts.value.forEach((h, idx) => {
         events.push({
             pos: h.start_offset,
             kind: "h_start",
             id: idx,
-            highlightId: h.id || null,
+            extractId: h.id || null,
             color: h.color,
         });
         events.push({
@@ -534,7 +534,7 @@ const renderContent = (): void => {
         });
     });
 
-    // sort events: pos asc; when equal: start before end; for starts: highlight before search; for ends: search before highlight
+    // sort events: pos asc; when equal: start before end; for starts: extract before search; for ends: search before extract
     events.sort((a, b) => {
         if (a.pos !== b.pos) return a.pos - b.pos;
         const order = (e: typeof a) => {
@@ -568,7 +568,7 @@ const renderContent = (): void => {
 
         // handle event
         if (ev.kind === "h_start") {
-            out += `<span class="doc-highlight cursor-pointer" style="background-color: ${ev.color}" data-highlight-id="${ev.highlightId}">`;
+            out += `<span class="doc-extract cursor-pointer" style="background-color: ${ev.color}" data-extract-id="${ev.extractId}">`;
             openStack.push("h");
         } else if (ev.kind === "s_start") {
             // differentiate current result visually
@@ -609,29 +609,29 @@ const renderContent = (): void => {
 
     formattedDocumentContent.value = out;
 
-    // ensure current highlight is scrolled into view and visually marked
+    // ensure current extract is scrolled into view and visually marked
 
     console.log(
         "renderContent: currentSearchIndex=",
         currentSearchIndex.value,
-        "currentHighlightId=",
-        currentHighlightId.value,
+        "currentExtractId=",
+        currentExtractId.value,
     );
 
     if (currentSearchIndex.value > -1) {
         focusCurrentSearch();
-    } else if (currentHighlightId.value) {
-        focusCurrentHighlight();
+    } else if (currentExtractId.value) {
+        focusCurrentExtract();
     }
 
-    // add event listeners to highlights for editing
+    // add event listeners to extracts for editing
     setTimeout(() => {
-        const highlightElements = document.querySelectorAll(".doc-highlight");
-        highlightElements.forEach((el) => {
+        const extractElements = document.querySelectorAll(".doc-extract");
+        extractElements.forEach((el) => {
             el.addEventListener("click", (event) => {
-                const highlightId = el.getAttribute("data-highlight-id");
-                if (highlightId) {
-                    editHighlight(parseInt(highlightId, 10));
+                const extractId = el.getAttribute("data-extract-id");
+                if (extractId) {
+                    editExtract(parseInt(extractId, 10));
                 }
             });
         });
@@ -640,16 +640,16 @@ const renderContent = (): void => {
 
 // Re-render the content whenever:
 // - document content changes
-// - the highlights change
+// - the extracts change
 // - the search query or current search index changes
 
 watch(
     [
         documentContent,
-        highlights,
+        extracts,
         searchMatches,
         currentSearchIndex,
-        currentHighlightId,
+        currentExtractId,
     ],
     () => {
         renderContent();
@@ -661,23 +661,23 @@ watch(
 );
 
 watch(
-    [highlights, selectedPriorityActions, selectedTypeScore],
+    [extracts, selectedPriorityActions, selectedTypeScore],
     () => {
-        updateFilteredHighlights();
+        updateFilteredExtracts();
         renderContent();
     },
     { immediate: true, deep: true },
 );
 
-const saveHighlightEdits = async (): Promise<void> => {
+const saveExtractEdits = async (): Promise<void> => {
     console.log("hi");
     let success = false;
-    if (currentHighlight.value) {
-        // editing existing highlight
-        success = await saveHighlight();
+    if (currentExtract.value) {
+        // editing existing extract
+        success = await saveExtract();
     } else if (currentSelection.value) {
-        // creating new highlight
-        success = await confirmHighlight(currentSelection.value);
+        // creating new extract
+        success = await confirmExtract(currentSelection.value);
     }
 
     if (success) {

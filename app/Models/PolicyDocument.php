@@ -34,24 +34,24 @@ class PolicyDocument extends Model implements HasMedia
         return $this->belongsToMany(Statement::class);
     }
 
-    /** @return HasMany<Highlight, $this> */
-    public function highlights(): HasMany
+    /** @return HasMany<Extract, $this> */
+    public function extracts(): HasMany
     {
-        return $this->hasMany(Highlight::class);
+        return $this->hasMany(Extract::class);
     }
 
-    /** @return HasMany<Highlight, $this> */
-    public function automaticHighlights(): HasMany
+    /** @return HasMany<Extract, $this> */
+    public function automaticExtracts(): HasMany
     {
-        return $this->hasMany(Highlight::class)
+        return $this->hasMany(Extract::class)
             ->where('automatic', true)
             ->where('verified', false);
     }
 
-    /** @return HasMany<Highlight, $this> */
-    public function verifiedHighlights(): HasMany
+    /** @return HasMany<Extract, $this> */
+    public function verifiedExtracts(): HasMany
     {
-        return $this->hasMany(Highlight::class)
+        return $this->hasMany(Extract::class)
             ->where('verified', true)
             ->orWhere('automatic', false);
     }

@@ -24,7 +24,7 @@ class PriorityActionExport implements FromCollection, WithColumnWidths, WithHead
      */
     public function collection()
     {
-        return PriorityAction::with(['statements', 'highlights', 'themes'])->get();
+        return PriorityAction::with(['statements', 'extracts', 'themes'])->get();
     }
 
     public function headings(): array
@@ -36,7 +36,7 @@ class PriorityActionExport implements FromCollection, WithColumnWidths, WithHead
             'Priority Action Text',
             '# Themes',
             '# Statements',
-            '# Highlights',
+            '# Extracts',
         ];
     }
 
@@ -49,7 +49,7 @@ class PriorityActionExport implements FromCollection, WithColumnWidths, WithHead
             $row->name,
             $row->themes()->count(),
             $row->statements()->count(),
-            $row->highlights()->count(),
+            $row->extracts()->count(),
         ];
     }
 
