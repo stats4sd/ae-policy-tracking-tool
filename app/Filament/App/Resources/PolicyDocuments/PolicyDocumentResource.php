@@ -124,6 +124,12 @@ class PolicyDocumentResource extends Resource
                     ->label('Search & Find Extracts')
                     ->url(fn (PolicyDocument $record): string => static::getUrl('review', ['record' => $record]))
                     ->icon('heroicon-o-magnifying-glass'),
+                Action::make('redo_search')
+                    ->label('Re-run Auto Search')
+                    ->icon('heroicon-o-arrow-path')
+                    ->requiresConfirmation()
+                    ->modalDescription('Re-runs the automatic search for this document. Any existing, unverified extracts will be deleted and new ones will be created.')
+                    ->action(fn (PolicyDocument $record) => $record->runAutomaticSearch()),
                 EditAction::make(),
                 DeleteAction::make()
                     ->requiresConfirmation()
