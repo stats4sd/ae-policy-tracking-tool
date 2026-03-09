@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call(RecommendationsTableSeeder::class);
         $this->call(AePrincipleRecommendationTableSeeder::class);
         $this->call(PriorityActionsTableSeeder::class);
-        $this->call(TypesTableSeeder::class);
+        $this->call(ScoresTableSeeder::class);
         $this->call(DefaultSearchTermsSeeder::class);
 
         if(env('APP_ENV') === 'local') {
