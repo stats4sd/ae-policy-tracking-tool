@@ -20,12 +20,12 @@ class Statement extends Model
 
         static::addGlobalScope('assessment', function ($query) {
             if (Filament::hasTenancy() && Filament::getTenant()) {
-                $query->where('assessment_id', Filament::getTenant()->id);
+                $query->where('assessment_id', Filament::getTenant()->getKey());
             }
         });
     }
 
-    /** @return Attribute<Collection<PolicyDocument>> */
+    /** @return Attribute<Collection<PolicyDocument>, never> */
     public function linkedPolicyDocuments(): Attribute
     {
         return Attribute::make(
@@ -50,11 +50,6 @@ class Statement extends Model
     public function assessment(): BelongsTo
     {
         return $this->belongsTo(Assessment::class);
-    }
-
-    public function type(): BelongsTo
-    {
-        return $this->belongsTo(Score::class);
     }
 
     public function aePrinciples(): BelongsToMany

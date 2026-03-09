@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "laravel-boost": {
+      "command": "/opt/homebrew/Cellar/php@8.4/8.4.17/bin/php",
+      "args": [
+        "/Users/dave/Sites/ae-policy-tracking-tool/artisan",
+        "boost:mcp"
+      ]
+    }
+  }
+}
