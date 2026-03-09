@@ -86,11 +86,14 @@ class BulkUploadPage extends ListRecords implements HasActions, HasSchemas
             // get the uploaded files from submitted form
             $documents = $data['documents'];
 
+            $assessmentLanguageId = Filament::getTenant()->language_id;
+
             // create one policy document model for each uploaded file
             foreach ($documents as $document) {
                 // create policy document model, set original file name
                 $policyDocument = PolicyDocument::create([
                     'assessment_id' => Filament::getTenant()->id,
+                    'language_id' => $assessmentLanguageId,
                     'name' => $document->getClientOriginalName(),
                     'short_title' => Str::limit($document->getClientOriginalName(), 150),
                 ]);
@@ -110,6 +113,13 @@ class BulkUploadPage extends ListRecords implements HasActions, HasSchemas
                 $medias[0]->file_name = $document->getClientOriginalName();
                 $medias[0]->save();
             }
+
+            Notification::make()
+                ->warning()
+                ->title('Please confirm the language for each document')
+                ->body('All uploaded documents have been assigned the assessment\'s default language. Please review each document and update the language if it differs.')
+                ->persistent()
+                ->send();
 
             // redirect to policy documents list page
             redirect(PolicyDocumentResource::getUrl('index'));
