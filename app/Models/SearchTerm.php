@@ -5,11 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Spatie\Translatable\HasTranslations;
 use Znck\Eloquent\Relations\BelongsToThrough;
 
 class SearchTerm extends Model
 {
+    use HasTranslations;
     use \Znck\Eloquent\Traits\BelongsToThrough;
+
+    public array $translatable = ['phrase'];
 
     /** @return BelongsTo<Assessment, $this> */
     public function assessment(): BelongsTo
@@ -32,12 +36,9 @@ class SearchTerm extends Model
         );
     }
 
-
     /** @return BelongsToMany<Extract, $this> */
     public function extracts(): BelongsToMany
     {
         return $this->belongsToMany(Extract::class);
     }
-
-
 }

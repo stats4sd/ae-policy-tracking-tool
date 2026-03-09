@@ -9,6 +9,7 @@ use App\Filament\Admin\Pages\AdminDashboard;
 use App\Filament\Admin\Resources\AePrinciples\AePrincipleResource;
 use App\Filament\Admin\Resources\Assessments\AssessmentResource;
 use App\Filament\Admin\Resources\Countries\CountryResource;
+use App\Filament\Admin\Resources\Languages\LanguageResource;
 use App\Filament\Admin\Resources\PriorityActions\PriorityActionResource;
 use App\Filament\Admin\Resources\Recommendations\RecommendationResource;
 use App\Filament\Admin\Resources\Scores\ScoreResource;
@@ -80,6 +81,7 @@ class AdminPanelProvider extends PanelProvider
                                 ...PriorityActionResource::getNavigationItems(),
                                 ...ScoreResource::getNavigationItems(),
                                 ...CountryResource::getNavigationItems(),
+                                ...LanguageResource::getNavigationItems(),
                             ]),
                         NavigationGroup::make('User Management')
                             ->items([

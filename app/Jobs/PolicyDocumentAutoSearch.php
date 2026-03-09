@@ -35,7 +35,14 @@ class PolicyDocumentAutoSearch implements ShouldQueue
                 $matches = [];
                 $offset = 0;
                 $content = $this->policyDocument->content;
-                $term = $searchTerm->phrase;
+                $term = $searchTerm->getTranslation('phrase', $this->policyDocument->assessment->language_id, useFallbackLocale: false);
+
+                // if there is no translation for the search term, skip it
+                if (blank($term)) {
+                    continue;
+                }
+
+                ray("Searching for term '{$term}' in document '{$this->policyDocument->name}'");
 
                 while (($pos = mb_stripos($content, $term, $offset)) !== false) {
                     $matches[] = $pos;

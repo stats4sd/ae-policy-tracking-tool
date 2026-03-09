@@ -7,6 +7,7 @@ use App\Filament\App\Resources\PolicyDocuments\Pages\CreatePolicyDocument;
 use App\Filament\App\Resources\PolicyDocuments\Pages\EditPolicyDocument;
 use App\Filament\App\Resources\PolicyDocuments\Pages\ListPolicyDocuments;
 use App\Filament\App\Resources\PolicyDocuments\Pages\ReviewPolicyDocument;
+use App\Models\Language;
 use App\Models\PolicyDocument;
 use BackedEnum;
 use Filament\Actions\Action;
@@ -14,6 +15,8 @@ use Filament\Actions\BulkAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Facades\Filament;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -55,6 +58,12 @@ class PolicyDocumentResource extends Resource
                             ->label('Additional Comments')
                             ->helperText('Any additional information about the document that may be relevant to the assessment.')
                             ->rows(5),
+                        Select::make('language_id')
+                            ->label('Language')
+                            ->helperText('The language this document is written in. Defaults to the assessment language.')
+                            ->options(Language::all()->mapWithKeys(fn (Language $lang) => [$lang->id => $lang->getTranslation('name', 'en')]))
+                            ->default(fn () => Filament::getTenant()->language_id)
+                            ->required(),
                     ]),
 
                 // file upload component to show files that can be deleted (files without any highlight)
@@ -90,6 +99,15 @@ class PolicyDocumentResource extends Resource
                 TextColumn::make('name')
                     ->wrap()
                     ->searchable(),
+                TextColumn::make('language_id')
+                    ->label('Language')
+                    ->getStateUsing(function (PolicyDocument $record): string {
+                        $language = $record->language ?? Filament::getTenant()->language;
+
+                        return $language
+                            ? $language->getTranslation('name', 'en').($record->language_id ? '' : ' (assessment default)')
+                            : '—';
+                    }),
                 TextColumn::make('automatic_extracts_count')
                     ->label(fn () => new HtmlString('# Automatic <br/>Search results'))
                     ->counts('automaticExtracts'),
@@ -106,6 +124,12 @@ class PolicyDocumentResource extends Resource
                     ->label('Search & Find Extracts')
                     ->url(fn (PolicyDocument $record): string => static::getUrl('review', ['record' => $record]))
                     ->icon('heroicon-o-magnifying-glass'),
+                Action::make('redo_search')
+                    ->label('Re-run Auto Search')
+                    ->icon('heroicon-o-arrow-path')
+                    ->requiresConfirmation()
+                    ->modalDescription('Re-runs the automatic search for this document. Any existing, unverified extracts will be deleted and new ones will be created.')
+                    ->action(fn (PolicyDocument $record) => $record->runAutomaticSearch()),
                 EditAction::make(),
                 DeleteAction::make()
                     ->requiresConfirmation()

@@ -109,4 +109,10 @@ class Assessment extends Team implements HasName
     {
         return $this->hasManyThrough(Extract::class, PolicyDocument::class);
     }
+
+    /** @return BelongsTo<Language, $this> */
+    public function language(): BelongsTo
+    {
+        return $this->belongsTo(Language::class);
+    }
 }

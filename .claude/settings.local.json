@@ -7,7 +7,8 @@
       "Bash(php artisan route:list:*)",
       "Bash(while read dir)",
       "Bash(do find \"$dir\" -name \"*View*.php\")",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(composer require stichoza/google-translate-php --no-interaction)"
     ]
   }
 }

@@ -29,17 +29,17 @@ class PolicyDocumentController extends Controller
                     'verified' => $extract->verified,
                     'search_terms' => $extract->searchTerms
                         ->sortby('id')
-                        ->map(function ($term) {
+                        ->map(function ($term) use ($extract) {
                             return [
                                 'id' => $term->id,
-                                'phrase' => $term->phrase,
+                                'phrase' => $term->getTranslation('phrase', $extract->policyDocument->language_id, useFallbackLocale: false) ?? '',
                                 'priority_action_id' => $term->priority_action_id,
                             ];
                         })
                         ->toArray(),
                     'search_terms_list' => $extract->searchTerms
                         ->sortby('id')
-                        ->pluck('phrase')
+                        ->map(fn ($term) => $term->getTranslation('phrase', $extract->policyDocument->language_id, useFallbackLocale: false) ?? '')
                         ->unique()
                         // join phrases with comma and 'and' as the last separator
                         ->join(', ', ' and '),
