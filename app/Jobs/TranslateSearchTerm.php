@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\DefaultSearchTerm;
 use App\Models\Language;
 use App\Models\SearchTerm;
 use Filament\Notifications\Notification;
@@ -15,7 +16,7 @@ class TranslateSearchTerm implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(public readonly SearchTerm $searchTerm) {}
+    public function __construct(public readonly SearchTerm|DefaultSearchTerm $searchTerm) {}
 
     public function handle(): void
     {

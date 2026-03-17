@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class SearchTermsRelationManager extends RelationManager
 {
-    protected static string $relationship = 'searchTerms';
+    protected static string $relationship = 'defaultSearchTerms';
 
     public function isReadOnly(): bool
     {
@@ -81,7 +81,7 @@ class SearchTermsRelationManager extends RelationManager
                 DeleteAction::make(),
             ])
             ->groupedBulkActions([
-                BulkActionGroup::make([
+
                     BulkAction::make('auto_translate_selected')
                         ->label('Auto Translate')
                         ->icon('heroicon-o-language')
@@ -99,7 +99,7 @@ class SearchTermsRelationManager extends RelationManager
                         })
                         ->deselectRecordsAfterCompletion(),
                     DeleteBulkAction::make(),
-                ]),
+
             ]);
     }
 }

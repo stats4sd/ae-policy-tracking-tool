@@ -34,6 +34,13 @@ class PriorityAction extends Model
         return $this->hasMany(SearchTerm::class);
     }
 
+    /** @return HasMany<DefaultSearchTerm, $this> */
+    public function defaultSearchTerms (): HasMany
+    {
+       return $this->hasMany(DefaultSearchTerm::class);
+    }
+
+
     /** @return HasMany<Theme, $this> */
     public function themes(): HasMany
     {
