@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\PolicyDocument;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Psy\Util\Str;
 use Spatie\PdfToText\Pdf;
 
 class PolicyDocumentExtractContent implements ShouldQueue
@@ -29,19 +30,8 @@ class PolicyDocumentExtractContent implements ShouldQueue
         if ($media) {
             $filePath = $media->getPath();
 
-            $text = (new Pdf)
-                ->setPdf($filePath)
-                ->addOptions([
-                    '-layout', // maintain original physical layout
-                    '-nopgbrk', // do not insert page breaks between pages
-                ])
-                ->text();
 
-            // formatting adjustments
-            // 1. convert multiple .s to fewer dots
-            $text = preg_replace('/\.{10,}/', '…', $text);
-            // 2. convert too many spaces
-            $text = preg_replace('/ {80,}/', '    ', $text);
+            $text = $this->extractTextFromPdfWithPython($filePath);
 
             // Save extracted text to a file for reference
             $outputPath = storage_path('app/temp/'.$this->policyDocument->id.'.txt');
@@ -53,4 +43,36 @@ class PolicyDocumentExtractContent implements ShouldQueue
             ]);
         }
     }
+
+    private function extractTextFromPdfWithPython(string $filePath): string
+    {
+        $pythonScript = base_path('scripts/extract_with_pymupdf.py');
+        $command = "venv/bin/python3 {$pythonScript} {$filePath}";
+        $output = shell_exec($command);
+
+        return $output ?: '';
+    }
+
+    // Use the spatie/pdf-to-text package to extract text from the PDF, with some custom options and formatting adjustments.
+    // Depreciated
+    private function extractTextFromPdf(string $filePath): string
+    {
+
+        $text = (new Pdf)
+            ->setPdf($filePath)
+            ->addOptions([
+                '-layout', // maintain original physical layout
+                '-nopgbrk', // do not insert page breaks between pages
+            ])
+            ->text();
+
+        // formatting adjustments
+        // 1. convert multiple .s to fewer dots
+        $text = preg_replace('/\.{10,}/', '…', $text);
+        // 2. convert too many spaces
+        $text = preg_replace('/ {80,}/', '    ', $text);
+
+        return $text;
+    }
+
 }

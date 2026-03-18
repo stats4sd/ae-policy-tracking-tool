@@ -159,9 +159,9 @@
                         class="border border-gray-300 ps-12 mx-auto rounded-md overflow-scroll h-[75vh]"
                         ref="contentDiv"
                     >
-                        <pre id="document_text">
+                        <div id="document_text">
                             <div ref="content-bounds" v-html="formattedDocumentContent"/>
-                        </pre>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -359,6 +359,8 @@ import {
     watch,
 } from "vue";
 
+import { marked } from "marked";
+
 import ExtractModal from "./ExtractModal.vue";
 import { useExtracts } from "@/composables/extracts.ts";
 import { useLiveSearch } from "@/composables/liveSearch.ts";
@@ -496,6 +498,7 @@ const escapeHtml = (s: string) =>
 // Every plain-text chunk is wrapped with a span[data-offset] so selection offset logic can locate base offset.
 const renderContent = (): void => {
     const text = documentContent.value || "";
+
     const events: {
         pos: number;
         kind: "h_start" | "h_end" | "s_start" | "s_end";
@@ -607,7 +610,9 @@ const renderContent = (): void => {
     // close any remaining open tags
     while (openStack.length) closeTag();
 
-    formattedDocumentContent.value = out;
+    const markedOut = marked(out);
+
+    formattedDocumentContent.value = markedOut;
 
     // ensure current extract is scrolled into view and visually marked
 

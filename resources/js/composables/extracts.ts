@@ -16,7 +16,7 @@ export interface Extract {
     priority_actions: Array<string>;
     automatic?: boolean;
     verified?: boolean;
-    type_id: number;
+    score_id: number;
 }
 
 export interface SearchTerm {
@@ -74,7 +74,7 @@ export function useExtracts(documentId: Ref<number, number>) {
             priority_actions: extractPriorityActions.value,
             search_terms_list: "",
             search_terms: [],
-            type_id: extractTypeId.value
+            score_id: extractTypeId.value
         };
 
         const newExtractWithId: Extract =
@@ -141,10 +141,10 @@ export function useExtracts(documentId: Ref<number, number>) {
                 "updating priority actions form",
                 currentExtract.value.priority_actions,
             );
-            console.log("updating type id form", currentExtract.value.type_id)
+            console.log("updating type id form", currentExtract.value.score_id)
             extractPriorityActions.value =
                 currentExtract.value.priority_actions;
-            extractTypeId.value = currentExtract.value.type_id;
+            extractTypeId.value = currentExtract.value.score_id;
         } else {
             extractPriorityActions.value = [];
             extractTypeId.value = null;
@@ -162,7 +162,7 @@ export function useExtracts(documentId: Ref<number, number>) {
             search_terms: currentExtract.value.search_terms,
             search_terms_list: currentExtract.value.search_terms_list,
             priority_actions: extractPriorityActions.value,
-            type_id: extractTypeId.value, // if the user is saving the extract, it is considered verified
+            score_id: extractTypeId.value, // if the user is saving the extract, it is considered verified
             verified: true,
         };
 

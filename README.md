@@ -16,9 +16,9 @@ Proof of Concept Application for policy tracking
 
 ### Main Assessment
 
-Each country / political entity has an entry in the “countries” table. 
+Each country / political entity has an entry in the “countries” table.
 
-A country has many “assessments” 
+A country has many “assessments”
 
 - Each assessment has the following components:
     - For each of the 24 **priority actions:**
@@ -27,7 +27,7 @@ A country has many “assessments”
         - “Measures that go beyond policy recommendations”
         - “View from a Civil Society perspective”
 
-A user can add *any number of statements* to each of the 4 x 24 components. Each statement has 
+A user can add *any number of statements* to each of the 4 x 24 components. Each statement has
 
 - a free-text entry,
 - the ability to add one or more pieces of “evidence”.
@@ -37,8 +37,8 @@ A user can add *any number of statements* to each of the 4 x 24 components. Each
         - (text) other references.
         - Probably, there should be a multi-upload for files, a free-text field, and a toggle or checkbox to state whether the evidence comes from official policy documents or other sources.
 - Statements can also be linked to 1 or more AE Principles.
-    
-    
+
+
 
 is drafted, then marked as “ready for review” (i.e. finalised.), and the assessment is timestamped.
 
@@ -54,7 +54,7 @@ Our standard setup of inviting users to teams and or roles (to be added later)
 ## Setup for Local Development
 
 1. Clone the repository
-2. Copy the .env.example file to .env 
+2. Copy the .env.example file to .env
 3. Add your database credentials to the .env file
 4. Create the local MySQL database if needed (e.g. `mysql -u root -e "CREATE DATABASE ae_policy_tracking_tool;"`)
 5. Run `composer install` to install PHP dependencies
@@ -67,3 +67,11 @@ Our standard setup of inviting users to teams and or roles (to be added later)
 10. If you're using Laravel Valet or Herd, go to `http://ae-policy-tracking-tool.test` in your browser. Otherwise, run `php artisan serve` and go to the provided URL.
 
 If you've run the seeders, you can log in with test@example.com and password 'password'.
+
+
+### Setup Python env
+TODO: update
+```
+virtualenv venv
+source venv/bin/activate
+```

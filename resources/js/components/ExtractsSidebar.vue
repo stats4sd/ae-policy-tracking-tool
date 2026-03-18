@@ -62,7 +62,7 @@
                                 {{ priorityAction }}
                             </span>
                             <span
-                                v-if="extract.priority_actions.length === 0"
+                                v-if="extract.priority_actions?.length == 0"
                                 class="mr-2"
                             >
                                 None
