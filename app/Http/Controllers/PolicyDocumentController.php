@@ -8,9 +8,11 @@ use Illuminate\Http\JsonResponse;
 
 class PolicyDocumentController extends Controller
 {
-    public function getContent(PolicyDocument $document): string
+    public function getPages(PolicyDocument $document): JsonResponse
     {
-        return $document->content;
+        $pages = $document->pages()->orderBy('page_number')->get(['page_number', 'content']);
+
+        return response()->json($pages);
     }
 
     public function getExtracts(PolicyDocument $document): JsonResponse
@@ -21,6 +23,7 @@ class PolicyDocumentController extends Controller
                 return [
                     'id' => $extract->id,
                     'policy_document_id' => $extract->policy_document_id,
+                    'page_number' => $extract->page_number,
                     'extract' => $extract->extract,
                     'start_offset' => $extract->start_offset,
                     'end_offset' => $extract->end_offset,
@@ -41,12 +44,11 @@ class PolicyDocumentController extends Controller
                         ->sortby('id')
                         ->map(fn ($term) => $term->getTranslation('phrase', $extract->policyDocument->language_id, useFallbackLocale: false) ?? '')
                         ->unique()
-                        // join phrases with comma and 'and' as the last separator
                         ->join(', ', ' and '),
                     'priority_actions' => $extract->priorityActions
                         ->sortby('id')
                         ->pluck('id')
-                        ->toArray(), // return only IDs for the Vue FormKit checkboxes.
+                        ->toArray(),
                     'type_id' => $extract->type_id,
                 ];
             });

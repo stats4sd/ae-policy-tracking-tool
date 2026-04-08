@@ -3,20 +3,22 @@ import {
     ref,
     type Ref,
     toValue,
-    useTemplateRef,
     watch
 } from "vue";
 import {
     scrollToSelection
 } from "@/composables/scrollHandler.ts";
+import { type DocumentPage } from "@/composables/extracts.ts";
 
-export function useLiveSearch(documentContent: Ref<string>) {
+export function useLiveSearch(documentPages: Ref<DocumentPage[]>) {
 
     const searchQuery: Ref<string, string> = ref<string>("");
     const searchMatches: Ref<{
+        page_number: number,
         start: number,
         end: number
     }[]> = ref<{
+        page_number: number;
         start: number;
         end: number
     }[]>([]);
@@ -40,10 +42,8 @@ export function useLiveSearch(documentContent: Ref<string>) {
         searchMatches.value = [];
         currentSearchIndex.value = -1;
 
-        // // if search query is empty, render original content
         const q = searchQuery.value.trim();
         if (!q) {
-            //     renderContent();
             return;
         }
 
@@ -51,22 +51,24 @@ export function useLiveSearch(documentContent: Ref<string>) {
         const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
         const regex = new RegExp(escaped, "gi");
 
-        let match: RegExpExecArray | null;
+        // search each page independently
+        for (const page of toValue(documentPages)) {
+            let match: RegExpExecArray | null;
+            regex.lastIndex = 0;
 
-        // find all matches and store inside searchMatches
-        while ((match = regex.exec(toValue(documentContent))) !== null) {
-            searchMatches.value.push({
-                start: match.index,
-                end: match.index + match[0].length
-            });
+            while ((match = regex.exec(page.content)) !== null) {
+                searchMatches.value.push({
+                    page_number: page.page_number,
+                    start: match.index,
+                    end: match.index + match[0].length
+                });
 
-            // avoid infinite loops on zero-length matches
-            if (match.index === regex.lastIndex) regex.lastIndex++;
+                // avoid infinite loops on zero-length matches
+                if (match.index === regex.lastIndex) regex.lastIndex++;
+            }
         }
 
         if (searchMatches.value.length > 0) currentSearchIndex.value = 0;
-
-
     };
 
     const focusCurrentSearch = (): void => {
@@ -94,17 +96,13 @@ export function useLiveSearch(documentContent: Ref<string>) {
     const nextSearch = (): void => {
         if (searchMatches.value.length === 0) return;
         currentSearchIndex.value = (currentSearchIndex.value + 1) % searchMatches.value.length;
-        // renderContent(); // re-render to update `search-current`
     };
 
     const prevSearch = (): void => {
-
-
         if (searchMatches.value.length === 0) return;
 
         // minus 2 because it triggers next-search first;
         currentSearchIndex.value = (currentSearchIndex.value - 2) % searchMatches.value.length;
-        // renderContent();
     };
 
 
@@ -117,6 +115,4 @@ export function useLiveSearch(documentContent: Ref<string>) {
         prevSearch,
         computeSearchMatches
     }
-
-
 }

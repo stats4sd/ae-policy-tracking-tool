@@ -3,8 +3,8 @@
 namespace App\Listeners;
 
 use App\Jobs\PolicyDocumentAutoSearch;
-use App\Models\PolicyDocument;
 use App\Jobs\PolicyDocumentExtractContent;
+use App\Models\PolicyDocument;
 use Spatie\MediaLibrary\MediaCollections\Events\MediaHasBeenAddedEvent;
 
 class NewPolicyDocumentUploaded
@@ -26,6 +26,6 @@ class NewPolicyDocumentUploaded
 
         // Dispatch job to extract content
         PolicyDocumentExtractContent::dispatch($policyDocument);
-        PolicyDocumentAutoSearch::dispatch($policyDocument);
+        // PolicyDocumentAutoSearch::dispatch($policyDocument);
     }
 }

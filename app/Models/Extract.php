@@ -21,6 +21,7 @@ class Extract extends Model
         static::addGlobalScope(function (Builder $query) {
             $query
                 ->orderBy('extracts.policy_document_id', 'asc')
+                ->orderBy('extracts.page_number', 'asc')
                 ->orderBy('extracts.start_offset', 'asc');
         });
     }

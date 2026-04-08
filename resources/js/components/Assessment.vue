@@ -160,7 +160,7 @@
                         ref="contentDiv"
                     >
                         <div id="document_text">
-                            <div ref="content-bounds" v-html="formattedDocumentContent"/>
+                            <div ref="content-container" v-html="formattedDocumentContent"/>
                         </div>
                     </div>
                 </div>
@@ -356,6 +356,7 @@ import {
     type Ref,
     ref,
     type UnwrapRef,
+    useTemplateRef,
     watch,
 } from "vue";
 
@@ -368,7 +369,7 @@ import { useTextSelection } from "@/composables/selectText.ts";
 import { usePriorityActions } from "@/composables/priorityActions.ts";
 import ExtractsSidebar from "@/components/ExtractsSidebar.vue";
 
-import { type Extract, type SearchTerm } from "@/composables/extracts.ts";
+import { type Extract, type DocumentPage } from "@/composables/extracts.ts";
 
 interface Props {
     documentId: number;
@@ -377,28 +378,28 @@ interface Props {
 const props = defineProps<Props>();
 
 const documentId = ref<number>(props.documentId);
-const documentContent = ref<string>("");
+const documentPages = ref<DocumentPage[]>([]);
 const formattedDocumentContent = ref<string>("");
 
 // get contentDiv element by ref
-const contentDiv = ref<HTMLElement | null>(null);
+const contentContainer = useTemplateRef<HTMLDivElement>("content-container");
 
-// Load document content from server
-const loadDocumentContent = async (id: number): Promise<void> => {
+    // Load document pages from server
+const loadDocumentPages = async (id: number): Promise<void> => {
     try {
-        const response = await fetch(`/policy-documents/${id}/content`);
+        const response = await fetch(`/policy-documents/${id}/pages`);
         if (!response.ok) {
             throw new Error("Network response was not ok");
         }
 
-        documentContent.value = await response.text();
+        documentPages.value = await response.json();
     } catch (error) {
-        console.error("Error loading document content:", error);
+        console.error("Error loading document pages:", error);
     }
 };
 
 onMounted(async (): Promise<void> => {
-    await loadDocumentContent(documentId.value);
+    await loadDocumentPages(documentId.value);
     await loadRecommendations();
     await loadTypes();
 
@@ -418,7 +419,7 @@ const {
     editExtract,
     saveExtract,
     deleteExtract,
-} = useExtracts(documentId);
+} = useExtracts(documentId, contentContainer);
 
 const {
     searchQuery,
@@ -427,13 +428,13 @@ const {
     nextSearch,
     prevSearch,
     focusCurrentSearch,
-} = useLiveSearch(documentContent);
+} = useLiveSearch(documentPages);
 
 const {
     currentSelection,
     expandSelectionToWordBoundaries,
     expandSelectionToSentenceBoundaries,
-} = useTextSelection();
+} = useTextSelection(contentContainer);
 
 const {
     recommendations,
@@ -486,7 +487,7 @@ const updateFilteredExtracts = () => {
         if (selectedTypeScore.value.length === 0) {
             return true;
         }
-        return selectedTypeScore.value.includes(h.type_id) ;
+        return selectedTypeScore.value.includes(h.score_id) ;
     });
 };
 
@@ -494,10 +495,16 @@ const updateFilteredExtracts = () => {
 const escapeHtml = (s: string) =>
     s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-// Render combined HTML from documentContent, applying extracts and search spans.
-// Every plain-text chunk is wrapped with a span[data-offset] so selection offset logic can locate base offset.
-const renderContent = (): void => {
-    const text = documentContent.value || "";
+// Track the global search match index across pages
+let globalSearchIdx = 0;
+
+// Render a single page's content with its extracts and search highlights
+const renderPageContent = (page: DocumentPage): string => {
+    const text = page.content || "";
+
+    // Filter extracts and search matches for this page
+    const pageExtracts = filteredExtracts.value.filter(h => h.page_number === page.page_number);
+    const pageSearchMatches = searchMatches.value.filter(m => m.page_number === page.page_number);
 
     const events: {
         pos: number;
@@ -505,10 +512,11 @@ const renderContent = (): void => {
         id: number;
         extractId?: number | null;
         color?: string;
+        globalSearchIndex?: number;
     }[] = [];
 
     // extract events
-    filteredExtracts.value.forEach((h, idx) => {
+    pageExtracts.forEach((h, idx) => {
         events.push({
             pos: h.start_offset,
             kind: "h_start",
@@ -523,12 +531,17 @@ const renderContent = (): void => {
         });
     });
 
-    // search events
-    searchMatches.value.forEach((m, idx) => {
+    // search events — compute global index for each match on this page
+    const pageSearchStartIdx = searchMatches.value.findIndex(
+        m => m.page_number === page.page_number && m.start === pageSearchMatches[0]?.start
+    );
+    pageSearchMatches.forEach((m, idx) => {
+        const globalIdx = pageSearchStartIdx >= 0 ? pageSearchStartIdx + idx : idx;
         events.push({
             pos: m.start,
             kind: "s_start",
             id: idx,
+            globalSearchIndex: globalIdx,
         });
         events.push({
             pos: m.end,
@@ -537,7 +550,7 @@ const renderContent = (): void => {
         });
     });
 
-    // sort events: pos asc; when equal: start before end; for starts: extract before search; for ends: search before extract
+    // sort events
     events.sort((a, b) => {
         if (a.pos !== b.pos) return a.pos - b.pos;
         const order = (e: typeof a) => {
@@ -553,7 +566,6 @@ const renderContent = (): void => {
     let p = 0;
     const openStack: string[] = [];
 
-    // helper to close tags in reverse order
     const closeTag = () => {
         const tag = openStack.pop();
         if (tag) out += "</span>";
@@ -569,30 +581,24 @@ const renderContent = (): void => {
             p = ev.pos;
         }
 
-        // handle event
         if (ev.kind === "h_start") {
             out += `<span class="doc-extract cursor-pointer" style="background-color: ${ev.color}" data-extract-id="${ev.extractId}">`;
             openStack.push("h");
         } else if (ev.kind === "s_start") {
-            // differentiate current result visually
+            const globalIdx = ev.globalSearchIndex ?? ev.id;
             const cls =
-                ev.id === currentSearchIndex.value
+                globalIdx === currentSearchIndex.value
                     ? "search-result search-current"
                     : "search-result";
-            out += `<span class="${cls}" data-search-index="${ev.id}" style="background-color: rgba(173,216,230,0.6)">`;
+            out += `<span class="${cls}" data-search-index="${globalIdx}" style="background-color: rgba(173,216,230,0.6)">`;
             openStack.push("s");
         } else if (ev.kind === "s_end") {
-            // close the most recent 's'
-            // pop until we find 's'
-            let popped = 0;
             while (openStack.length) {
                 const top = openStack[openStack.length - 1];
                 closeTag();
-                popped++;
                 if (top === "s") break;
             }
         } else if (ev.kind === "h_end") {
-            // close the most recent 'h'
             while (openStack.length) {
                 const top = openStack[openStack.length - 1];
                 closeTag();
@@ -610,11 +616,22 @@ const renderContent = (): void => {
     // close any remaining open tags
     while (openStack.length) closeTag();
 
-    const markedOut = marked(out);
+    // Parse markdown per-page to avoid cross-page bleeding
+    return marked(out) as string;
+};
 
-    formattedDocumentContent.value = markedOut;
+// Render combined HTML from all pages
+const renderContent = (): void => {
+    globalSearchIdx = 0;
+    let fullHtml = "";
 
-    // ensure current extract is scrolled into view and visually marked
+    for (const page of documentPages.value) {
+        const pageHtml = renderPageContent(page);
+        fullHtml += `<div data-page="${page.page_number}" class="document-page">${pageHtml}</div>`;
+        fullHtml += `<div class="page-separator text-center text-gray-400 text-sm py-2 my-4 border-t border-b border-gray-200">Page ${page.page_number}</div>`;
+    }
+
+    formattedDocumentContent.value = fullHtml;
 
     console.log(
         "renderContent: currentSearchIndex=",
@@ -644,13 +661,13 @@ const renderContent = (): void => {
 };
 
 // Re-render the content whenever:
-// - document content changes
+// - document pages change
 // - the extracts change
 // - the search query or current search index changes
 
 watch(
     [
-        documentContent,
+        documentPages,
         extracts,
         searchMatches,
         currentSearchIndex,
@@ -690,13 +707,13 @@ const saveExtractEdits = async (): Promise<void> => {
     }
 };
 
-interface Type {
+interface Score {
     id: number;
     score: number;
     name: string;
 }
 
-const types = ref<UnwrapRef<Type[]> | null>(null);
+const scores = ref<UnwrapRef<Score[]> | null>(null);
 
 const loadTypes = async (): Promise<void> => {
     try {
@@ -705,7 +722,7 @@ const loadTypes = async (): Promise<void> => {
             throw new Error("Network response was not ok");
         }
         // types are not used directly here, but could be stored if needed
-        types.value = await response.json();
+        scores.value = await response.json();
     } catch (error) {
         console.error("Error loading priority action types:", error);
     }

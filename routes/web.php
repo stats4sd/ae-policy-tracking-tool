@@ -15,8 +15,8 @@ Route::group(
             return view('filament.app.pages.review');
         })->name('assessment.print-review');
 
-        Route::get('/policy-documents/{document}/content', [\App\Http\Controllers\PolicyDocumentController::class, 'getContent'])
-            ->name('policy-document.content');
+        Route::get('/policy-documents/{document}/pages', [\App\Http\Controllers\PolicyDocumentController::class, 'getPages'])
+            ->name('policy-document.pages');
 
         Route::get('/policy-documents/{document}/extracts', [\App\Http\Controllers\PolicyDocumentController::class, 'getExtracts']);
 

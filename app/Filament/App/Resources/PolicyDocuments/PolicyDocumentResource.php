@@ -108,6 +108,9 @@ class PolicyDocumentResource extends Resource
                             ? $language->getTranslation('name', 'en').($record->language_id ? '' : ' (assessment default)')
                             : '—';
                     }),
+                TextColumn::make('pages_count')
+                    ->label('# Pages')
+                    ->counts('pages'),
                 TextColumn::make('automatic_extracts_count')
                     ->label(fn () => new HtmlString('# Automatic <br/>Search results'))
                     ->counts('automaticExtracts'),

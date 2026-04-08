@@ -24,6 +24,7 @@ class ExtractRequest extends FormRequest
     {
         return [
             'policy_document_id' => 'required|integer|exists:policy_documents,id',
+            'page_number' => 'required|integer|min:1',
             'extract' => 'required|string',
             'start_offset' => 'required|integer',
             'end_offset' => 'required|integer',

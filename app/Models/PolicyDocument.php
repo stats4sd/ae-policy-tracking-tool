@@ -34,6 +34,12 @@ class PolicyDocument extends Model implements HasMedia
         return $this->belongsToMany(Statement::class);
     }
 
+    /** @return HasMany<PolicyDocumentPage, $this> */
+    public function pages(): HasMany
+    {
+        return $this->hasMany(PolicyDocumentPage::class);
+    }
+
     /** @return HasMany<Extract, $this> */
     public function extracts(): HasMany
     {

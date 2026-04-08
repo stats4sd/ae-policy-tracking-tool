@@ -1,12 +1,13 @@
 import { scrollToSelection } from "@/composables/scrollHandler.ts";
 import { onMounted, ref, type Ref, useTemplateRef, watch } from "vue";
 
-import { findOffsetAncestor } from "@/composables/findOffsetAncestor.ts";
+import { getTextOffset } from "@/composables/domTextOffset.ts";
 import axios from "axios";
 
 export interface Extract {
     id?: number;
     policy_document_id: number;
+    page_number: number;
     extract: string;
     start_offset: number;
     end_offset: number;
@@ -25,7 +26,12 @@ export interface SearchTerm {
     priority_action_id: string,
 }
 
-export function useExtracts(documentId: Ref<number, number>) {
+export interface DocumentPage {
+    page_number: number;
+    content: string;
+}
+
+export function useExtracts(documentId: Ref<number, number>, contentContainer: Ref<HTMLElement | null>) {
     const extracts = ref<Extract[]>([]);
     const currentExtractId = ref<number | null>(null);
     const currentExtract: Ref<Extract> = ref<Extract>(null);
@@ -34,6 +40,7 @@ export function useExtracts(documentId: Ref<number, number>) {
 
     const showModal = ref<boolean>(false);
     const showExtractsSidebar = ref<boolean>(false);
+
 
     /*********** READ EXTRACTS FROM DATABASE ***********/
     onMounted(async (): Promise<void> => {
@@ -55,21 +62,36 @@ export function useExtracts(documentId: Ref<number, number>) {
         }
     };
 
+    const findPageContainer = (node: Node): HTMLElement | null => {
+        let el = node.nodeType === Node.ELEMENT_NODE ? (node as HTMLElement) : node.parentElement;
+        while (el) {
+            if (el.dataset?.page !== undefined) return el;
+            el = el.parentElement;
+        }
+        return null;
+    };
+
     const confirmExtract = async (
         currentSelection: Range,
     ): Promise<boolean> => {
         console.log(currentSelection);
 
         if (!currentSelection) return false;
-        const start = currentSelection.startOffset;
-        const end = currentSelection.endOffset;
-        const offset = findOffsetAncestor(currentSelection.startContainer);
+
+        const pageContainer = findPageContainer(currentSelection.startContainer);
+        if (!pageContainer) return false;
+
+        const pageNumber = parseInt(pageContainer.dataset.page || "1", 10);
+
+        const startOffset = getTextOffset(pageContainer, currentSelection.startContainer, currentSelection.startOffset);
+        const endOffset = getTextOffset(pageContainer, currentSelection.endContainer, currentSelection.endOffset);
 
         const newExtract: Extract = {
             policy_document_id: documentId.value,
+            page_number: pageNumber,
             extract: currentSelection.toString(),
-            start_offset: start + offset,
-            end_offset: end + offset,
+            start_offset: startOffset,
+            end_offset: endOffset,
             color: "yellow",
             priority_actions: extractPriorityActions.value,
             search_terms_list: "",
@@ -81,8 +103,11 @@ export function useExtracts(documentId: Ref<number, number>) {
             await saveExtractToDatabase(newExtract);
         extracts.value.push(newExtractWithId);
 
-        // resort extracts by start_offset
-        extracts.value.sort((a, b) => a.start_offset - b.start_offset);
+        // resort extracts by page_number then start_offset
+        extracts.value.sort((a, b) => {
+            if (a.page_number !== b.page_number) return a.page_number - b.page_number;
+            return a.start_offset - b.start_offset;
+        });
 
         console.log("new extract with ID", newExtractWithId);
 
@@ -155,6 +180,7 @@ export function useExtracts(documentId: Ref<number, number>) {
         const updatedExtract: Extract = {
             id: currentExtract.value.id,
             policy_document_id: documentId.value,
+            page_number: currentExtract.value.page_number,
             extract: currentExtract.value.extract,
             start_offset: currentExtract.value.start_offset,
             end_offset: currentExtract.value.end_offset,

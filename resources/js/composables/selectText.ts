@@ -1,22 +1,22 @@
 import {
     onMounted,
     ref,
-    useTemplateRef
+    useTemplateRef,
+    type Ref
 } from "vue";
 
 import {
     findOffsetAncestor
 } from "@/composables/findOffsetAncestor.ts";
 
-export function useTextSelection() {
+export function useTextSelection(contentContainer: Ref<HTMLElement | null>) {
 
     const currentSelection = ref<Range | null>(null);
-    const contentBounds = useTemplateRef<HTMLDivElement>("content-bounds");
 
 
     onMounted((): void => {
         console.log('boo');
-        contentBounds.value.addEventListener("mouseup", handleTextSelection);
+        contentContainer.value.addEventListener("mouseup", handleTextSelection);
     });
 
     const handleTextSelection = (): void => {
@@ -28,7 +28,7 @@ export function useTextSelection() {
         if (!selection) return;
 
         // if the selection is not inside the content div, return
-        if (!contentBounds.value?.contains(selection.anchorNode) || !contentBounds.value?.contains(selection.focusNode)) {
+        if (!contentContainer.value?.contains(selection.anchorNode) || !contentContainer.value?.contains(selection.focusNode)) {
             return;
         }
 
