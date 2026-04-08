@@ -2,6 +2,7 @@ import { scrollToSelection } from "@/composables/scrollHandler.ts";
 import { onMounted, ref, type Ref, useTemplateRef, watch } from "vue";
 
 import { getTextOffset } from "@/composables/domTextOffset.ts";
+import { buildCharMap, plainToRawOffset } from "@/composables/markdownMap.ts";
 import axios from "axios";
 
 export interface Extract {
@@ -31,7 +32,7 @@ export interface DocumentPage {
     content: string;
 }
 
-export function useExtracts(documentId: Ref<number, number>, contentContainer: Ref<HTMLElement | null>) {
+export function useExtracts(documentId: Ref<number, number>, contentContainer: Ref<HTMLElement | null>, documentPages: Ref<DocumentPage[]>) {
     const extracts = ref<Extract[]>([]);
     const currentExtractId = ref<number | null>(null);
     const currentExtract: Ref<Extract> = ref<Extract>(null);
@@ -83,8 +84,19 @@ export function useExtracts(documentId: Ref<number, number>, contentContainer: R
 
         const pageNumber = parseInt(pageContainer.dataset.page || "1", 10);
 
-        const startOffset = getTextOffset(pageContainer, currentSelection.startContainer, currentSelection.startOffset);
-        const endOffset = getTextOffset(pageContainer, currentSelection.endContainer, currentSelection.endOffset);
+        // getTextOffset returns visible-text offsets (DOM textContent positions).
+        // Convert to raw markdown offsets so they align with auto-search offsets
+        // and the rendering pipeline (which applies offsets to raw markdown).
+        const visibleStart = getTextOffset(pageContainer, currentSelection.startContainer, currentSelection.startOffset);
+        const visibleEnd = getTextOffset(pageContainer, currentSelection.endContainer, currentSelection.endOffset);
+
+        const page = documentPages.value.find(p => p.page_number === pageNumber);
+        const rawMarkdown = page?.content || "";
+        const visibleText = pageContainer.textContent || "";
+        const charMap = buildCharMap(rawMarkdown, visibleText);
+
+        const startOffset = plainToRawOffset(charMap, visibleStart, rawMarkdown.length, false);
+        const endOffset = plainToRawOffset(charMap, visibleEnd, rawMarkdown.length, true);
 
         const newExtract: Extract = {
             policy_document_id: documentId.value,

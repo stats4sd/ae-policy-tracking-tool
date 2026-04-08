@@ -419,7 +419,7 @@ const {
     editExtract,
     saveExtract,
     deleteExtract,
-} = useExtracts(documentId, contentContainer);
+} = useExtracts(documentId, contentContainer, documentPages);
 
 const {
     searchQuery,
@@ -627,8 +627,8 @@ const renderContent = (): void => {
 
     for (const page of documentPages.value) {
         const pageHtml = renderPageContent(page);
-        fullHtml += `<div data-page="${page.page_number}" class="document-page">${pageHtml}</div>`;
         fullHtml += `<div class="page-separator text-center text-gray-400 text-sm py-2 my-4 border-t border-b border-gray-200">Page ${page.page_number}</div>`;
+        fullHtml += `<div data-page="${page.page_number}" class="document-page">${pageHtml}</div>`;
     }
 
     formattedDocumentContent.value = fullHtml;
