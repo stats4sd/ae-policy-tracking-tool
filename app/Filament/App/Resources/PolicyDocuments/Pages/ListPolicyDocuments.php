@@ -21,8 +21,6 @@ class ListPolicyDocuments extends ListRecords
     {
         $mainConent = parent::content($schema);
 
-        ray('hi');
-
         return $schema
             ->components([
                 Section::make('How to use this page')
