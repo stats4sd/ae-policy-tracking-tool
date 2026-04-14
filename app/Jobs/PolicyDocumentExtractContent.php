@@ -55,6 +55,11 @@ class PolicyDocumentExtractContent implements ShouldQueue
         $command = "venv/bin/python3 {$pythonScript} --pages {$filePath}";
         $output = shell_exec($command);
 
-        return $output ?: '';
+        return $this->removePicturePlaceholders($output ?: '');
+    }
+
+    private function removePicturePlaceholders(string $text): string
+    {
+        return preg_replace('/==> picture \[\d+ x \d+\] intentionally omitted <==/m', '', $text);
     }
 }

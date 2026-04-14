@@ -1,22 +1,30 @@
 {
-  "permissions": {
-    "allow": [
-      "WebFetch(domain:filamentphp.com)",
-      "Bash(php artisan:*)",
-      "Read(//opt/homebrew/bin/**)",
-      "Read(//usr/local/bin/**)",
-      "Bash(export PATH=\"/opt/homebrew/bin:$PATH\")",
-      "Bash(npm run:*)",
-      "Bash(ls /opt/homebrew/bin/node*)",
-      "Bash(ls /usr/local/bin/node*)",
-      "Read(//Users/dave/.nvm/versions/node/**)",
-      "Bash(export PATH=\"/usr/local/bin:/opt/homebrew/bin:$PATH\")",
-      "Bash(PATH=\"/opt/homebrew/bin:/usr/local/bin:$PATH\" npx vite build)",
-      "Bash(git add:*)",
-      "Bash(git commit:*)",
-      "Bash(gh pr:*)",
-      "mcp__claude_ai_Notion__notion-fetch",
-      "mcp__claude_ai_Notion__notion-update-page"
-    ]
-  }
+    "permissions": {
+        "allow": [
+            "WebFetch(domain:filamentphp.com)",
+            "Bash(php artisan:*)",
+            "Read(//opt/homebrew/bin/**)",
+            "Read(//usr/local/bin/**)",
+            "Bash(export PATH=\"/opt/homebrew/bin:$PATH\")",
+            "Bash(npm run:*)",
+            "Bash(ls /opt/homebrew/bin/node*)",
+            "Bash(ls /usr/local/bin/node*)",
+            "Read(//Users/dave/.nvm/versions/node/**)",
+            "Bash(export PATH=\"/usr/local/bin:/opt/homebrew/bin:$PATH\")",
+            "Bash(PATH=\"/opt/homebrew/bin:/usr/local/bin:$PATH\" npx vite build)",
+            "Bash(vendor/bin/pint --dirty **/*.php)"
+        ],
+        "deny": [
+            "Read(**/.env*)",
+            "Read(**/env.php*)",
+            "Read(**/*.pem)",
+            "Read(**/*.key)",
+            "Read(**/secrets/**)",
+            "Read(**/credentials/**)",
+            "Read(**/.aws/**)",
+            "Read(**/.ssh/**)",
+            "Read(**/docker-compose*.yml)",
+            "Read(**/config/database.yml)"
+        ]
+    }
 }
