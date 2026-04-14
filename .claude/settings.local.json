@@ -10,7 +10,13 @@
       "Bash(ls /opt/homebrew/bin/node*)",
       "Bash(ls /usr/local/bin/node*)",
       "Read(//Users/dave/.nvm/versions/node/**)",
-      "Bash(export PATH=\"/usr/local/bin:/opt/homebrew/bin:$PATH\")"
+      "Bash(export PATH=\"/usr/local/bin:/opt/homebrew/bin:$PATH\")",
+      "Bash(PATH=\"/opt/homebrew/bin:/usr/local/bin:$PATH\" npx vite build)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(gh pr:*)",
+      "mcp__claude_ai_Notion__notion-fetch",
+      "mcp__claude_ai_Notion__notion-update-page"
     ]
   }
 }

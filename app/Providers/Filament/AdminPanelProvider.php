@@ -95,6 +95,7 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 FilamentSpatieRolesPermissionsPlugin::make(),
             ])
+            ->databaseNotifications()
             ->viteTheme('resources/css/filament/admin/theme.css');
     }
 }

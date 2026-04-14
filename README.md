@@ -15,7 +15,7 @@ Proof of Concept Application for policy tracking
 ---
 
 ### Main Assessment
-
+-
 Each country / political entity has an entry in the “countries” table.
 
 A country has many “assessments”

@@ -95,6 +95,7 @@ class AppPanelProvider extends PanelProvider
                     ->icon('heroicon-o-shield-check'),
             ])
             ->topNavigation(true)
+            ->databaseNotifications()
             ->viteTheme('resources/css/filament/app/theme.css')
             ->plugins([
                 StickyTableHeaderPlugin::make(),
