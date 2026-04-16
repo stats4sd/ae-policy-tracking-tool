@@ -40,7 +40,7 @@
         "filament/upgrade": "^4.0",
         "larastan/larastan": "^3.0",
         "laravel-shift/blueprint": "^2.8",
-        "laravel/boost": "^1.0",
+        "laravel/boost": "^2.1",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.26",
         "mockery/mockery": "^1.6",

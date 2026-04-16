@@ -21,3 +21,9 @@ yarn-error.log
 /public/css
 /public/packages
 data.ms/
+.agents/
+.claude/skills/
+.mcp.json
+AGENTS.md
+CLAUDE.md
+boost.json
