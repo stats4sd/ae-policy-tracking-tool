@@ -3,6 +3,7 @@
 namespace App\Filament\App\Clusters\Setup\Pages;
 
 use App\Filament\App\Clusters\Setup\SetupCluster;
+use App\Filament\App\Widgets\PendingInvitesWidget;
 use App\Models\Assessment;
 use App\Models\User;
 use Awcodes\Shout\Components\Shout;
@@ -32,6 +33,13 @@ class TeamMembers extends Page implements HasTable
     protected static ?string $title = 'Team Members';
 
     protected string $view = 'filament.app.clusters.setup.pages.team-members';
+
+    protected function getFooterWidgets(): array
+    {
+        return [
+            PendingInvitesWidget::class,
+        ];
+    }
 
     public function getAssessment(): Assessment
     {

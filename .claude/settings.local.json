@@ -16,7 +16,8 @@
       "Bash(grep -E \"\\\\.\\(php|ts\\)$\")",
       "Bash(find /Users/dave/Sites/ae-policy-tracking-tool/app/Models -type f -name \"*.php\" -exec grep -l \"Assessment\\\\|User\" {} \\\\;)",
       "Bash(xargs basename *)",
-      "Bash(vendor/bin/pint --dirty)"
+      "Bash(vendor/bin/pint --dirty)",
+      "Bash(xargs cat *)"
     ],
     "deny": [
       "Read(**/.env*)",
