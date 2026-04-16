@@ -29,14 +29,12 @@ class SetupIntroduction extends Page
                     Text::make(new HtmlString("
 
                         <p class='mb-2'>Welcome to the Assessment Setup process. This guided setup will help you configure your assessment step-by-step.</p>
-                        <p class='mb-2'>Before starting the assessment, please complete the information in this '0. Setup' section. Use the links in the sidebar to complete the sections:
-                        <ul class='list-disc list-inside'>
+                        <p class='mb-2'>Before starting the assessment, please complete the information in this '0. Setup' section. Use the links in the sidebar to complete the sections:</p>
+                        <ul class='list-disc list-inside mb-2'>
                         <li><b>Assessment Details:</b> Review the key metadata about the assessment.</li>
-                        <li><b>Team Members:</b> Invite any additional team members to collaborate on the assessment.</li>
+                        <li><b>Team Members:</b> View, invite, and remove team members who can collaborate on this assessment.</li>
                         <li><b>Search Terms:</b> Review the search terms that will be used for automatic searching of the documents you upload during the assessment.</li>
-</ul>
-
-
+                        </ul>
 
                     ")),
                 ]),

@@ -4,6 +4,7 @@
 @source '../../../../app/';
 @source '../../../../resources/views/';
 @source '../../../../resources/js/components';
+@source '../../../../vendor/awcodes/shout/resources/**/*.blade.php';
 
 @theme {
     --color-dark-title-block: #3A7898;

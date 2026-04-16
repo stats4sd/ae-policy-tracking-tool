@@ -2,14 +2,11 @@
 
 namespace App\Models;
 
-use App\Mail\InviteUserToAssessment;
 use Filament\Models\Contracts\HasName;
-use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Stats4sd\FilamentTeamManagement\Models\Team;
 
@@ -43,20 +40,11 @@ class Assessment extends Team implements HasName
                 continue;
             }
 
-            $invite = $this->invites()->create([
+            $this->invites()->create([
                 'email' => $email,
                 'inviter_id' => auth()->id(),
                 'token' => Str::random(24),
             ]);
-
-            Mail::to($invite->email)->send(new InviteUserToAssessment($invite));
-
-            // show notification after sending invitation email to user
-            Notification::make()
-                ->success()
-                ->title('Invitation Sent')
-                ->body('An email invitation has been successfully sent to '.$email)
-                ->send();
         }
     }
 
