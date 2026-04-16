@@ -9,7 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "althinect/filament-spatie-roles-permissions": "3.x-dev",
+        "althinect/filament-spatie-roles-permissions": "^3.3.1",
         "dave-mills/filament-table-in-a-schema": "dev-main",
         "defstudio/filament-column-length-limiter": "^4.0",
         "filament/filament": "^4.3.1",
@@ -45,7 +45,7 @@
         "laravel/sail": "^1.26",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.1",
-        "phpunit/phpunit": "^10.1",
+        "pestphp/pest": "^4.6",
         "spatie/laravel-ignition": "^2.0",
         "spatie/laravel-ray": "^1.39"
     },
