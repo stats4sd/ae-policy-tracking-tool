@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('recommendations', function (Blueprint $table) {
             $table->string('code')->unique()->after('id');
             $table->text('code_and_short_title')->nullable()->after('short_title')
-                ->virtualAs('CONCAT(code, " - ", short_title)');
+                ->virtualAs("(code || ' - ' || short_title)");
         });
     }
 

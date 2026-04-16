@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Recommendation extends Model
 {
+    use HasFactory;
 
     public function aePrinciples(): BelongsToMany
     {

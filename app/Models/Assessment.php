@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Filament\Models\Contracts\HasName;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,6 +14,8 @@ use Stats4sd\FilamentTeamManagement\Models\Team;
 // # Assessments are used as the tenant: users can join specific assessments, and the entire front-end is scoped to a specific assessment. Admin users should be able to access all assessments; other users may have access to one or multiple based on specific assignments.
 class Assessment extends Team implements HasName
 {
+    use HasFactory;
+
     protected static function booted(): void
     {
         static::creating(function ($query) {

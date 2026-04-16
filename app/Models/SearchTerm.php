@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -10,7 +11,7 @@ use Znck\Eloquent\Relations\BelongsToThrough;
 
 class SearchTerm extends Model
 {
-    use HasTranslations;
+    use HasFactory, HasTranslations;
     use \Znck\Eloquent\Traits\BelongsToThrough;
 
     public array $translatable = ['phrase'];

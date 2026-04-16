@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Country extends Model
 {
+    use HasFactory;
+
     public function assessments(): HasMany
     {
         return $this->hasMany(Assessment::class);

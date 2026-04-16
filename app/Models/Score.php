@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Score extends Model
 {
+    use HasFactory;
+
     /** @return HasMany<Extract, $this> */
     public function extracts(): HasMany
     {
         return $this->hasMany(Extract::class);
     }
-
 }

@@ -1,5 +1,11 @@
 <?php
 
+use App\Http\Controllers\ExtractController;
+use App\Http\Controllers\PolicyDocumentController;
+use App\Http\Controllers\RecommendationController;
+use App\Http\Controllers\TypeController;
+use App\Models\Assessment;
+use App\Models\Recommendation;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -11,24 +17,26 @@ Route::group(
         'middleware' => ['web', 'auth'],
     ], function () {
 
-        Route::get('/{assessment}/print-review', function () {
-            return view('filament.app.pages.review');
+        Route::get('/{assessment}/print-review', function (Assessment $assessment) {
+            $recommendations = Recommendation::with(['aePrinciples', 'priorityActions'])->get();
+
+            return view('filament.app.pages.review', compact('assessment', 'recommendations'));
         })->name('assessment.print-review');
 
-        Route::get('/policy-documents/{document}/pages', [\App\Http\Controllers\PolicyDocumentController::class, 'getPages'])
+        Route::get('/policy-documents/{document}/pages', [PolicyDocumentController::class, 'getPages'])
             ->name('policy-document.pages');
 
-        Route::get('/policy-documents/{document}/extracts', [\App\Http\Controllers\PolicyDocumentController::class, 'getExtracts']);
+        Route::get('/policy-documents/{document}/extracts', [PolicyDocumentController::class, 'getExtracts']);
 
-        Route::apiResource('extracts', \App\Http\Controllers\ExtractController::class)->only([
+        Route::apiResource('extracts', ExtractController::class)->only([
             'store', 'update', 'destroy',
         ]);
 
-        Route::apiResource('recommendations', \App\Http\Controllers\RecommendationController::class)->only([
+        Route::apiResource('recommendations', RecommendationController::class)->only([
             'index', 'show',
         ]);
 
-        Route::apiResource('types', \App\Http\Controllers\TypeController::class)->only([
+        Route::apiResource('types', TypeController::class)->only([
             'index',
         ]);
 

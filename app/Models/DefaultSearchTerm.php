@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Translatable\HasTranslations;
+use Znck\Eloquent\Traits\BelongsToThrough;
 
 class DefaultSearchTerm extends Model
 {
-    use HasTranslations;
-    use \Znck\Eloquent\Traits\BelongsToThrough;
+    use BelongsToThrough;
+    use HasFactory, HasTranslations;
 
     public array $translatable = ['phrase'];
 

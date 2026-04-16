@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('policy_statement', function (Blueprint $table) {
-            $table->dropForeign('policy_statement_policy_id_foreign');
+            $table->dropForeign(['policy_id']);
             $table->foreign('policy_id')->references('id')->on('policies')->cascadeOnDelete();
 
-            $table->dropForeign('policy_statement_statement_id_foreign');
+            $table->dropForeign(['statement_id']);
             $table->foreign('statement_id')->references('id')->on('statements')->cascadeOnDelete();
         });
     }
