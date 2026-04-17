@@ -2,9 +2,8 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 use App\Models\Recommendation;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class RecommendationFactory extends Factory
 {
@@ -21,7 +20,9 @@ class RecommendationFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name,
+            'code' => $this->faker->unique()->bothify('R##'),
+            'name' => $this->faker->sentence(4),
+            'short_title' => $this->faker->words(3, true),
         ];
     }
 }

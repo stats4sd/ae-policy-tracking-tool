@@ -2,10 +2,9 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 use App\Models\PriorityAction;
 use App\Models\Recommendation;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PriorityActionFactory extends Factory
 {
@@ -22,7 +21,9 @@ class PriorityActionFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name,
+            'id' => $this->faker->unique()->bothify('PA-###'),
+            'name' => $this->faker->sentence(5),
+            'short_name' => $this->faker->words(3, true),
             'recommendation_id' => Recommendation::factory(),
         ];
     }

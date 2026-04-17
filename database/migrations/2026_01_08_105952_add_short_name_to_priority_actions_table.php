@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('priority_actions', function (Blueprint $table) {
             $table->string('short_name')->after('name');
             $table->string('code_and_short_name')
-                ->virtualAs("CONCAT(id, ' - ', short_name)")->nullable()
+                ->virtualAs("(id || ' - ' || short_name)")->nullable()
                 ->after('code_and_name');
         });
     }

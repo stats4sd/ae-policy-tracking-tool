@@ -21,7 +21,7 @@ return new class extends Migration
         // update policy_statement table foreign key
         Schema::table('policy_statement', function (Blueprint $table) {
 
-            $table->dropForeign('policy_statement_policy_id_foreign');
+            $table->dropForeign(['policy_id']);
             $table->renameColumn('policy_id', 'policy_document_id');
 
         });
@@ -48,7 +48,7 @@ return new class extends Migration
 
         // revert policy_statement table foreign key
         Schema::table('policy_statement', function (Blueprint $table) {
-            $table->dropForeign('policy_statement_policy_document_id_foreign');
+            $table->dropForeign(['policy_document_id']);
             $table->foreign('policy_id')->references('id')->on('policies')->cascadeOnDelete();
         });
     }

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('priority_actions', function (Blueprint $table) {
-            $table->string('code_and_name', 500)->virtualAs("CONCAT(id, ' - ', name)")->nullable()->after('name');
+            $table->string('code_and_name', 500)->virtualAs("(id || ' - ' || name)")->nullable()->after('name');
         });
     }
 

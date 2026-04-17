@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -12,8 +13,16 @@ use Znck\Eloquent\Relations\BelongsToThrough;
 
 class Extract extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
     use \Znck\Eloquent\Traits\BelongsToThrough;
+
+    protected function casts(): array
+    {
+        return [
+            'verified' => 'boolean',
+            'automatic' => 'boolean',
+        ];
+    }
 
     protected static function booted()
     {

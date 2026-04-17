@@ -17,7 +17,18 @@
       "Bash(find /Users/dave/Sites/ae-policy-tracking-tool/app/Models -type f -name \"*.php\" -exec grep -l \"Assessment\\\\|User\" {} \\\\;)",
       "Bash(xargs basename *)",
       "Bash(vendor/bin/pint --dirty)",
-      "Bash(xargs cat *)"
+      "Bash(xargs cat *)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d.get\\('require-dev',{}\\), indent=2\\)\\)\")",
+      "Bash(xargs ls *)",
+      "Bash(grep -rL \"HasFactory\" app/Models/*.php)",
+      "Bash(grep -l \"HasFactory\" app/Models/*.php)",
+      "Bash(php -r 'require '\\\\''/Users/dave/Sites/ae-policy-tracking-tool/vendor/autoload.php'\\\\''; $app = require '\\\\''/Users/dave/Sites/ae-policy-tracking-tool/bootstrap/app.php'\\\\''; $app->make\\(\\\\Illuminate\\\\Contracts\\\\Console\\\\Kernel::class\\)->bootstrap\\(\\); echo config\\('\\\\''filament-team-management.models.team'\\\\''\\) . PHP_EOL;')",
+      "Bash(grep -n \"recommendations\\\\|priorityActions\\\\|statements\\\\|\\\\$\" /Users/dave/Sites/ae-policy-tracking-tool/resources/views/filament/app/pages/review.blade.php)",
+      "Bash(grep -n '$recommendations\\\\|$priorityActions\\\\|$statements\\\\|$extracts' /Users/dave/Sites/ae-policy-tracking-tool/resources/views/filament/app/pages/review.blade.php)",
+      "Bash(composer show *)",
+      "Bash(grep -v \".php:$\")",
+      "Bash(php -r \"echo get_parent_class\\(Filament\\\\Schemas\\\\Components\\\\Component::class\\);\")",
+      "Bash(vendor/bin/pint --dirty --format agent)"
     ],
     "deny": [
       "Read(**/.env*)",

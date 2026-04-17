@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -9,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PriorityAction extends Model
 {
+    use HasFactory;
+
     protected $keyType = 'string';
 
     public $incrementing = false;
@@ -35,11 +38,10 @@ class PriorityAction extends Model
     }
 
     /** @return HasMany<DefaultSearchTerm, $this> */
-    public function defaultSearchTerms (): HasMany
+    public function defaultSearchTerms(): HasMany
     {
-       return $this->hasMany(DefaultSearchTerm::class);
+        return $this->hasMany(DefaultSearchTerm::class);
     }
-
 
     /** @return HasMany<Theme, $this> */
     public function themes(): HasMany
