@@ -55,6 +55,6 @@ class User extends \Stats4sd\FilamentTeamManagement\Models\User
     /** @return BelongsToMany<Assessment, $this> */
     public function assessments(): BelongsToMany
     {
-        return $this->belongsToMany(Assessment::class, 'assessment_user', 'user_id', 'assessment_id');
+        return $this->teams();
     }
 }
