@@ -101,6 +101,13 @@ class Assessment extends Team implements HasName
         return $this->hasManyThrough(Extract::class, PolicyDocument::class);
     }
 
+    /** @return HasManyThrough<Extract, PolicyDocument, $this> */
+    public function verifiedExtracts(): HasManyThrough
+    {
+        return $this->hasManyThrough(Extract::class, PolicyDocument::class)
+            ->where(fn ($q) => $q->where('extracts.verified', true)->orWhere('extracts.automatic', false));
+    }
+
     /** @return BelongsTo<Language, $this> */
     public function language(): BelongsTo
     {

@@ -8,11 +8,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends \Stats4sd\FilamentTeamManagement\Models\User
 {
     use HasApiTokens, HasFactory;
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function (User $user) {
+            if (empty($user->password)) {
+                $user->password = Str::random(32);
+            }
+        });
+    }
 
     protected $hidden = [
         'password',

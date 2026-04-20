@@ -28,7 +28,9 @@
       "Bash(composer show *)",
       "Bash(grep -v \".php:$\")",
       "Bash(php -r \"echo get_parent_class\\(Filament\\\\Schemas\\\\Components\\\\Component::class\\);\")",
-      "Bash(vendor/bin/pint --dirty --format agent)"
+      "Bash(vendor/bin/pint --dirty --format agent)",
+      "mcp__laravel-boost__search-docs",
+      "Bash(grep -A 5 \"getModelNameLower\" app/Models/Assessment.php vendor/stats4sd/filament-team-management/src/Models/*.php)"
     ],
     "deny": [
       "Read(**/.env*)",
@@ -42,5 +44,8 @@
       "Read(**/docker-compose*.yml)",
       "Read(**/config/database.yml)"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "laravel-boost"
+  ]
 }

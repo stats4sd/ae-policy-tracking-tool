@@ -32,10 +32,9 @@ class UserResource extends \Stats4sd\FilamentTeamManagement\Filament\Admin\Resou
                     ->email()
                     ->required(),
 
-                Select::make('assessment')
+                Select::make('assessments')
                     ->label('Which assessment(s) should the user be a member of?')
-                    ->exists('assessments', 'id')
-                    ->relationship('teams', titleAttribute: 'title')
+                    ->relationship('assessments', titleAttribute: 'title')
                     ->live()
                     ->preload()
                     ->multiple(),
