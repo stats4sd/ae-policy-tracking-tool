@@ -4,8 +4,6 @@ use App\Http\Controllers\ExtractController;
 use App\Http\Controllers\PolicyDocumentController;
 use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\TypeController;
-use App\Models\Assessment;
-use App\Models\Recommendation;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -16,12 +14,6 @@ Route::group(
     [
         'middleware' => ['web', 'auth'],
     ], function () {
-
-        Route::get('/{assessment}/print-review', function (Assessment $assessment) {
-            $recommendations = Recommendation::with(['aePrinciples', 'priorityActions'])->get();
-
-            return view('filament.app.pages.review', compact('assessment', 'recommendations'));
-        })->name('assessment.print-review');
 
         Route::get('/policy-documents/{document}/pages', [PolicyDocumentController::class, 'getPages'])
             ->name('policy-document.pages');

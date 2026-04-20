@@ -4,8 +4,10 @@ namespace App\Filament\App\Resources\Extracts\Tables;
 
 use App\Filament\App\Resources\Extracts\Pages\ListExtracts;
 use App\Models\Extract;
+use App\Models\PriorityAction;
 use App\Models\Score;
 use App\Models\Statement;
+use App\Models\Theme;
 use Awcodes\Shout\Components\Shout;
 use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
@@ -168,7 +170,7 @@ class ExtractTable
                                 $data['assessment_id'] = Filament::getTenant()->id;
                                 $data['priority_action_id'] = $priorityActionId;
 
-                                $theme = \App\Models\Theme::create($data);
+                                $theme = Theme::create($data);
 
                                 $livewire->dispatch('refreshTable');
 
@@ -205,48 +207,62 @@ class ExtractTable
 
                     }),
                 BulkAction::make('Assign to Theme')
-                    ->schema(fn (Collection $selectedRecords) => [
+                    ->fillForm(fn (Collection $selectedRecords) => [
+                        'priority_action_ids' => $selectedRecords->flatMap->priorityActions->unique('id')->pluck('id')->toArray(),
+                    ])
+                    ->schema([
                         Shout::make('info')
-                            ->content('Link the selected extracts to a theme. This will help organise highlights and summary statements under relevant themes for reporting.')
+                            ->content('Link the selected extracts to one or more priority actions and a theme. This will help organise highlights and summary statements under relevant themes for reporting.')
                             ->icon('heroicon-o-information-circle'),
+                        Select::make('priority_action_ids')
+                            ->label('Assign Priority Actions')
+                            ->multiple()
+                            ->options(PriorityAction::all()->pluck('id', 'id')->toArray())
+                            ->live()
+                            ->required(),
                         Select::make('theme_id')
-                            ->relationship('theme', 'name', function ($query) use ($selectedRecords) {
-                                $query->where('assessment_id', Filament::getTenant()->id);
-                                if ($selectedRecords->flatMap->priorityActions->isNotEmpty()) {
-                                    $query
-                                        ->where('priority_action_id', $selectedRecords->flatMap->priorityActions->first()->id ?? null);
-                                }
+                            ->label('Select Theme to Assign')
+                            ->options(function (Get $get) {
+                                $priorityActionIds = $get('priority_action_ids') ?? [];
 
-                                return $query;
+                                return Theme::query()
+                                    ->where('assessment_id', Filament::getTenant()->id)
+                                    ->when(
+                                        ! empty($priorityActionIds),
+                                        fn ($query) => $query->whereIn('priority_action_id', $priorityActionIds),
+                                    )
+                                    ->pluck('name', 'id');
                             })
+                            ->searchable()
                             ->createOptionForm([
-                                TextInput::make('name')->required()->label('Enter the new theme'),
+                                TextInput::make('name')->required()->label('Theme name'),
+                                Select::make('priority_action_id')
+                                    ->label('Priority Action')
+                                    ->options(PriorityAction::all()->pluck('id', 'id'))
+                                    ->required(),
                             ])
-                            ->createOptionUsing(function (array $data, Get $get, ListExtracts $livewire) {
-
-                                $priorityActionId = $get('default_priority_action_id') ?? $get('priority_action_id');
-
+                            ->createOptionUsing(function (array $data, Get $get) {
                                 $data['assessment_id'] = Filament::getTenant()->id;
-                                $data['priority_action_id'] = $priorityActionId;
+                                $data['priority_action_id'] ??= collect($get('priority_action_ids'))->first();
 
-                                $theme = \App\Models\Theme::create($data);
-
-                                $livewire->dispatch('refreshTable');
+                                $theme = Theme::create($data);
 
                                 return $theme->id;
-
-                            })
-                            ->label('Select Theme to Assign'),
+                            }),
                     ])
                     ->action(function (Collection $selectedRecords, array $data, ListExtracts $livewire) {
+                        $priorityActionIds = $data['priority_action_ids'] ?? [];
 
                         foreach ($selectedRecords as $extract) {
-                            $extract->theme_id = $data['theme_id'];
+                            if (! empty($priorityActionIds)) {
+                                $extract->priorityActions()->syncWithoutDetaching($priorityActionIds);
+                            }
+
+                            $extract->theme_id = $data['theme_id'] ?? null;
                             $extract->save();
                         }
 
                         $livewire->dispatch('refreshTable');
-
                     }),
             ]);
     }

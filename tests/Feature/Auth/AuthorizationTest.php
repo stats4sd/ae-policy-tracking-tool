@@ -20,13 +20,6 @@ describe('Authentication', function () {
             ->assertRedirect('/app');
     });
 
-    it('requires authentication for print review page', function () {
-        $assessment = Assessment::factory()->create();
-
-        $this->get("/{$assessment->id}/print-review")
-            ->assertRedirect();
-    });
-
     it('requires authentication for policy document pages endpoint', function () {
         $document = PolicyDocument::factory()->create();
 

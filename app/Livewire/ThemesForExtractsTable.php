@@ -31,7 +31,7 @@ class ThemesForExtractsTable extends Component implements HasActions, HasSchemas
     {
         return $table
             ->heading('Priority Action: '.$this->priorityAction->name)
-            ->relationship(fn () => $this->priorityAction->themes())
+            ->relationship(fn () => $this->priorityAction->themes()->where('assessment_id', Filament::getTenant()->id))
             ->columns([
                 TextColumn::make('name')->label('Theme Name')->wrap(),
                 TextColumn::make('extracts_count')->counts('extracts')->label('# of Extracts'),

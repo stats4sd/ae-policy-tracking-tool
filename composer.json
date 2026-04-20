@@ -36,6 +36,7 @@
         "watheqalshowaiter/filament-sticky-table-header": "^1.0"
     },
     "require-dev": {
+        "codemonkey76/laravel-legacy-cleaner": "^1.0",
         "fakerphp/faker": "^1.23",
         "filament/upgrade": "^4.0",
         "larastan/larastan": "^3.0",

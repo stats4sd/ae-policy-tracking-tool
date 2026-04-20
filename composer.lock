@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "92e824b2d07c226e4e07f822b7c623ad",
+    "content-hash": "ecffbbe8d598e91d5fc8d6f04b076726",
     "packages": [
         {
             "name": "althinect/filament-spatie-roles-permissions",
@@ -12237,6 +12237,70 @@
                 }
             ],
             "time": "2026-03-29T15:46:14+00:00"
+        },
+        {
+            "name": "codemonkey76/laravel-legacy-cleaner",
+            "version": "v1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/codemonkey76/laravel-legacy-cleaner.git",
+                "reference": "86b215613abe236f647a963d4483d4bc63920cba"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/codemonkey76/laravel-legacy-cleaner/zipball/86b215613abe236f647a963d4483d4bc63920cba",
+                "reference": "86b215613abe236f647a963d4483d4bc63920cba",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "^10.0|^11.0|^12.0",
+                "illuminate/support": "^10.0|^11.0|^12.0",
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.26",
+                "orchestra/testbench": "^8.0|^9.0",
+                "phpunit/phpunit": "^10.0|^11.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "LegacyCleaner": "Codemonkey76\\LegacyCleaner\\Facades\\LegacyCleaner"
+                    },
+                    "providers": [
+                        "Codemonkey76\\LegacyCleaner\\LegacyCleanerServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Codemonkey76\\LegacyCleaner\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Shane Poppleton",
+                    "email": "shane@bjja.com.au"
+                }
+            ],
+            "description": "Detect and manager unused/legacy code in Laravel applications",
+            "keywords": [
+                "code-analysis",
+                "laravel",
+                "legacy-code",
+                "refactoring",
+                "unused-code"
+            ],
+            "support": {
+                "issues": "https://github.com/codemonkey76/laravel-legacy-cleaner/issues",
+                "source": "https://github.com/codemonkey76/laravel-legacy-cleaner/tree/v1.0.4"
+            },
+            "time": "2025-12-09T05:26:59+00:00"
         },
         {
             "name": "doctrine/deprecations",

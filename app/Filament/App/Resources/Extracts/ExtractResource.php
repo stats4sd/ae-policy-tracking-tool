@@ -7,6 +7,7 @@ use App\Filament\App\Resources\Extracts\Schemas\ExtractForm;
 use App\Filament\App\Resources\Extracts\Tables\ExtractTable;
 use App\Models\Extract;
 use BackedEnum;
+use Filament\Facades\Filament;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -48,6 +49,18 @@ class ExtractResource extends Resource
         return [
             'index' => ListExtracts::route('/'),
         ];
+    }
+
+    // # Custom tenancy query filter due to complex relationship between Extract and Assessment.
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        if ($tenant = Filament::getTenant()) {
+            $query->whereHas('policyDocument', fn (Builder $q) => $q->where('assessment_id', $tenant->getKey()));
+        }
+
+        return $query;
     }
 
     public static function getRecordRouteBindingEloquentQuery(): Builder

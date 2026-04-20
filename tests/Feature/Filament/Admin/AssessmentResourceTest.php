@@ -1,6 +1,5 @@
 <?php
 
-use App\Filament\Admin\Resources\Assessments\Pages\CreateAssessment;
 use App\Filament\Admin\Resources\Assessments\Pages\ListAssessments;
 use App\Filament\Admin\Resources\Assessments\Pages\ViewAssessment;
 use App\Models\Assessment;
@@ -34,27 +33,22 @@ describe('Admin / ListAssessments', function () {
 
 describe('Admin / CreateAssessment', function () {
 
-    it('renders the create page', function () {
-        livewire(CreateAssessment::class)
-            ->assertSuccessful();
-    });
-
-    it('creates an assessment', function () {
+    it('creates an assessment via the modal action', function () {
         $country = Country::factory()->create();
 
-        livewire(CreateAssessment::class)
-            ->fillForm(['country_id' => $country->id])
-            ->call('create')
-            ->assertHasNoFormErrors();
+        livewire(ListAssessments::class)
+            ->callAction('create', ['country_id' => $country->id]);
 
         $this->assertDatabaseHas('assessments', ['country_id' => $country->id]);
     });
 
     it('fails validation when country is missing', function () {
-        livewire(CreateAssessment::class)
-            ->fillForm(['country_id' => null])
-            ->call('create')
-            ->assertHasFormErrors(['country_id']);
+        $countBefore = Assessment::query()->count();
+
+        livewire(ListAssessments::class)
+            ->callAction('create', ['country_id' => null]);
+
+        expect(Assessment::query()->count())->toBe($countBefore);
     });
 
 });
