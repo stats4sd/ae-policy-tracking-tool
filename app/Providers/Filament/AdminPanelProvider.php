@@ -72,20 +72,19 @@ class AdminPanelProvider extends PanelProvider
                             ->url('/')
                             ->icon('heroicon-o-arrow-left'),
                         ...AdminDashboard::getNavigationItems(),
+                        ...AssessmentResource::getNavigationItems(),
                     ])
                     ->groups([
                         NavigationGroup::make('Lookup Lists')
                             ->items([
                                 ...AePrincipleResource::getNavigationItems(),
                                 ...RecommendationResource::getNavigationItems(),
-                                ...PriorityActionResource::getNavigationItems(),
                                 ...ScoreResource::getNavigationItems(),
                                 ...CountryResource::getNavigationItems(),
                                 ...LanguageResource::getNavigationItems(),
                             ]),
                         NavigationGroup::make('User Management')
                             ->items([
-                                ...AssessmentResource::getNavigationItems(),
                                 ...UserResource::getNavigationItems(),
                                 ...RoleResource::getNavigationItems(),
                                 ...PermissionResource::getNavigationItems(),

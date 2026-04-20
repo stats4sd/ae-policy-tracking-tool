@@ -63,14 +63,15 @@ class PriorityActionsRelationManager extends RelationManager
             ->recordActions([
                 Action::make('View')
                     ->label('View + Update Search Terms')
-                    ->url(fn($record) => PriorityActionResource::getUrl('view', ['record' => $record->id])),
+                    ->url(fn ($record) => PriorityActionResource::getUrl('view', ['record' => $record->id])),
                 EditAction::make(),
                 DeleteAction::make(),
             ])
             ->groupedBulkActions([
-        BulkActionGroup::make([
-            DeleteBulkAction::make(),
-        ]),
-    ]);
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
+            ])
+            ->recordUrl(fn ($record) => PriorityActionResource::getUrl('view', ['record' => $record->id]));
     }
 }

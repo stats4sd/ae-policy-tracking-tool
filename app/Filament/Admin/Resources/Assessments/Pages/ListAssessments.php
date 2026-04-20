@@ -10,12 +10,16 @@ use Filament\Schemas\Components\RenderHook;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Text;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\Width;
 use Filament\Support\Icons\Heroicon;
 use Filament\View\PanelsRenderHook;
 
 class ListAssessments extends ListRecords
 {
-    protected static string $resource = AssessmentResource::class;
+
+protected Width|string|null $maxContentWidth = 'full';
+
+protected static string $resource = AssessmentResource::class;
 
     protected static ?string $title = 'Assessments';
 
