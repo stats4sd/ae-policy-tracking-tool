@@ -79,7 +79,6 @@ class AdminPanelProvider extends PanelProvider
                             ->items([
                                 ...AePrincipleResource::getNavigationItems(),
                                 ...RecommendationResource::getNavigationItems(),
-                                ...PriorityActionResource::getNavigationItems(),
                                 ...ScoreResource::getNavigationItems(),
                                 ...CountryResource::getNavigationItems(),
                                 ...LanguageResource::getNavigationItems(),

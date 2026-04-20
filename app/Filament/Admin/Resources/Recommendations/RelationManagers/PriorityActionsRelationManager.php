@@ -68,9 +68,10 @@ class PriorityActionsRelationManager extends RelationManager
                 DeleteAction::make(),
             ])
             ->groupedBulkActions([
-        BulkActionGroup::make([
-            DeleteBulkAction::make(),
-        ]),
-    ]);
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
+            ])
+            ->recordUrl(fn($record) => PriorityActionResource::getUrl('view', ['record' => $record->id]));
     }
 }
