@@ -28,7 +28,15 @@
       "Bash(composer show *)",
       "Bash(grep -v \".php:$\")",
       "Bash(php -r \"echo get_parent_class\\(Filament\\\\Schemas\\\\Components\\\\Component::class\\);\")",
+<<<<<<< Updated upstream
       "Bash(vendor/bin/pint --dirty --format agent)"
+=======
+      "Bash(vendor/bin/pint --dirty --format agent)",
+      "mcp__laravel-boost__search-docs",
+      "Bash(grep -A 5 \"getModelNameLower\" app/Models/Assessment.php vendor/stats4sd/filament-team-management/src/Models/*.php)",
+      "Bash(find:*)",
+      "Bash(cat:*)"
+>>>>>>> Stashed changes
     ],
     "deny": [
       "Read(**/.env*)",
