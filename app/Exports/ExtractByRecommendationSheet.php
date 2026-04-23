@@ -26,12 +26,12 @@ class ExtractByRecommendationSheet implements FromCollection, WithColumnWidths, 
     public function __construct(public Assessment $assessment, public Recommendation $recommendation)
     {
         $this->priorityActions = PriorityAction::where('recommendation_id', $recommendation->id)
-            ->with(['extracts.type', 'extracts.policyDocument', 'extracts.theme'])
+            ->with(['extracts.score', 'extracts.policyDocument', 'extracts.theme'])
             ->get();
     }
 
     /**
-     * @return \Illuminate\Support\Collection
+     * @return SupportCollection
      */
     public function collection()
     {

@@ -26,24 +26,24 @@ class AllRecommendationsExport implements FromCollection, ShouldAutoSize, WithHe
 
     public function collection(): Collection
     {
-        $types = Score::all();
+        $scores = Score::all();
         $recommendations = Recommendation::all();
         $documents = $this->assessment->policyDocuments;
 
-        return $recommendations->flatMap(function ($recommendation) use ($types, $documents) {
-            return $types->map(function (Score $type) use ($recommendation, $documents) {
-                $documentCountRows = $documents->mapWithKeys(function (PolicyDocument $doc) use ($recommendation, $type) {
+        return $recommendations->flatMap(function ($recommendation) use ($scores, $documents) {
+            return $scores->map(function (Score $score) use ($recommendation, $documents) {
+                $documentCountRows = $documents->mapWithKeys(function (PolicyDocument $doc) use ($recommendation, $score) {
                     return [
                         $doc->extracts()
                             ->whereHas('priorityActions', fn ($query) => $query->where('priority_actions.recommendation_id', $recommendation->id))
-                            ->whereHas('score', fn ($query) => $query->where('types.id', $type->id))
+                            ->whereHas('score', fn ($query) => $query->where('scores.id', $score->id))
                             ->count(),
                     ];
                 });
 
                 return [
                     $recommendation->code_and_short_title,
-                    $type->name,
+                    $score->name,
                     ...$documentCountRows,
                     $documentCountRows->sum(),
                 ];
@@ -69,7 +69,7 @@ class AllRecommendationsExport implements FromCollection, ShouldAutoSize, WithHe
     {
         $map = [
             $row['recommendation'],
-            $row['type'],
+            $row['score'],
         ];
 
         $this->assessment->policyDocuments->each(function (PolicyDocument $doc) use (&$map, $row) {

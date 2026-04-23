@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 trait ExportStyles
@@ -14,7 +15,7 @@ trait ExportStyles
             ],
             // fill light-blue
             'fill' => [
-                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'fillType' => Fill::FILL_SOLID,
                 'startColor' => [
                     'argb' => 'FFB0C4DE',
                 ],
@@ -23,7 +24,7 @@ trait ExportStyles
     }
 
     // Apply a green styling in a heatmap style to the document count columns, with the intensity of the green color corresponding to the value in the cell (darker green for higher values, lighter green for lower values)
-    public function applyHeadMapStyles(Worksheet $sheet): Worksheet
+    public function applyHeadMapStyles(Worksheet $sheet): void
     {
         // highlight the document count columns with increasing shades of green based on the value:
         // brightest green for the highest value, and lightest green for the lowest value
@@ -61,19 +62,19 @@ trait ExportStyles
 
                 // for 0 values, shade white
                 if ($value == 0) {
-                    $cell->getStyle()->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                    $cell->getStyle()->getFill()->setFillType(Fill::FILL_SOLID)
                         ->getStartColor()->setARGB('FFFFFFFF');
 
                     continue;
                 }
 
                 if ($highest !== $lowest) {
-                    $quartile = (int) (4 * ($value - $lowest) / ($highest - $lowest));
+                    $quartile = (int) (4 * ((int) $value - (int) $lowest) / ((int) $highest - (int) $lowest));
                 } else {
                     $quartile = 0;
                 }
                 $shadeIndex = min($quartile, 3); // ensure index is within bounds
-                $cell->getStyle()->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                $cell->getStyle()->getFill()->setFillType(Fill::FILL_SOLID)
                     ->getStartColor()->setARGB($shades[$shadeIndex]);
             }
         }

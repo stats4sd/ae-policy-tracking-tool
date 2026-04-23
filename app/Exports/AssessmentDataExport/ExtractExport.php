@@ -4,6 +4,7 @@ namespace App\Exports\AssessmentDataExport;
 
 use App\Exports\ExportStyles;
 use App\Models\Assessment;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -19,7 +20,7 @@ class ExtractExport implements FromCollection, WithColumnWidths, WithHeadings, W
     public function __construct(public Assessment $assessment) {}
 
     /**
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function collection()
     {
@@ -32,6 +33,7 @@ class ExtractExport implements FromCollection, WithColumnWidths, WithHeadings, W
             'Assessment ID',
             'Assessment',
             'Policy Document',
+            'Page',
             'Extract',
             'From Automatic Search',
             'Theme',
@@ -45,6 +47,7 @@ class ExtractExport implements FromCollection, WithColumnWidths, WithHeadings, W
         return [
             $row->policyDocument->name,
             $row->priorityActions()->pluck('priority_actions.id')->join(', '),
+            $row->page_number,
             $row->formatted_extract,
             $row->automatic ? 'Yes' : 'No',
             $row->theme?->name,

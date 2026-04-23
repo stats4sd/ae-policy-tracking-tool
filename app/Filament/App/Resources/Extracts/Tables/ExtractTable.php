@@ -5,7 +5,6 @@ namespace App\Filament\App\Resources\Extracts\Tables;
 use App\Filament\App\Resources\Extracts\Pages\ListExtracts;
 use App\Models\Extract;
 use App\Models\PriorityAction;
-use App\Models\Score;
 use App\Models\Statement;
 use App\Models\Theme;
 use Awcodes\Shout\Components\Shout;
@@ -14,7 +13,6 @@ use Filament\Actions\BulkAction;
 use Filament\Actions\DeleteAction;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -27,6 +25,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
+use Illuminate\Support\HtmlString;
 
 class ExtractTable
 {
@@ -41,7 +40,7 @@ class ExtractTable
                     ->searchable()
                     // macro setup in DefStudio\FilamentColumnLengthLimiter package
                     ->limitWithTooltip()
-                    ->description(fn (Extract $record) => 'From: '.$record->policyDocument->name ?? 'No Document')
+                    ->description(fn (Extract $record): HtmlString => new HtmlString('From document: <b>'.$record->policyDocument->name.' (page '.$record->page_number.' of '.$record->policyDocument->pages->count().' )</b>' ?? 'No Document'))
                     ->label('Highlighted Extract'),
                 TextColumn::make('priorityActions.id')
                     ->toggleable()
@@ -117,7 +116,6 @@ class ExtractTable
             ->toolbarActions([
                 BulkAction::make('Summarise')
                     ->fillForm(function (Collection $selectedRecords) {
-                        // TODO: organise selected highlights by source document
                         return [
                             'selected_extracts' => $selectedRecords->map(fn ($record) => $record->extract)->toArray(),
                             'default_priority_action_id' => $selectedRecords->flatMap->priorityActions->first()->id ?? null,
@@ -184,11 +182,6 @@ class ExtractTable
                             ->label('Enter Summary Statement')
                             ->required()
                             ->rows(3),
-
-                        Radio::make('type_id')
-                            ->options(Score::all()->mapWithKeys(fn (Score $type) => [$type->id => '( '.$type->score.' ) '.$type->name])->toArray())
-                            ->label('How does this statement link to the priority action? (Select the most appropriate type)')
-                            ->required(),
                     ])
                     ->action(function (Collection $selectedRecords, array $data, ListExtracts $livewire) {
 
@@ -196,9 +189,9 @@ class ExtractTable
 
                         $statement = Statement::create([
                             'name' => $data['name'],
-                            'type_id' => $data['type_id'],
                             'priority_action_id' => $priorityActionId,
                             'theme_id' => $data['theme_id'],
+                            'assessment_id' => Filament::getTenant()->id,
                         ]);
 
                         $statement->extracts()->sync($selectedRecords->pluck('id'));
