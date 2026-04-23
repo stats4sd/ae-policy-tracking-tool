@@ -52,15 +52,15 @@ class ExtractController extends Controller
             'verified' => 'boolean',
             'priority_actions' => 'array',
             'priority_actions.*' => 'exists:priority_actions,id',
-            'type_id' => 'nullable|exists:types,id',
+            'score_id' => 'nullable|exists:scores,id',
         ]);
 
         if (isset($validated['verified'])) {
             $extract->verified = $validated['verified'];
         }
 
-        if (isset($validated['type_id'])) {
-            $extract->type_id = $validated['type_id'];
+        if (isset($validated['score_id'])) {
+            $extract->score_id = $validated['score_id'];
         }
 
         $extract->save();

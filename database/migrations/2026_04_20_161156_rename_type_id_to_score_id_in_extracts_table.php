@@ -11,19 +11,31 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
+
         Schema::table('extracts', function (Blueprint $table) {
-            $table->dropForeign('highlights_type_id_foreign');
             $table->renameColumn('type_id', 'score_id');
+        });
+
+        Schema::table('extracts', function (Blueprint $table) {
             $table->foreign('score_id')->references('id')->on('scores');
         });
+
+        Schema::enableForeignKeyConstraints();
     }
 
     public function down(): void
     {
+        Schema::disableForeignKeyConstraints();
+
         Schema::table('extracts', function (Blueprint $table) {
-            $table->dropForeign(['score_id']);
             $table->renameColumn('score_id', 'type_id');
+        });
+
+        Schema::table('extracts', function (Blueprint $table) {
             $table->foreign('type_id')->references('id')->on('scores');
         });
+
+        Schema::enableForeignKeyConstraints();
     }
 };

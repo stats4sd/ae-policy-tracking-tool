@@ -165,7 +165,7 @@ describe('POST /extracts', function () {
             ->assertJsonValidationErrors(['color']);
     });
 
-    it('accepts a null type_id', function () {
+    it('accepts a null score_id', function () {
         $this->actingAs($this->user)
             ->postJson('/extracts', [
                 'policy_document_id' => $this->document->id,
@@ -174,12 +174,12 @@ describe('POST /extracts', function () {
                 'start_offset' => 0,
                 'end_offset' => 10,
                 'color' => 'blue',
-                'type_id' => null,
+                'score_id' => null,
             ])
             ->assertCreated();
     });
 
-    it('returns 422 when type_id is provided but does not exist', function () {
+    it('returns 422 when score_id is provided but does not exist', function () {
         $this->actingAs($this->user)
             ->postJson('/extracts', [
                 'policy_document_id' => $this->document->id,
@@ -188,10 +188,10 @@ describe('POST /extracts', function () {
                 'start_offset' => 0,
                 'end_offset' => 10,
                 'color' => 'blue',
-                'type_id' => 99999,
+                'score_id' => 99999,
             ])
             ->assertUnprocessable()
-            ->assertJsonValidationErrors(['type_id']);
+            ->assertJsonValidationErrors(['score_id']);
     });
 
 });
