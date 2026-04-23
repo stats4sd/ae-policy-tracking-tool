@@ -24,7 +24,7 @@ trait ExportStyles
     }
 
     // Apply a green styling in a heatmap style to the document count columns, with the intensity of the green color corresponding to the value in the cell (darker green for higher values, lighter green for lower values)
-    public function applyHeadMapStyles(Worksheet $sheet): void
+    public function applyHeatMapStyles(Worksheet $sheet): void
     {
         // highlight the document count columns with increasing shades of green based on the value:
         // brightest green for the highest value, and lightest green for the lowest value
@@ -33,7 +33,7 @@ trait ExportStyles
         $columnCount = $this->assessment->policyDocuments->count();
 
         // find the highest count across all document count columns
-        foreach (range(3, 2 + $columnCount) as $colIndex) {
+        foreach (range(4, 3 + $columnCount) as $colIndex) {
             $columnValues = $sheet->rangeToArray($sheet->getCellByColumnAndRow($colIndex, 2)->getCoordinate().':'.$sheet->getCellByColumnAndRow($colIndex, $sheet->getHighestRow())->getCoordinate());
             foreach ($columnValues as $valueRow) {
                 $value = $valueRow[0];
@@ -68,8 +68,9 @@ trait ExportStyles
                     continue;
                 }
 
-                if ($highest !== $lowest) {
-                    $quartile = (int) (4 * ((int) $value - (int) $lowest) / ((int) $highest - (int) $lowest));
+                $range = (int) $highest - (int) $lowest;
+                if ($range > 0) {
+                    $quartile = (int) (4 * ((int) $value - (int) $lowest) / $range);
                 } else {
                     $quartile = 0;
                 }

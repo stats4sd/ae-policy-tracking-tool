@@ -34,7 +34,7 @@ class AllRecommendationsExport implements FromCollection, ShouldAutoSize, WithHe
             return $scores->map(function (Score $score) use ($recommendation, $documents) {
                 $documentCountRows = $documents->mapWithKeys(function (PolicyDocument $doc) use ($recommendation, $score) {
                     return [
-                        $doc->extracts()
+                        $doc->short_title => $doc->extracts()
                             ->whereHas('priorityActions', fn ($query) => $query->where('priority_actions.recommendation_id', $recommendation->id))
                             ->whereHas('score', fn ($query) => $query->where('scores.id', $score->id))
                             ->count(),
@@ -42,10 +42,11 @@ class AllRecommendationsExport implements FromCollection, ShouldAutoSize, WithHe
                 });
 
                 return [
-                    $recommendation->code_and_short_title,
-                    $score->name,
-                    ...$documentCountRows,
-                    $documentCountRows->sum(),
+                    'recommendation' => $recommendation->code_and_short_title,
+                    'score' => $score->score,
+                    'score_description' => $score->name,
+                    ...$documentCountRows->toArray(),
+                    'total' => $documentCountRows->sum(),
                 ];
             });
         });
@@ -55,7 +56,8 @@ class AllRecommendationsExport implements FromCollection, ShouldAutoSize, WithHe
     {
         $headings = [
             'Recommendation',
-            'Type',
+            'Score',
+            'Score Description',
         ];
 
         $documentShortTitles = $this->assessment->policyDocuments->pluck('short_title')->toArray();
@@ -70,6 +72,7 @@ class AllRecommendationsExport implements FromCollection, ShouldAutoSize, WithHe
         $map = [
             $row['recommendation'],
             $row['score'],
+            $row['score_description'],
         ];
 
         $this->assessment->policyDocuments->each(function (PolicyDocument $doc) use (&$map, $row) {
@@ -87,7 +90,7 @@ class AllRecommendationsExport implements FromCollection, ShouldAutoSize, WithHe
     public function styles(Worksheet $sheet): void
     {
         $sheet->getStyle('1')->applyFromArray($this->headingStyle());
-        $this->applyHeadMapStyles($sheet);
+        $this->applyHeatMapStyles($sheet);
     }
 
     public function title(): string
