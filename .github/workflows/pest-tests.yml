@@ -23,6 +23,9 @@ jobs:
           extensions: sqlite3, pdo_sqlite
           coverage: none
 
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -33,9 +36,6 @@ jobs:
 
       - name: Build assets
         run: npm run build
-
-      - name: Install Composer dependencies
-        run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Copy .env
         run: cp .env.example .env
