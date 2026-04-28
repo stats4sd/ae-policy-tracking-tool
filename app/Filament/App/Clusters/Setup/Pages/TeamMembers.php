@@ -54,6 +54,7 @@ class TeamMembers extends Page implements HasTable
         $assessment = $this->getAssessment();
 
         return $table
+            ->paginated(false)
             ->query($assessment->users()->getQuery())
             ->columns([
                 TextColumn::make('name')

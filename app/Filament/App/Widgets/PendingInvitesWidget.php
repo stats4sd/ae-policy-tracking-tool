@@ -18,6 +18,7 @@ class PendingInvitesWidget extends TableWidget
         $assessment = Filament::getTenant();
 
         return $table
+            ->paginated(false)
             ->heading('Pending Invitations')
             ->query($assessment->invites()->getQuery())
             ->columns([
