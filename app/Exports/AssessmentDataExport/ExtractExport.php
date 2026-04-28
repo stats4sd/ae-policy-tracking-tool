@@ -45,13 +45,15 @@ class ExtractExport implements FromCollection, WithColumnWidths, WithHeadings, W
     public function map($row): array
     {
         return [
+            $this->assessment->id,
+            $this->assessment->title,
             $row->policyDocument->name,
-            $row->priorityActions()->pluck('priority_actions.id')->join(', '),
             $row->page_number,
             $row->formatted_extract,
             $row->automatic ? 'Yes' : 'No',
             $row->theme?->name,
             $row->statements()->count(),
+            $row->priorityActions()->pluck('priority_actions.id')->join(', '),
         ];
     }
 
@@ -64,8 +66,8 @@ class ExtractExport implements FromCollection, WithColumnWidths, WithHeadings, W
     {
         $sheet->getStyle('1')->applyFromArray($this->headingStyle());
 
-        // Wrap text for the 'Extract' column (D)
-        $sheet->getStyle('D')->getAlignment()->setWrapText(true);
+        // Wrap text for the 'Extract' column (E)
+        $sheet->getStyle('E')->getAlignment()->setWrapText(true);
     }
 
     public function columnWidths(): array
@@ -74,11 +76,12 @@ class ExtractExport implements FromCollection, WithColumnWidths, WithHeadings, W
             'A' => 15,  // Assessment ID
             'B' => 30,  // Assessment
             'C' => 30,  // Policy Document
-            'D' => 50,  // Extract
-            'E' => 20,  // From Automatic Search
-            'F' => 20,  // Theme
-            'G' => 15,  // # Statements
-            'H' => 25,  // Priority Action(s)
+            'D' => 10,  // Page
+            'E' => 50,  // Extract
+            'F' => 20,  // From Automatic Search
+            'G' => 20,  // Theme
+            'H' => 15,  // # Statements
+            'I' => 25,  // Priority Action(s)
         ];
     }
 }

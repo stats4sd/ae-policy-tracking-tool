@@ -71,6 +71,13 @@ class RegisterAssessment extends RegisterTenant
                                 ->label('Year of the Assessment')
                                 ->helperText('If the assessment is being conducted over multiple years, enter the starting year.')
                                 ->numeric()
+                                ->minValue(1900)
+                                ->maxValue(now()->year + 20)
+                                ->validationMessages([
+                                    'numeric' => 'The year must be a number.',
+                                    'max_value' => 'The year must not be more than 20 years in the future.',
+                                    'min_value' => 'The year must not be less than 1900.',
+                                ])
                                 ->columnSpan(1),
                         ]),
                     Step::make('2. Team Members')

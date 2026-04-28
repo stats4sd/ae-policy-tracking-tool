@@ -28,25 +28,26 @@ class RecommendationExport implements FromCollection, ShouldAutoSize, WithHeadin
     public function collection(): Collection
     {
         // get list of each Priority Action x Type
-        $types = Score::all();
+        $scores = Score::all();
         $documents = $this->assessment->policyDocuments;
 
         return $this->recommendation->priorityActions
-            ->flatMap(function (PriorityAction $pa) use ($types, $documents) {
-                return $types->map(function ($type) use ($pa, $documents) {
+            ->flatMap(function (PriorityAction $pa) use ($scores, $documents) {
+                return $scores->map(function ($score) use ($pa, $documents) {
 
-                    $documentCountRows = $documents->mapWithKeys(function (PolicyDocument $doc) use ($pa, $type) {
+                    $documentCountRows = $documents->mapWithKeys(function (PolicyDocument $doc) use ($pa, $score) {
                         return [
                             $doc->short_title => $doc->extracts()
                                 ->whereHas('priorityActions', fn ($query) => $query->where('priority_actions.id', $pa->id))
-                                ->whereHas('score', fn ($query) => $query->where('scores.id', $type->id))
+                                ->whereHas('score', fn ($query) => $query->where('scores.id', $score->id))
                                 ->count(),
                         ];
                     });
 
                     return [
                         'priority_action' => $pa,
-                        'type' => $type,
+                        'score' => $score->score,
+                        'score_description' => $score->name,
                         ...$documentCountRows->toArray(),
                         'total' => $documentCountRows->sum(),
                     ];
@@ -58,7 +59,8 @@ class RecommendationExport implements FromCollection, ShouldAutoSize, WithHeadin
     {
         $headings = [
             'Priority Action',
-            'Type',
+            'Score',
+            'Score Description',
         ];
 
         $this->assessment->policyDocuments->each(function (PolicyDocument $doc) use (&$headings) {
@@ -74,7 +76,8 @@ class RecommendationExport implements FromCollection, ShouldAutoSize, WithHeadin
     {
         $map = [
             $row['priority_action']->code_and_short_name,
-            $row['type']->name,
+            $row['score'],
+            $row['score_description'],
         ];
 
         $this->assessment->policyDocuments->each(function (PolicyDocument $doc) use (&$map, $row) {
@@ -92,7 +95,7 @@ class RecommendationExport implements FromCollection, ShouldAutoSize, WithHeadin
     public function styles(Worksheet $sheet): void
     {
         $sheet->getStyle('1')->applyFromArray($this->headingStyle());
-        $this->applyHeadMapStyles($sheet);
+        $this->applyHeatMapStyles($sheet);
     }
 
     public function title(): string

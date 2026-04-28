@@ -44,8 +44,9 @@ class ExtractByRecommendationSheet implements FromCollection, WithColumnWidths, 
             ->filter(fn (Extract $extract) => $extract->policyDocument->assessment_id === $this->assessment->id)
             ->map(fn (Extract $extract) => [
                 'priority_action' => $priorityAction,
-                'type' => $extract->type,
+                'type' => $extract->score,
                 'policyDocument' => $extract->policyDocument,
+                'page_number' => $extract->page_number,
                 'extract' => $extract->formatted_extract,
                 'automatic' => $extract->automatic,
                 'theme' => $extract->theme,
@@ -58,6 +59,7 @@ class ExtractByRecommendationSheet implements FromCollection, WithColumnWidths, 
             'Priority Action',
             'Type',
             'Policy Document',
+            'Page',
             'Extract',
             'From Search Terms',
             'Themes Linked',
@@ -73,6 +75,7 @@ class ExtractByRecommendationSheet implements FromCollection, WithColumnWidths, 
             $row['priority_action']->code_and_short_name,
             $row['type']?->name,
             $row['policyDocument']->short_title,
+            $row['page_number'],
             $row['extract'],
             $row['automatic'] ? 'Yes' : 'No',
             $row['theme']?->name,
@@ -83,9 +86,9 @@ class ExtractByRecommendationSheet implements FromCollection, WithColumnWidths, 
     {
         $sheet->getStyle('1')->applyFromArray($this->headingStyle());
 
-        // wrap text for the Extract column (D) and Priority Action Column (A)
+        // wrap text for the Extract column (E) and Priority Action Column (A)
         $sheet->getStyle('A')->getAlignment()->setWrapText(true);
-        $sheet->getStyle('D')->getAlignment()->setWrapText(true);
+        $sheet->getStyle('E')->getAlignment()->setWrapText(true);
     }
 
     public function title(): string
@@ -99,9 +102,10 @@ class ExtractByRecommendationSheet implements FromCollection, WithColumnWidths, 
             'A' => 25,  // Priority Action
             'B' => 30,  // Type
             'C' => 30,  // Policy Document
-            'D' => 70,  // Extract
-            'E' => 20,  // From Search Terms
-            'F' => 25,  // Themes Linked
+            'D' => 10,  // Page
+            'E' => 70,  // Extract
+            'F' => 20,  // From Search Terms
+            'G' => 25,  // Themes Linked
         ];
     }
 }
