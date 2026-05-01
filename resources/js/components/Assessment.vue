@@ -102,7 +102,7 @@
                                                 types?.map(
                                                     (type) => ({
                                                         label: `( ${type.score} ) ${type.name}`,
-                                                        value: type.score,
+                                                        value: type.id,
                                                     }),
                                                 ) ?? []
                                             "
@@ -468,26 +468,24 @@ watch(
 );
 
 const showTypeScoreSidebar = ref<boolean>(true);
-const selectedTypeScore = ref<number[]>([]);
+const selectedTypeScore = ref<number[]>([]); // holds score record IDs (matches Extract.score_id)
 
 // filter extracts by priority action
 const filteredExtracts = ref<Extract[]>([]);
 
 const updateFilteredExtracts = () => {
     filteredExtracts.value = extracts.value.filter((h) => {
-        if (selectedPriorityActions.value.length === 0) {
-            return true;
-        }
-        return h.priority_actions.some((id) =>
-            selectedPriorityActions.value.includes(id),
-        );
-    });
+        const matchesPriorityAction =
+            selectedPriorityActions.value.length === 0 ||
+            h.priority_actions.some((id) =>
+                selectedPriorityActions.value.includes(id),
+            );
 
-    filteredExtracts.value = extracts.value.filter((h) => {
-        if (selectedTypeScore.value.length === 0) {
-            return true;
-        }
-        return selectedTypeScore.value.includes(h.score_id) ;
+        const matchesTypeScore =
+            selectedTypeScore.value.length === 0 ||
+            selectedTypeScore.value.includes(h.score_id);
+
+        return matchesPriorityAction && matchesTypeScore;
     });
 };
 
@@ -713,7 +711,7 @@ interface Score {
     name: string;
 }
 
-const scores = ref<UnwrapRef<Score[]> | null>(null);
+const types = ref<UnwrapRef<Score[]> | null>(null);
 
 const loadTypes = async (): Promise<void> => {
     try {
@@ -721,10 +719,9 @@ const loadTypes = async (): Promise<void> => {
         if (!response.ok) {
             throw new Error("Network response was not ok");
         }
-        // types are not used directly here, but could be stored if needed
-        scores.value = await response.json();
+        types.value = await response.json();
     } catch (error) {
-        console.error("Error loading priority action types:", error);
+        console.error("Error loading types:", error);
     }
 };
 </script>
