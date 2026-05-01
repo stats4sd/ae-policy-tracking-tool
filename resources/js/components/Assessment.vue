@@ -220,6 +220,26 @@
             </div>
         </div>
         <div class="p-4">
+            <!-- Score assignment -->
+            <div class="w-full bg-gray-100 p-4 rounded-md mt-4">
+                <label class="block mb-2 font-semibold">Extract Score</label>
+                <select
+                    v-if="types"
+                    v-model="extractTypeId"
+                    class="w-full bg-white border border-gray-300 rounded-md px-4 py-2"
+                >
+                    <option :value="null">— No score assigned —</option>
+                    <option
+                        v-for="type in types"
+                        :key="type.id"
+                        :value="type.id"
+                    >
+                        ({{ type.score }}) {{ type.name }}
+                    </option>
+                </select>
+                <p v-else class="text-sm text-gray-500">Loading scores…</p>
+            </div>
+
             <div
                 v-if="!currentExtract"
                 class="w-full bg-gray-100 p-4 rounded-md mt-4"
@@ -254,21 +274,6 @@
             <div v-else class="w-full bg-gray-100 p-4 rounded-md mt-4">
                 To change the selected text, please delete this extract and
                 recreate it.
-            </div>
-
-            <!-- Link extract to 'type' -->
-            <div class="p-4">
-
-                <select v-if="types" v-model="extractTypeId" class="w-full bg-white border border-gray-300 rounded-md px-4 py-2">
-                    <option :value="null">Select Extract Type</option>
-                    <option
-                        v-for="type in types"
-                        :key="type.id"
-                        :value="type.id"
-                    >
-                        ( {{ type.score }} ) {{ type.name }}
-                    </option>
-                </select>
             </div>
             <!-- If no priority actions are selected, show all of them -->
             <div
