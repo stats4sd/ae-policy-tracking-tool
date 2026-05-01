@@ -52,6 +52,7 @@ class MigrateExtractsToPages extends Command
                     'policy_document_id' => $document->id,
                     'page_number' => $page['page'],
                     'content' => $page['text'],
+                    'page_type' => $page['page_type'] ?? 'unknown',
                 ]);
             }
 

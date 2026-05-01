@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enums\PageType;
 use App\Models\Extract;
 use App\Models\PolicyDocument;
 use App\Models\PolicyDocumentPage;
@@ -23,7 +24,10 @@ class PolicyDocumentAutoSearchForPriorityAction implements ShouldQueue
     public function handle(): void
     {
         $this->priorityAction->loadMissing('searchTerms');
-        $pages = $this->policyDocument->pages()->orderBy('page_number')->get();
+        $pages = $this->policyDocument->pages()
+            ->whereNotIn('page_type', [PageType::Title->value, PageType::Contents->value])
+            ->orderBy('page_number')
+            ->get();
 
         foreach ($pages as $page) {
             $this->searchPage($page);
