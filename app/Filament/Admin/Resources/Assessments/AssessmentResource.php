@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Assessments;
 
+use App\Enums\AssessmentStatus;
 use App\Filament\Admin\Resources\Assessments\Pages\ListAssessments;
 use App\Filament\Admin\Resources\Assessments\Pages\ViewAssessment;
 use App\Filament\Admin\Resources\Assessments\RelationManagers\UsersRelationManager;
@@ -10,18 +11,18 @@ use App\Models\Country;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\RestoreAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-
 use Filament\Resources\Resource;
-use Filament\Schemas\Components\Utilities\Get as Get;
-use Filament\Schemas\Components\Utilities\Set as Set;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
-use Filament\Tables;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Stats4sd\FilamentTeamManagement\Filament\Admin\Resources\Teams\RelationManagers\InvitesRelationManager;
 
@@ -87,11 +88,7 @@ class AssessmentResource extends Resource
                     ->sortable()
                     ->date(),
                 SelectColumn::make('status')
-                    ->options([
-                        'In Progress' => 'In Progress',
-                        'Review' => 'Review',
-                        'Finalised' => 'Finalised',
-                    ]),
+                    ->options(AssessmentStatus::class),
                 TextColumn::make('finalised_at')
                     ->sortable()
                     ->date(),
@@ -119,36 +116,15 @@ class AssessmentResource extends Resource
             ->filters([
                 SelectFilter::make('country')->relationship('country', 'name'),
                 SelectFilter::make('status')
-                    ->options([
-                        'In Progress' => 'In Progress',
-                        'Review' => 'Review',
-                        'Finalised' => 'Finalised',
-                    ]),
+                    ->options(AssessmentStatus::class),
+                TrashedFilter::make(),
+
             ])
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
-                DeleteAction::make()
-                    ->visible(fn (Assessment $record): bool =>
-                        ($record->verified_extracts_count ?? $record->verifiedExtracts()->count()) === 0
-                        && ($record->statements_count ?? $record->statements()->count()) === 0
-                    ),
-                //                Tables\Actions\Action::make('finalise')
-                //                                ->icon(fn(Assessment $record): string => $record->finalised_at ? '' : 'heroicon-o-check')
-                //                                ->label(fn(Assessment $record): string => $record->finalised_at ? '' : 'Mark as finalised')
-                //                                ->color('success')
-                //                                ->action(function (Assessment $record) {
-                //                                    if($record->status==='In Progress') {
-                //                                        $record->status = 'Finalised';
-                //                                        $record->finalised_at = Carbon::now();
-                //                                        $record->save();
-                //                                    }
-                //                                }),
-                //                Tables\Actions\Action::make('viewReport')
-                //                                ->label('View Report')
-                //                                ->url('/report')
-                //                                ->icon('heroicon-o-chart-bar-square')
-                //                                ->openUrlInNewTab(),
+                DeleteAction::make(),
+                RestoreAction::make(),
             ])
             ->toolbarActions([
                 //

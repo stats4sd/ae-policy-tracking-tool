@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write(*.php)|Write(*.blade.php)|Write(*.js)|Write(*.css)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/check-pages.sh",
+            "async": true,
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

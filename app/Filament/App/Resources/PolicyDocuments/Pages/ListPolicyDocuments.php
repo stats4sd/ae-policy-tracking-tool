@@ -5,6 +5,7 @@ namespace App\Filament\App\Resources\PolicyDocuments\Pages;
 use App\Filament\App\Resources\PolicyDocuments\PolicyDocumentResource;
 use Filament\Actions;
 use Filament\Actions\CreateAction;
+use Filament\Facades\Filament;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Text;
@@ -16,6 +17,23 @@ class ListPolicyDocuments extends ListRecords
     protected static string $resource = PolicyDocumentResource::class;
 
     protected ?string $heading = 'Policies Reviewed During this Assessment';
+
+    public ?string $autoSearchRestartedAt = null;
+
+    protected function getListeners(): array
+    {
+        $assessmentId = Filament::getTenant()?->id;
+
+        return [
+            "echo-private:assessment.{$assessmentId},PolicyDocumentProcessingStarted" => 'refreshTable',
+            "echo-private:assessment.{$assessmentId},PolicyDocumentProcessingStopped" => 'refreshTable',
+        ];
+    }
+
+    public function refreshTable(): void
+    {
+        $this->resetTable();
+    }
 
     public function content(Schema $schema): Schema
     {

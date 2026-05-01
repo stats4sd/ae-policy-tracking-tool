@@ -1,20 +1,27 @@
 """Extract text from a PDF using PyMuPDF4LLM."""
 
 import json
+import re
 import sys
 
 import pymupdf.layout
 import pymupdf4llm
 
 
+def sanitize_text(text: str) -> str:
+    """Replace unprintable/PUA Unicode characters with a standard bullet point."""
+    # Private Use Area: U+E000–U+F8FF (includes dingbat font bullets like U+F0B7)
+    return re.sub(r'[\uE000-\uF8FF]', '•', text)
+
+
 def extract_text(file_path: str, lang: str = 'eng') -> str:
 
-    return pymupdf4llm.to_markdown(
+    return sanitize_text(pymupdf4llm.to_markdown(
         file_path,
         header=False,
         footer=False,
         ocr_language=lang
-        )
+        ))
 
 
 def extract_pages(file_path: str, lang: str = 'eng') -> list[dict]:
@@ -28,7 +35,7 @@ def extract_pages(file_path: str, lang: str = 'eng') -> list[dict]:
         )
 
     return [
-        {"page": i + 1, "text": chunk["text"]}
+        {"page": i + 1, "text": sanitize_text(chunk["text"])}
         for i, chunk in enumerate(chunks)
     ]
 

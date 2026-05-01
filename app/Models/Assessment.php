@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Enums\AssessmentStatus;
 use Filament\Models\Contracts\HasName;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Stats4sd\FilamentTeamManagement\Models\Team;
 
@@ -15,12 +17,20 @@ use Stats4sd\FilamentTeamManagement\Models\Team;
 class Assessment extends Team implements HasName
 {
     use HasFactory;
+    use SoftDeletes;
+
+    protected function casts(): array
+    {
+        return [
+            'status' => AssessmentStatus::class,
+        ];
+    }
 
     protected static function booted(): void
     {
         static::creating(function ($query) {
             // set default status to 'In Progress' on creation
-            $query->status = 'In Progress';
+            $query->status = AssessmentStatus::InProgress;
         });
 
         static::created(function (self $assessment) {
