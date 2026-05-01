@@ -17,7 +17,9 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
@@ -36,39 +38,38 @@ class ExtractTable
             ->paginationPageOptions([25, 50, 100, 200])
             ->defaultPaginationPageOption(50)
             ->columns([
+                IconColumn::make('verified')
+                    ->label('')
+                    ->boolean(),
                 TextColumn::make('extract')
                     ->searchable()
                     // macro setup in DefStudio\FilamentColumnLengthLimiter package
                     ->limitWithTooltip()
-                    ->description(fn (Extract $record): HtmlString => new HtmlString('From document: <b>'.$record->policyDocument->name.' (page '.$record->page_number.' of '.$record->policyDocument->pages->count().' )</b>' ?? 'No Document'))
-                    ->label('Highlighted Extract'),
+                    ->description(fn (Extract $record): HtmlString => new HtmlString('<span class="text-xs"> From document: <b>'.$record->policyDocument->name.' (page '.$record->page_number.' of '.$record->policyDocument->pages->count().' )</b></span>' ?? 'No Document'))
+                    ->label('Highlighted Extract')
+                    ->extraHeaderAttributes(['style' => 'min-width: 300px; width: 50vw;'])
+                    ->extraAttributes(['style' => 'min-width: 300px; width: 50vw;']),
                 TextColumn::make('priorityActions.id')
                     ->toggleable()
-                    ->label('Priority Action'),
+                    ->badge()
+                    ->wrap()
+                    ->label('Priority Actions'),
                 TextColumn::make('theme.name')
                     ->toggleable()
                     ->label('Theme')
                     ->wrap(),
-
-                TextColumn::make('searchTerms.phrase')
-                    ->toggleable()
-                    ->badge()
-                    ->label('keywords'),
                 TextColumn::make('score.score')
                     ->toggleable()
                     ->badge()
-                    ->color(fn (Extract $record) => match ($record->type->score ?? null) {
+                    ->color(fn (Extract $record) => match ($record->score->score ?? null) {
                         null => 'secondary',
                         2 => 'success',
                         -1 => 'danger',
                         default => 'info',
                     })
-                    ->tooltip(fn (Extract $record) => $record->type->name ?? 'No Score Assigned')
+                    ->tooltip(fn (Extract $record) => $record->score->name ?? 'No Score Assigned')
                     ->label('Score'),
 
-                IconColumn::make('verified')
-                    ->toggleable()
-                    ->boolean(),
             ])
             ->filtersTriggerAction(fn (Action $action) => $action->hiddenLabel(false)->link()->label('Filters'))
             ->deferFilters(false)
@@ -103,11 +104,25 @@ class ExtractTable
             ])
             ->recordActions([
                 Action::make('Verify Extract')
-                    ->visible(fn (Extract $record) => ! $record->verified)
-                    ->requiresConfirmation()
-                    ->modalDescription('This extract was created by an automated search. Are you sure you want to verify it as relevant to this assessment?')
-                    ->action(function (Extract $record) {
-                        $record->verified = true;
+                    ->label('Edit + Verify')
+                    ->icon(Heroicon::OutlinedPencilSquare)
+                    ->schema([
+                        Select::make('score_id')
+                            ->relationship('score', 'name')
+                            ->required(),
+                        Select::make('theme_id')
+                            ->relationship('theme', 'name'),
+                        ToggleButtons::make('verified')
+                            ->boolean(trueLabel: 'Verified', falseLabel: 'Unverified')
+                            ->grouped()
+                            ->label('Verification Status')
+                            ->helperText('Confirm that this automated extract is relevant to the assessment.'),
+
+                    ])
+                    ->modalDescription('Edit the scoring')
+                    ->action(function (Extract $record, array $data) {
+                        $record->verified = $data['verified'];
+                        $record->score_id = $data['score_id'];
                         $record->save();
                     }),
                 DeleteAction::make()
