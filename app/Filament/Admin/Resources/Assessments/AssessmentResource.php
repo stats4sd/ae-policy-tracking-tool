@@ -73,6 +73,7 @@ class AssessmentResource extends Resource
                     ->columnSpanFull(),
                 Select::make('language_id')
                     ->label('Primary Language')
+                    ->required()
                     ->relationship('language', 'name')
                     ->preload(),
             ])
