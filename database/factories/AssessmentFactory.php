@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Language;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use App\Models\Assessment;
@@ -23,6 +24,7 @@ class AssessmentFactory extends Factory
     {
         return [
             'country_id' => Country::factory(),
+            'language_id' => Language::factory(),
         ];
     }
 }

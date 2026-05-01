@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\AssessmentStatus;
 use App\Models\Assessment;
 use App\Models\Country;
 use App\Models\DefaultSearchTerm;
@@ -18,7 +19,7 @@ describe('Assessment model', function () {
     it('sets status to In Progress on creation', function () {
         $assessment = Assessment::factory()->create();
 
-        expect($assessment->status)->toBe('In Progress');
+        expect($assessment->status)->toBe(AssessmentStatus::InProgress);
     });
 
     it('creates search terms from default search terms on creation', function () {

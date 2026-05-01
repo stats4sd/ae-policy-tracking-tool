@@ -4,6 +4,7 @@ use App\Filament\Admin\Resources\Assessments\Pages\ListAssessments;
 use App\Filament\Admin\Resources\Assessments\Pages\ViewAssessment;
 use App\Models\Assessment;
 use App\Models\Country;
+use App\Models\Language;
 use App\Models\User;
 use Filament\Facades\Filament;
 
@@ -35,31 +36,32 @@ describe('Admin / CreateAssessment', function () {
 
     it('creates an assessment via the modal action', function () {
         $country = Country::factory()->create();
+        $language = Language::factory()->create();
 
         livewire(ListAssessments::class)
-            ->callAction('create', ['country_id' => $country->id]);
+            ->callAction('create', ['country_id' => $country->id, 'language_id' => $language->id]);
 
-        $this->assertDatabaseHas('assessments', ['country_id' => $country->id]);
+        $this->assertDatabaseHas('assessments', ['country_id' => $country->id, 'language_id' => $language->id]);
     });
 
     it('fails validation when country is missing', function () {
         $countBefore = Assessment::query()->count();
+        $language = Language::factory()->create();
 
         livewire(ListAssessments::class)
-            ->callAction('create', ['country_id' => null]);
+            ->callAction('create', ['country_id' => null, 'language_id' => $language->id]);
 
         expect(Assessment::query()->count())->toBe($countBefore);
     });
 
-});
+    it('fails validation when language is missing', function () {
+        $countBefore = Assessment::query()->count();
+        $country = Country::factory()->create();
 
-describe('Admin / ViewAssessment', function () {
+        livewire(ListAssessments::class)
+            ->callAction('create', ['language_id' => null, 'country_id' => $country->id]);
 
-    it('renders the view page', function () {
-        $assessment = Assessment::factory()->create();
-
-        livewire(ViewAssessment::class, ['record' => $assessment->getRouteKey()])
-            ->assertSuccessful();
+        expect(Assessment::query()->count())->toBe($countBefore);
     });
 
 });

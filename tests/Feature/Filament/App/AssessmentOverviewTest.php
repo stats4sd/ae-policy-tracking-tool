@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\AssessmentStatus;
 use App\Filament\App\Pages\AssessmentOverview;
 use App\Models\Assessment;
 use App\Models\Country;
@@ -30,22 +31,22 @@ describe('AssessmentOverview page', function () {
     it('mark as ready for review action changes status to Review', function () {
         Recommendation::factory()->create();
 
-        expect($this->assessment->status)->toBe('In Progress');
+        expect($this->assessment->status)->toBe(AssessmentStatus::InProgress);
 
         livewire(AssessmentOverview::class)
             ->callAction('ready-for-review');
 
-        expect($this->assessment->fresh()->status)->toBe('Review');
+        expect($this->assessment->fresh()->status)->toBe(AssessmentStatus::Review);
     });
 
     it('mark as not ready action changes status back to In Progress', function () {
-        $this->assessment->update(['status' => 'Review']);
+        $this->assessment->update(['status' => AssessmentStatus::Review]);
         Recommendation::factory()->create();
 
         livewire(AssessmentOverview::class)
             ->callAction('not-ready');
 
-        expect($this->assessment->fresh()->status)->toBe('In Progress');
+        expect($this->assessment->fresh()->status)->toBe(AssessmentStatus::InProgress);
     });
 
 });

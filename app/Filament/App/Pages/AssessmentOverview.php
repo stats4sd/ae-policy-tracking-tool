@@ -2,6 +2,7 @@
 
 namespace App\Filament\App\Pages;
 
+use App\Enums\AssessmentStatus;
 use App\Models\Assessment;
 use App\Models\Recommendation;
 use App\Services\HelperService;
@@ -50,13 +51,13 @@ class AssessmentOverview extends Page
                 ->label('Mark as Ready For Review')
                 ->color('info')
                 ->outlined()
-                ->visible(Filament::getTenant()->status === 'In Progress')
+                ->visible(Filament::getTenant()->status === AssessmentStatus::InProgress)
                 ->action(function () {
 
                     $record = Filament::getTenant();
 
-                    if ($record->status === 'In Progress') {
-                        $record->status = 'Review';
+                    if ($record->status === AssessmentStatus::InProgress) {
+                        $record->status = AssessmentStatus::Review;
                         $record->finalised_at = Carbon::now();
                         $record->save();
 
@@ -67,13 +68,13 @@ class AssessmentOverview extends Page
             Action::make('not-ready')
                 ->label('Mark as Not Ready')
                 ->color('info')
-                ->visible(Filament::getTenant()->status === 'Review')
+                ->visible(Filament::getTenant()->status === AssessmentStatus::Review)
                 ->action(function () {
 
                     $record = Filament::getTenant();
 
-                    if ($record->status === 'Review') {
-                        $record->status = 'In Progress';
+                    if ($record->status === AssessmentStatus::Review) {
+                        $record->status = AssessmentStatus::InProgress;
                         $record->finalised_at = null;
                         $record->save();
 
@@ -91,7 +92,7 @@ class AssessmentOverview extends Page
 
     public function getSubheading(): ?string
     {
-        return (new Carbon($this->assessment->created_at))->format('Y-m-d').'    | '.$this->assessment->status;
+        return (new Carbon($this->assessment->created_at))->format('Y-m-d').'    | '.$this->assessment->status->value;
     }
 
     #[On('tabChanged')]

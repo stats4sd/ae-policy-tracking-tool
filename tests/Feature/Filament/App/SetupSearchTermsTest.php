@@ -25,7 +25,7 @@ describe('Setup / ListSearchTerms', function () {
             ->assertSuccessful();
     });
 
-    it('shows search terms for the current assessment', function () {
+    it('shows the current priority action(s) in the table', function () {
         $recommendation = Recommendation::factory()->create();
         $priorityAction = PriorityAction::factory()->create(['recommendation_id' => $recommendation->id]);
         $searchTerm = SearchTerm::factory()->create([
@@ -34,16 +34,22 @@ describe('Setup / ListSearchTerms', function () {
         ]);
 
         livewire(ListSearchTerms::class)
-            ->assertCanSeeTableRecords([$searchTerm]);
+            ->assertCanSeeTableRecords([$priorityAction]);
+
     });
 
-    it('shows search terms from the current assessment in the list', function () {
+    it('shows search terms from the current assessment in the list and not terms from another assessment', function () {
         $recommendation = Recommendation::factory()->create();
         $priorityAction = PriorityAction::factory()->create(['recommendation_id' => $recommendation->id]);
 
         $term = SearchTerm::factory()->create([
             'assessment_id' => $this->assessment->id,
             'priority_action_id' => $priorityAction->id,
+        ]);
+
+        $anotherTerm = SearchTerm::factory()->create([
+            'assessment_id' => $this->assessment->id,
+            'priority_action_id' => $priorityAction->id
         ]);
 
         $otherAssessment = Assessment::factory()->create();
@@ -53,7 +59,13 @@ describe('Setup / ListSearchTerms', function () {
         ]);
 
         livewire(ListSearchTerms::class)
-            ->assertCanSeeTableRecords([$term]);
+            ->assertTableColumnVisible('phrases')
+            ->assertTableColumnStateSet(
+                'phrases',
+                $term->getTranslation('phrase', 'en') . '; ' . $anotherTerm->getTranslation('phrase', 'en'),
+                record: $priorityAction
+            );
+
     });
 
 });

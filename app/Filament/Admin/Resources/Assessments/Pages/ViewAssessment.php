@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Assessments\Pages;
 
+use App\Enums\AssessmentStatus;
 use App\Filament\Admin\Resources\Assessments\AssessmentResource;
 use App\Models\Assessment;
 use Carbon\Carbon;
@@ -28,10 +29,10 @@ class ViewAssessment extends ViewRecord
             Action::make('finalise')
                 ->label('Mark as finalised')
                 ->color('success')
-                ->visible(fn (Assessment $record) => $record->status === 'In Progress')
+                ->visible(fn (Assessment $record) => $record->status === AssessmentStatus::InProgress)
                 ->action(function (Assessment $record) {
-                    if ($record->status === 'In Progress') {
-                        $record->status = 'Finalised';
+                    if ($record->status === AssessmentStatus::InProgress) {
+                        $record->status = AssessmentStatus::Finalised;
                         $record->finalised_at = Carbon::now();
                         $record->save();
                     }
@@ -49,6 +50,6 @@ class ViewAssessment extends ViewRecord
 
     public function getSubheading(): ?string
     {
-        return __($this->getRecord()->status);
+        return __($this->getRecord()->status->value);
     }
 }

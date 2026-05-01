@@ -6,8 +6,10 @@ use App\Enums\AssessmentStatus;
 use App\Filament\Admin\Resources\Assessments\Pages\ListAssessments;
 use App\Filament\Admin\Resources\Assessments\Pages\ViewAssessment;
 use App\Filament\Admin\Resources\Assessments\RelationManagers\UsersRelationManager;
+use App\Filament\App\Pages\AssessmentOverview;
 use App\Models\Assessment;
 use App\Models\Country;
+use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -19,6 +21,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -121,7 +124,10 @@ class AssessmentResource extends Resource
 
             ])
             ->recordActions([
-                ViewAction::make(),
+                Action::make('view_assessment')
+                ->icon(Heroicon::Eye)
+                ->label('View')
+                ->url(fn(Assessment $record) => AssessmentOverview::getUrl(panel: 'app', tenant: $record)),
                 EditAction::make(),
                 DeleteAction::make(),
                 RestoreAction::make(),

@@ -25,7 +25,7 @@ describe('TranslateSearchTerm', function () {
     it('dispatches to queue', function () {
         Queue::fake();
 
-        $assessment = Assessment::factory()->create();
+        $assessment = Assessment::factory()->create(['language_id' => 'en']);
         $recommendation = Recommendation::factory()->create();
         $priorityAction = PriorityAction::factory()->create(['recommendation_id' => $recommendation->id]);
         $searchTerm = SearchTerm::factory()->create([
@@ -46,7 +46,7 @@ describe('TranslateSearchTerm', function () {
             ], 200),
         ]);
 
-        $assessment = Assessment::factory()->create();
+        $assessment = Assessment::factory()->create(['language_id' => 'en']);
         $recommendation = Recommendation::factory()->create();
         $priorityAction = PriorityAction::factory()->create(['recommendation_id' => $recommendation->id]);
         $searchTerm = SearchTerm::factory()->create([
@@ -67,7 +67,7 @@ describe('TranslateSearchTerm', function () {
     it('returns early when no English phrase is set', function () {
         Http::fake();
 
-        $assessment = Assessment::factory()->create();
+        $assessment = Assessment::factory()->create(['language_id' => 'en']);
         $recommendation = Recommendation::factory()->create();
         $priorityAction = PriorityAction::factory()->create(['recommendation_id' => $recommendation->id]);
         $searchTerm = SearchTerm::factory()->create([
@@ -88,7 +88,7 @@ describe('TranslateSearchTerm', function () {
             ], 200),
         ]);
 
-        $assessment = Assessment::factory()->create();
+        $assessment = Assessment::factory()->create(['language_id' => 'en']);
         $recommendation = Recommendation::factory()->create();
         $priorityAction = PriorityAction::factory()->create(['recommendation_id' => $recommendation->id]);
         $searchTerm = SearchTerm::factory()->create([
@@ -112,7 +112,7 @@ describe('TranslateSearchTerm', function () {
             'https://translation.googleapis.com/*' => Http::response(['error' => 'API key missing'], 403),
         ]);
 
-        $assessment = Assessment::factory()->create();
+        $assessment = Assessment::factory()->create(['language_id' => 'en']);
         $recommendation = Recommendation::factory()->create();
         $priorityAction = PriorityAction::factory()->create(['recommendation_id' => $recommendation->id]);
         $searchTerm = SearchTerm::factory()->create([
