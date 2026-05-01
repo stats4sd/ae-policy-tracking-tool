@@ -3,15 +3,13 @@
 use App\Enums\AssessmentStatus;
 use App\Filament\App\Pages\AssessmentOverview;
 use App\Models\Assessment;
-use App\Models\Country;
 use App\Models\Recommendation;
 use App\Models\User;
 use Filament\Facades\Filament;
 
 beforeEach(function () {
     $this->user = User::factory()->create();
-    $this->country = Country::factory()->create(['name' => 'Kenya']);
-    $this->assessment = Assessment::factory()->create(['country_id' => $this->country->id]);
+    $this->assessment = Assessment::factory()->create();
     $this->assessment->members()->attach($this->user->id);
 
     $this->actingAs($this->user);

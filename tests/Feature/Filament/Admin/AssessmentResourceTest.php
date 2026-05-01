@@ -2,7 +2,7 @@
 
 use App\Filament\Admin\Resources\Assessments\Pages\ListAssessments;
 use App\Models\Assessment;
-use App\Models\Country;
+use App\Models\Jurisdiction;
 use App\Models\Language;
 use App\Models\User;
 use Filament\Facades\Filament;
@@ -34,31 +34,21 @@ describe('Admin / ListAssessments', function () {
 describe('Admin / CreateAssessment', function () {
 
     it('creates an assessment via the modal action', function () {
-        $country = Country::factory()->create();
+        $jurisdiction = Jurisdiction::factory()->create();
         $language = Language::factory()->create();
 
         livewire(ListAssessments::class)
-            ->callAction('create', ['country_id' => $country->id, 'language_id' => $language->id]);
+            ->callAction('create', ['jurisdiction_id' => $jurisdiction->id, 'language_id' => $language->id]);
 
-        $this->assertDatabaseHas('assessments', ['country_id' => $country->id, 'language_id' => $language->id]);
-    });
-
-    it('fails validation when country is missing', function () {
-        $countBefore = Assessment::query()->count();
-        $language = Language::factory()->create();
-
-        livewire(ListAssessments::class)
-            ->callAction('create', ['country_id' => null, 'language_id' => $language->id]);
-
-        expect(Assessment::query()->count())->toBe($countBefore);
+        $this->assertDatabaseHas('assessments', ['jurisdiction_id' => $jurisdiction->id, 'language_id' => $language->id]);
     });
 
     it('fails validation when language is missing', function () {
         $countBefore = Assessment::query()->count();
-        $country = Country::factory()->create();
+        $jurisdiction = Jurisdiction::factory()->create();
 
         livewire(ListAssessments::class)
-            ->callAction('create', ['language_id' => null, 'country_id' => $country->id]);
+            ->callAction('create', ['language_id' => null, 'jurisdiction_id' => $jurisdiction->id]);
 
         expect(Assessment::query()->count())->toBe($countBefore);
     });

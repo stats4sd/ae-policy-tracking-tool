@@ -22,16 +22,33 @@ class CountryResource extends Resource
     {
         return $schema
             ->components([
+                TextInput::make('id')
+                    ->label('ISO Alpha-3 Code')
+                    ->required()
+                    ->maxLength(3)
+                    ->minLength(3)
+                    ->readOnly(fn (string $operation): bool => $operation === 'edit'),
                 TextInput::make('name')
                     ->required(),
-            ])->columns(1);
+                TextInput::make('iso2')
+                    ->label('ISO Alpha-2 Code')
+                    ->maxLength(2)
+                    ->minLength(2),
+                TextInput::make('un_code')
+                    ->label('UN M49 Code')
+                    ->maxLength(3)
+                    ->minLength(3),
+            ])->columns(2);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('name')->sortable(),
+                TextColumn::make('id')->label('ISO-3')->sortable()->searchable(),
+                TextColumn::make('name')->sortable()->searchable(),
+                TextColumn::make('iso2')->label('ISO-2')->sortable(),
+                TextColumn::make('un_code')->label('UN M49')->sortable(),
             ])
             ->filters([
                 //
@@ -49,9 +66,7 @@ class CountryResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array

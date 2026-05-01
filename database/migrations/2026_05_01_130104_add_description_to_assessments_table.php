@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Assessment;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,15 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-
-        // assign english temporarily to all assessments
-        Assessment::where('language_id', '=', null)
-            ->update([
-                'language_id' => 'en',
-            ]);
-
         Schema::table('assessments', function (Blueprint $table) {
-            $table->string('language_id')->change();
+            $table->text('description')->nullable()->after('title');
         });
     }
 
@@ -30,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('assessments', function (Blueprint $table) {
-            //
+            $table->dropColumn('description');
         });
     }
 };

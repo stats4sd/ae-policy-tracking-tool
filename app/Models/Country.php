@@ -10,8 +10,13 @@ class Country extends Model
 {
     use HasFactory;
 
-    public function assessments(): HasMany
+    protected $keyType = 'string';
+
+    public $incrementing = false;
+
+    /** @return HasMany<Jurisdiction, $this> */
+    public function jurisdictions(): HasMany
     {
-        return $this->hasMany(Assessment::class);
+        return $this->hasMany(Jurisdiction::class);
     }
 }

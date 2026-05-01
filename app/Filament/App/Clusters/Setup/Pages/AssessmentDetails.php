@@ -3,11 +3,13 @@
 namespace App\Filament\App\Clusters\Setup\Pages;
 
 use App\Filament\App\Clusters\Setup\SetupCluster;
+use App\Filament\App\Pages\RegisterAssessment;
 use App\Models\Assessment;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
@@ -57,15 +59,12 @@ class AssessmentDetails extends Page
                         ->label('Assessment Title')
                         ->required()
                         ->columnSpan(1),
-                    Select::make('country_id')
-                        ->relationship('country', 'name')
-                        ->label('Country')
-                        ->createOptionForm([
-                            TextInput::make('name')->label('Country Name')->required(),
-                        ])
+                    Select::make('jurisdiction_id')
+                        ->relationship('jurisdiction', 'name')
+                        ->label('Jurisdiction')
+                        ->createOptionForm(RegisterAssessment::jurisdictionCreateOptionForm())
                         ->searchable()
                         ->preload()
-                        ->required()
                         ->columnSpan(1),
                     Select::make('language_id')
                         ->relationship('language', 'name')
@@ -76,6 +75,11 @@ class AssessmentDetails extends Page
                                 ->required(),
                             TextInput::make('name')->label('Language Name')->required(),
                         ]),
+                    Textarea::make('description')
+                        ->label('Description')
+                        ->helperText('Optional notes or context about this assessment.')
+                        ->rows(4)
+                        ->columnSpan(1),
                     TextInput::make('year')
                         ->label('Year of the Assessment')
                         ->helperText('If the assessment is being conducted over multiple years, enter the starting year.')
@@ -97,7 +101,7 @@ class AssessmentDetails extends Page
 
     public function save(): void
     {
-        $data = $this->form->getState();
+        $this->form->getState();
         $record = $this->getRecord();
 
         if ($record) {

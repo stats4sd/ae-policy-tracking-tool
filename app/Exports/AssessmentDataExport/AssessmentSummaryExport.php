@@ -4,6 +4,7 @@ namespace App\Exports\AssessmentDataExport;
 
 use App\Exports\ExportStyles;
 use App\Models\Assessment;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -18,7 +19,7 @@ class AssessmentSummaryExport implements FromCollection, ShouldAutoSize, WithHea
     public function __construct(public Assessment $assessment) {}
 
     /**
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function collection()
     {
@@ -26,7 +27,7 @@ class AssessmentSummaryExport implements FromCollection, ShouldAutoSize, WithHea
             [
                 'Assessment ID' => $this->assessment->id,
                 'Assessment' => $this->assessment->title,
-                'Country' => $this->assessment->country->name,
+                'Jurisdiction' => $this->assessment->jurisdiction?->name,
                 'Year' => $this->assessment->year,
                 'Created At' => $this->assessment->created_at,
                 'Finalized At' => $this->assessment->finalized_at,
@@ -39,7 +40,7 @@ class AssessmentSummaryExport implements FromCollection, ShouldAutoSize, WithHea
         return [
             'Assessment ID',
             'Assessment',
-            'Country',
+            'Jurisdiction',
             'Year',
             'Created At',
             'Finalized At',

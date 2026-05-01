@@ -61,9 +61,10 @@ class Assessment extends Team implements HasName
         }
     }
 
-    public function country(): BelongsTo
+    /** @return BelongsTo<Jurisdiction, $this> */
+    public function jurisdiction(): BelongsTo
     {
-        return $this->belongsTo(Country::class);
+        return $this->belongsTo(Jurisdiction::class);
     }
 
     public function statements(): HasMany
@@ -88,7 +89,7 @@ class Assessment extends Team implements HasName
 
     public function getFilamentName(): string
     {
-        return $this->title ?? $this->country->name;
+        return $this->title ?? $this->jurisdiction?->name ?? '';
     }
 
     // Override Team model's invites relationship to use our Invite model, to enable email sending on invite creation

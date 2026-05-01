@@ -2,10 +2,10 @@
 
 use App\Enums\AssessmentStatus;
 use App\Models\Assessment;
-use App\Models\Country;
 use App\Models\DefaultSearchTerm;
 use App\Models\Extract;
 use App\Models\Invite;
+use App\Models\Jurisdiction;
 use App\Models\Language;
 use App\Models\PolicyDocument;
 use App\Models\PriorityAction;
@@ -83,9 +83,9 @@ describe('Assessment model', function () {
         expect($assessment->getFilamentName())->toBe('Kenya Assessment 2024');
     });
 
-    it('getFilamentName falls back to country name when no title', function () {
-        $country = Country::factory()->create(['name' => 'Ghana']);
-        $assessment = Assessment::factory()->create(['country_id' => $country->id, 'title' => null]);
+    it('getFilamentName falls back to jurisdiction name when no title', function () {
+        $jurisdiction = Jurisdiction::factory()->create(['name' => 'Ghana']);
+        $assessment = Assessment::factory()->create(['jurisdiction_id' => $jurisdiction->id, 'title' => null]);
 
         expect($assessment->getFilamentName())->toBe('Ghana');
     });
@@ -117,11 +117,11 @@ describe('Assessment model', function () {
         expect($assessment->extracts()->count())->toBe(3);
     });
 
-    it('belongs to a country', function () {
-        $country = Country::factory()->create();
-        $assessment = Assessment::factory()->create(['country_id' => $country->id]);
+    it('belongs to a jurisdiction', function () {
+        $jurisdiction = Jurisdiction::factory()->create();
+        $assessment = Assessment::factory()->create(['jurisdiction_id' => $jurisdiction->id]);
 
-        expect($assessment->country->id)->toBe($country->id);
+        expect($assessment->jurisdiction->id)->toBe($jurisdiction->id);
     });
 
     it('belongs to a language', function () {

@@ -4,6 +4,7 @@ namespace App\Filament\App\Clusters\Setup\Pages;
 
 use App\Enums\AssessmentStatus;
 use App\Filament\App\Clusters\Setup\SetupCluster;
+use Awcodes\Shout\Components\Shout;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
@@ -34,7 +35,7 @@ class SetupIntroduction extends Page
                 ->fillForm(fn (): array => [
                     'status' => Filament::getTenant()?->status,
                 ])
-                ->form([
+                ->schema([
                     Select::make('status')
                         ->label('Assessment Status')
                         ->options(AssessmentStatus::class)
@@ -48,7 +49,12 @@ class SetupIntroduction extends Page
 
     public function assessmentInfoList(Schema $schema): Schema
     {
+        $status = Filament::getTenant()?->status;
+
         return $schema->components([
+            Shout::make('status')
+                ->content('Assessment Status: '.($status?->getLabel() ?? 'Unknown'))
+                ->type($status?->getColor() ?? 'info'),
             Section::make('Assessment Setup - Start Here!')
                 ->components([
                     Text::make(new HtmlString("

@@ -2,6 +2,8 @@
 
 namespace App\Filament\App\Pages;
 
+use App\Enums\JurisdictionType;
+use App\Models\Country;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Repeater\TableColumn;
@@ -13,6 +15,8 @@ use Filament\Schemas\Components\EmbeddedSchema;
 use Filament\Schemas\Components\Form;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Text;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
@@ -48,16 +52,14 @@ class RegisterAssessment extends RegisterTenant
                                 ->label('Assessment Title')
                                 ->required()
                                 ->columnSpan(1),
-                            Select::make('country_id')
-                                ->relationship('country', 'name')
-                                ->label('Country')
-                                ->createOptionForm([
-                                    TextInput::make('name')->label('Country Name')->required(),
-                                ])
+                            Select::make('jurisdiction_id')
+                                ->relationship('jurisdiction', 'name')
+                                ->label('Jurisdiction')
+                                ->createOptionForm(static::jurisdictionCreateOptionForm())
                                 ->searchable()
                                 ->preload()
-                                ->required()
-                                ->columnSpan(1),
+                                ->columnSpan(1)
+                                ->required(),
                             Select::make('language_id')
                                 ->relationship('language', 'name')
                                 ->label('Language')
@@ -66,7 +68,8 @@ class RegisterAssessment extends RegisterTenant
                                         ->unique()
                                         ->required(),
                                     TextInput::make('name')->label('Language Name')->required(),
-                                ]),
+                                ])
+                                ->required(),
                             TextInput::make('year')
                                 ->label('Year of the Assessment')
                                 ->helperText('If the assessment is being conducted over multiple years, enter the starting year.')
@@ -112,6 +115,61 @@ class RegisterAssessment extends RegisterTenant
                         BLADE
                 ))),
             ]);
+    }
+
+    /** @return array<int, mixed> */
+    public static function jurisdictionCreateOptionForm(): array
+    {
+        $updateName = static function (Get $get, Set $set): void {
+            $type = $get('type');
+            $country = ($id = $get('country_id')) ? Country::find($id) : null;
+            $subnationalName = $get('subnational_jurisdiction_name');
+
+            if ($type === JurisdictionType::National && $country) {
+                $set('name', $country->name.' (National)');
+            } elseif ($type === JurisdictionType::Subnational) {
+                $set('name', trim(implode(' - ', array_filter([$country?->name, $subnationalName]))));
+            } else {
+                $set('name', '');
+            }
+        };
+
+        $isNationalOrSubnational = fn (Get $get): bool => in_array(
+            $get('type'),
+            [JurisdictionType::National, JurisdictionType::Subnational]
+        );
+
+        $isMultiNational = fn (Get $get): bool => $get('type') === JurisdictionType::MultinationalInternational;
+
+        return [
+            Select::make('type')
+                ->label('Type')
+                ->options(JurisdictionType::class)
+                ->required()
+                ->live()
+                ->afterStateUpdated($updateName),
+            Select::make('country_id')
+                ->label('Country')
+                ->relationship('country', 'name')
+                ->searchable()
+                ->preload()
+                ->disabled($isMultiNational)
+                ->required($isNationalOrSubnational)
+                ->live()
+                ->afterStateUpdated($updateName),
+            TextInput::make('subnational_jurisdiction_name')
+                ->label('Sub-national Jurisdiction Name')
+                ->visible(fn (Get $get): bool => $get('type') === JurisdictionType::Subnational)
+                ->required(fn (Get $get): bool => $get('type') === JurisdictionType::Subnational)
+                ->live()
+                ->afterStateUpdated($updateName)
+                ->dehydrated(false),
+            TextInput::make('name')
+                ->live()
+                ->label('Jurisdiction Name')
+                ->required()
+                ->readOnly($isNationalOrSubnational),
+        ];
     }
 
     public function getFormContentComponent(): Component

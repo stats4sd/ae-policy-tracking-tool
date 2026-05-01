@@ -3,18 +3,18 @@
 namespace App\Filament\Admin\Resources\Assessments;
 
 use App\Enums\AssessmentStatus;
+use App\Enums\JurisdictionType;
 use App\Filament\Admin\Resources\Assessments\Pages\ListAssessments;
 use App\Filament\Admin\Resources\Assessments\Pages\ViewAssessment;
 use App\Filament\Admin\Resources\Assessments\RelationManagers\UsersRelationManager;
 use App\Filament\App\Pages\AssessmentOverview;
 use App\Models\Assessment;
-use App\Models\Country;
+use App\Models\Jurisdiction;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\RestoreAction;
-use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
@@ -39,21 +39,34 @@ class AssessmentResource extends Resource
     {
         return $schema
             ->components([
-                Select::make('country_id')
-                    ->label('Country')
-                    ->relationship('country', 'name')
+                Select::make('jurisdiction_id')
+                    ->label('Jurisdiction')
+                    ->relationship('jurisdiction', 'name')
                     ->searchable()
                     ->preload()
                     ->createOptionForm([
-                        TextInput::make('name')->required(),
+                        TextInput::make('name')->label('Jurisdiction Name')->required(),
+                        Select::make('type')
+                            ->label('Type')
+                            ->options(JurisdictionType::class)
+                            ->required()
+                            ->live(),
+                        Select::make('country_id')
+                            ->label('Country')
+                            ->relationship('country', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->visible(fn (Get $get) => in_array(
+                                $get('type'),
+                                [JurisdictionType::National->value, JurisdictionType::Subnational->value]
+                            )),
                     ])
                     ->live()
                     ->afterStateUpdated(function (Set $set, Get $get, ?int $state): void {
-                        $country = $state ? Country::find($state) : null;
+                        $jurisdiction = $state ? Jurisdiction::find($state) : null;
                         $year = $get('year');
-                        $set('title', implode(' - ', array_filter([$country?->name, $year])));
-                    })
-                    ->required(),
+                        $set('title', implode(' - ', array_filter([$jurisdiction?->name, $year])));
+                    }),
                 Select::make('year')
                     ->label('Year of Assessment')
                     ->options(
@@ -63,13 +76,13 @@ class AssessmentResource extends Resource
                     ->searchable()
                     ->live()
                     ->afterStateUpdated(function (Set $set, Get $get, ?string $state): void {
-                        $countryId = $get('country_id');
-                        $country = $countryId ? Country::find($countryId) : null;
-                        $set('title', implode(' - ', array_filter([$country?->name, $state])));
+                        $jurisdictionId = $get('jurisdiction_id');
+                        $jurisdiction = $jurisdictionId ? Jurisdiction::find($jurisdictionId) : null;
+                        $set('title', implode(' - ', array_filter([$jurisdiction?->name, $state])));
                     }),
                 TextInput::make('title')
                     ->label('Assessment Title')
-                    ->helperText('Auto-generated from country and year, but can be customised.')
+                    ->helperText('Auto-generated from jurisdiction and year, but can be customised.')
                     ->columnSpanFull(),
                 Select::make('language_id')
                     ->label('Primary Language')
@@ -87,7 +100,7 @@ class AssessmentResource extends Resource
                 TextColumn::make('title')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('country.name')->sortable(),
+                TextColumn::make('jurisdiction.name')->sortable(),
                 TextColumn::make('created_at')
                     ->sortable()
                     ->date(),
@@ -118,7 +131,7 @@ class AssessmentResource extends Resource
                     ->color('gray'),
             ])
             ->filters([
-                SelectFilter::make('country')->relationship('country', 'name'),
+                SelectFilter::make('jurisdiction')->relationship('jurisdiction', 'name'),
                 SelectFilter::make('status')
                     ->options(AssessmentStatus::class),
                 TrashedFilter::make(),
@@ -126,9 +139,9 @@ class AssessmentResource extends Resource
             ])
             ->recordActions([
                 Action::make('view_assessment')
-                ->icon(Heroicon::Eye)
-                ->label('View')
-                ->url(fn(Assessment $record) => AssessmentOverview::getUrl(panel: 'app', tenant: $record)),
+                    ->icon(Heroicon::Eye)
+                    ->label('View')
+                    ->url(fn (Assessment $record) => AssessmentOverview::getUrl(panel: 'app', tenant: $record)),
                 EditAction::make(),
                 DeleteAction::make(),
                 RestoreAction::make(),

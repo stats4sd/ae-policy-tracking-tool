@@ -87,7 +87,7 @@ class AssessmentOverview extends Page
     public function getHeading(): string
     {
 
-        return 'Assessment for '.$this->assessment->country->name;
+        return 'Assessment for '.($this->assessment->jurisdiction?->name ?? $this->assessment->title ?? '');
     }
 
     public function getSubheading(): ?string

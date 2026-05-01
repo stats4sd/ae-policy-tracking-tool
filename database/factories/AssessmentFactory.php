@@ -2,11 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Models\Assessment;
+use App\Models\Jurisdiction;
 use App\Models\Language;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
-use App\Models\Assessment;
-use App\Models\Country;
 
 class AssessmentFactory extends Factory
 {
@@ -23,7 +22,7 @@ class AssessmentFactory extends Factory
     public function definition(): array
     {
         return [
-            'country_id' => Country::factory(),
+            'jurisdiction_id' => Jurisdiction::factory(),
             'language_id' => Language::factory(),
         ];
     }

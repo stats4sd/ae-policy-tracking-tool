@@ -45,7 +45,7 @@ class ViewAssessment extends ViewRecord
     {
         $assessment = $this->getRecord();
 
-        return __($assessment->country->name.' '.substr($assessment->created_at, 0, stripos($assessment->created_at, ' ')));
+        return __(($assessment->jurisdiction?->name ?? $assessment->title ?? '').' '.substr($assessment->created_at, 0, stripos($assessment->created_at, ' ')));
     }
 
     public function getSubheading(): ?string

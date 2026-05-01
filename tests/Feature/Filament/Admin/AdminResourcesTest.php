@@ -19,9 +19,6 @@ use App\Models\Recommendation;
 use App\Models\Score;
 use App\Models\SearchTerm;
 use App\Models\User;
-use Filament\Actions\CreateAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\EditAction;
 use Filament\Actions\Testing\TestAction;
 use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Mail;
@@ -250,19 +247,30 @@ describe('Admin / CountryResource', function () {
     it('can create a new country', function () {
         livewire(ListCountries::class)
             ->callAction('create', data: [
+                'id' => 'TST',
                 'name' => 'Test Country',
             ])
             ->assertHasNoFormErrors();
 
-        $this->assertDatabaseHas('countries', ['name' => 'Test Country']);
+        $this->assertDatabaseHas('countries', ['id' => 'TST', 'name' => 'Test Country']);
     });
 
     it('fails validation when country name is missing', function () {
         livewire(ListCountries::class)
             ->callAction('create', data: [
+                'id' => 'TST',
                 'name' => null,
             ])
             ->assertHasFormErrors(['name']);
+    });
+
+    it('fails validation when country iso3 id is missing', function () {
+        livewire(ListCountries::class)
+            ->callAction('create', data: [
+                'id' => null,
+                'name' => 'Test Country',
+            ])
+            ->assertHasFormErrors(['id']);
     });
 
     it('can edit a country', function () {
