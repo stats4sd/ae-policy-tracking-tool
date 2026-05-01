@@ -27,3 +27,5 @@ data.ms/
 AGENTS.md
 CLAUDE.md
 boost.json
+TODO.md
+/.claude/settings.local.json

@@ -2,8 +2,12 @@
 
 namespace App\Filament\App\Clusters\Setup\Pages;
 
+use App\Enums\AssessmentStatus;
 use App\Filament\App\Clusters\Setup\SetupCluster;
 use BackedEnum;
+use Filament\Actions\Action;
+use Filament\Facades\Filament;
+use Filament\Forms\Components\Select;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Text;
@@ -20,6 +24,27 @@ class SetupIntroduction extends Page
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedInformationCircle;
 
     protected static ?int $navigationSort = 0;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('changeStatus')
+                ->label('Change Status')
+                ->icon(Heroicon::OutlinedArrowPath)
+                ->fillForm(fn (): array => [
+                    'status' => Filament::getTenant()?->status,
+                ])
+                ->form([
+                    Select::make('status')
+                        ->label('Assessment Status')
+                        ->options(AssessmentStatus::class)
+                        ->required(),
+                ])
+                ->action(function (array $data): void {
+                    Filament::getTenant()->update(['status' => $data['status']]);
+                }),
+        ];
+    }
 
     public function assessmentInfoList(Schema $schema): Schema
     {

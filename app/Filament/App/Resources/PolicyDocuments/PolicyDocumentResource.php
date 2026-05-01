@@ -23,9 +23,11 @@ use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\IconPosition;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
 
 class PolicyDocumentResource extends Resource
@@ -98,7 +100,9 @@ class PolicyDocumentResource extends Resource
             ->columns([
                 TextColumn::make('name')
                     ->wrap()
-                    ->searchable(),
+                    ->searchable()
+                    ->icon(fn (PolicyDocument $record): ?string => $record->processing ? 'heroicon-o-arrow-path' : null)
+                    ->iconPosition(IconPosition::Before),
                 TextColumn::make('language_id')
                     ->label('Language')
                     ->getStateUsing(function (PolicyDocument $record): string {
@@ -132,7 +136,10 @@ class PolicyDocumentResource extends Resource
                     ->icon('heroicon-o-arrow-path')
                     ->requiresConfirmation()
                     ->modalDescription('Re-runs the automatic search for this document. Any existing, unverified extracts will be deleted and new ones will be created.')
-                    ->action(fn (PolicyDocument $record) => $record->runAutomaticSearch()),
+                    ->action(function (PolicyDocument $record, ListPolicyDocuments $livewire): void {
+                        $record->runAutomaticSearch();
+                        $livewire->autoSearchRestartedAt = now()->format('d M Y, H:i');
+                    }),
                 EditAction::make(),
                 DeleteAction::make()
                     ->requiresConfirmation()
@@ -142,14 +149,21 @@ class PolicyDocumentResource extends Resource
                 BulkAction::make('redo_search')
                     ->label('Re-run auto search')
                     ->tooltip('Re-runs the automatic search for all selected documents. Any existing, unverified extracts will be deleted and new ones will be created. This may take some time depending on the number of documents selected.')
-                    ->action(function (BulkAction $action, \Illuminate\Support\Collection $selectedRecords) {
+                    ->action(function (BulkAction $action, Collection $selectedRecords, ListPolicyDocuments $livewire): void {
                         foreach ($selectedRecords as $record) {
                             $record->runAutomaticSearch();
                         }
+                        $livewire->autoSearchRestartedAt = now()->format('d M Y, H:i');
                     }),
 
                 DeleteBulkAction::make(),
 
+                Action::make('auto_search_status')
+                    ->label(fn (ListPolicyDocuments $livewire): string => 'Auto search restarted at '.$livewire->autoSearchRestartedAt)
+                    ->visible(fn (ListPolicyDocuments $livewire): bool => $livewire->autoSearchRestartedAt !== null)
+                    ->disabled()
+                    ->extraAttributes(['class' => 'border-none'])
+                    ->color('gray'),
             ]);
     }
 

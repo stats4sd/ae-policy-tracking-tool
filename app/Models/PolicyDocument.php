@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Enums\TextDirection;
+use App\Events\PolicyDocumentProcessingStarted;
+use App\Events\PolicyDocumentProcessingStopped;
 use App\Jobs\PolicyDocumentAutoSearch;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,6 +23,7 @@ class PolicyDocument extends Model implements HasMedia
 
     protected $casts = [
         'text_direction' => TextDirection::class,
+        'processing' => 'boolean',
     ];
 
     /** @return BelongsTo<Assessment, $this> */
@@ -65,23 +68,25 @@ class PolicyDocument extends Model implements HasMedia
 
     public function processing(): void
     {
-        //        $this->update([
-        //            'processing' => true,
-        //        ]);
+        $this->update(['processing' => true]);
+        PolicyDocumentProcessingStarted::dispatch($this);
     }
 
-    public function stopProcessing()
+    public function stopProcessing(): void
     {
-        //        $this->update([
-        //            'processing' => false,
-        //        ]);
+        $this->update(['processing' => false]);
+        PolicyDocumentProcessingStopped::dispatch($this);
     }
 
-    public function runAutomaticSearch()
+    public function deleteAutomaticExtracts(): void
     {
+        $this->extracts()->where('automatic', true)->where('verified', false)->forceDelete();
+    }
 
+    public function runAutomaticSearch(): void
+    {
+        $this->deleteAutomaticExtracts();
         $this->processing();
-
         PolicyDocumentAutoSearch::dispatch($this);
     }
 

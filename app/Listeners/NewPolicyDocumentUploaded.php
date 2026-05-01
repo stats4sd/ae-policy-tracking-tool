@@ -20,12 +20,16 @@ class NewPolicyDocumentUploaded
         $policyDocument = $event->media->model;
 
         // only operate on PolicyDocument models
-        if (! $policyDocument instanceof PolicyDocument) {
+        if (!$policyDocument instanceof PolicyDocument) {
             return;
         }
 
+        $policyDocument->processing();
+
         // Dispatch job to extract content
-        PolicyDocumentExtractContent::dispatch($policyDocument);
-        // PolicyDocumentAutoSearch::dispatch($policyDocument);
+        PolicyDocumentExtractContent::dispatch($policyDocument)
+            ->chain([
+                new PolicyDocumentAutoSearch($policyDocument),
+            ]);
     }
 }

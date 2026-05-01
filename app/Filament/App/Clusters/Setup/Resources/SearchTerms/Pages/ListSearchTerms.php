@@ -3,11 +3,9 @@
 namespace App\Filament\App\Clusters\Setup\Resources\SearchTerms\Pages;
 
 use App\Filament\App\Clusters\Setup\Resources\SearchTerms\SearchTermResource;
-use App\Models\Recommendation;
-use Filament\Actions\CreateAction;
+use App\Filament\App\Clusters\Setup\Resources\SearchTerms\Tables\SearchTermsTable;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Schemas\Components\Tabs\Tab;
-use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Table;
 
 class ListSearchTerms extends ListRecords
 {
@@ -15,25 +13,11 @@ class ListSearchTerms extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [
-            CreateAction::make(),
-        ];
+        return [];
     }
 
-    public function getTabs(): array
+    public function table(Table $table): Table
     {
-        $tabs = [
-            'all' => Tab::make('All'),
-        ];
-
-        foreach (Recommendation::orderBy('code')->get() as $recommendation) {
-            $tabs[$recommendation->code] = Tab::make($recommendation->code . ' - ' . $recommendation->short_title)
-                ->modifyQueryUsing(fn (Builder $query) => $query->whereHas(
-                    'priorityAction',
-                    fn (Builder $q) => $q->where('recommendation_id', $recommendation->id)
-                ));
-        }
-
-        return $tabs;
+        return SearchTermsTable::configure($table);
     }
 }

@@ -46,6 +46,7 @@ class TestSeeder extends Seeder
             'status' => 'In Progress',
             'finalised_at' => null,
             'title' => 'Test Assessment 1',
+            'language_id' => 'en'
         ]);
 
         $assessment2 = Assessment::create([
@@ -53,6 +54,7 @@ class TestSeeder extends Seeder
             'status' => 'In Progress',
             'finalised_at' => null,
             'title' => 'Test Assessment 2',
+            'language_id' => 'fr'
         ]);
 
         $this->call(StatementSeeder::class);
