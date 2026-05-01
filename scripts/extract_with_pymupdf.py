@@ -21,9 +21,10 @@ TITLE_MAX_WORD_COUNT = 60       # A title page must have fewer words than this
 # Table-of-contents detection
 TOC_MAX_PAGE_NUMBER = 25        # Only consider pages up to this number as TOC pages
 
-# A TOC-pattern line ends with: 3+ dots then a number, or 3+ spaces then a number
+# A TOC-pattern line ends with: 3+ dots then a number, or 3+ spaces then a number.
+## The number might be followed by one or more | if the contents has been rendered out as a markdown table
 _TOC_LINE_PATTERN = re.compile(
-    r'.{5,}(?:\.{3,}|\s{3,})\s*\d{1,4}\s*$',
+    r'.{5,}(?:\.{3,}|\s{3,})\s*\d{1,4}\s*\|*\s*$',
     re.MULTILINE,
 )
 
@@ -70,7 +71,7 @@ def classify_page(text: str, page_number: int) -> str:
         if len(words) < TITLE_MAX_WORD_COUNT:
             return 'title'
 
-    return 'unknown'
+    return 'body'
 
 
 def sanitize_text(text: str) -> str:
