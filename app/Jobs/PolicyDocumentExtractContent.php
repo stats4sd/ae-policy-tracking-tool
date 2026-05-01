@@ -45,6 +45,7 @@ class PolicyDocumentExtractContent implements ShouldQueue
                 'policy_document_id' => $this->policyDocument->id,
                 'page_number' => $page['page'],
                 'content' => $page['text'],
+                'page_type' => $page['page_type'] ?? 'unknown',
             ]);
         }
     }
