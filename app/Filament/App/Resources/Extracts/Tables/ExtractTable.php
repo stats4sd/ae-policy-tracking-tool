@@ -100,16 +100,18 @@ class ExtractTable
                 Action::make('Verify Extract')
                     ->label('Edit + Verify')
                     ->icon(Heroicon::OutlinedPencilSquare)
+                    ->fillForm(fn(Extract $record) => $record->toArray())
                     ->schema([
                         Select::make('score_id')
-                            ->relationship('score', 'name')
-                            ->required(),
+                            ->relationship('score', 'name'),
                         Select::make('theme_id')
                             ->relationship('theme', 'name'),
                         ToggleButtons::make('verified')
                             ->boolean(trueLabel: 'Verified', falseLabel: 'Unverified')
                             ->grouped()
                             ->label('Verification Status')
+                            ->required()
+                            ->default(false)
                             ->helperText('Confirm that this automated extract is relevant to the assessment.'),
 
                     ])
