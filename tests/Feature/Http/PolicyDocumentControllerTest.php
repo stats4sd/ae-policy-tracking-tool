@@ -129,7 +129,7 @@ describe('GET /policy-documents/{document}/extracts', function () {
             ->assertOk();
 
         $item = $response->json()[0];
-        expect($item)->toHaveKeys(['id', 'policy_document_id', 'page_number', 'extract', 'start_offset', 'end_offset', 'color', 'automatic', 'verified', 'search_terms', 'search_terms_list', 'priority_actions', 'type_id']);
+        expect($item)->toHaveKeys(['id', 'policy_document_id', 'page_number', 'extract', 'start_offset', 'end_offset', 'color', 'automatic', 'verified', 'search_terms', 'search_terms_list', 'priority_actions', 'score_id']);
     });
 
     it('includes priority actions in extract response', function () {
