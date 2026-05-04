@@ -24,7 +24,7 @@
         >
             <div
                 v-for="extract in localExtracts"
-                :key="extract.start_offset"
+                :key="extract.id ?? extract.start_offset + '-' + extract.end_offset"
                 class="mt-2 p-0 w-full cursor-pointer"
                 :class="
                     extract.automatic && !extract.verified
