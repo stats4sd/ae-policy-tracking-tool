@@ -236,11 +236,6 @@ export function useExtracts(documentId: Ref<number, number>, contentContainer: R
     };
 
     const deleteExtract = async (extractId: number): Promise<void> => {
-        // confirm deletion with the user
-        const confirmed = window.confirm(
-            "Are you sure you want to delete this extract?",
-        );
-        if (!confirmed) return;
 
         try {
             await axios.delete(`/extracts/${extractId}`);

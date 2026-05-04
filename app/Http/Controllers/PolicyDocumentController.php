@@ -49,7 +49,7 @@ class PolicyDocumentController extends Controller
                         ->sortby('id')
                         ->pluck('id')
                         ->toArray(),
-                    'type_id' => $extract->type_id,
+                    'score_id' => $extract->score_id,
                 ];
             });
 

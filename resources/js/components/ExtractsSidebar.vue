@@ -23,7 +23,7 @@
             :class="showExtractsSidebar ? '' : 'hidden'"
         >
             <div
-                v-for="extract in extracts"
+                v-for="extract in localExtracts"
                 :key="extract.start_offset"
                 class="mt-2 p-0 w-full cursor-pointer"
                 :class="
@@ -57,7 +57,13 @@
                                 v-for="priorityAction in extract.priority_actions"
                                 :key="priorityAction"
                                 class="mr-2"
-                                :class="extract.type_id === 2 ? 'font-bold text-red-600' : (extract.type_id === 3 ? 'font-bold text-green-600' : 'font-bold text-blue-600')"
+                                :class="
+                                    extract.score_id === 2
+                                        ? 'font-bold text-red-600'
+                                        : extract.score_id === 3
+                                          ? 'font-bold text-green-600'
+                                          : 'font-bold text-blue-600'
+                                "
                             >
                                 {{ priorityAction }}
                             </span>
@@ -96,7 +102,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
 import { SlTrash, SlPencil } from "vue-icons-plus/sl";
 
@@ -110,23 +116,36 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-    editExtract: [];
-    deleteExtract: [];
+    editExtract: [extractId: number];
+    deleteExtract: [extractId: number];
 }>();
 
 const currentExtractId = defineModel("currentExtractId");
 
 const showExtractsSidebar = ref(true);
 
+const localExtracts = ref([...props.extracts]);
+
+watch(
+    () => props.extracts,
+    (newExtracts) => {
+        localExtracts.value = [...newExtracts];
+    },
+    { deep: true },
+);
+
 const editExtract = (extractId) => {
     emit("editExtract", extractId);
 };
 
 const deleteExtract = (extractId) => {
-    console.log("deleting extract with ID:", extractId);
-    // Emit an event or call a method to handle deletion
+
+    const confirmed = window.confirm(
+        "Are you sure you want to delete this extract?",
+    );
+    if (!confirmed) return;
+
+    localExtracts.value = localExtracts.value.filter((e) => e.id !== extractId);
     emit("deleteExtract", extractId);
 };
-
-
 </script>

@@ -102,7 +102,8 @@ class PolicyDocumentResource extends Resource
                     ->wrap()
                     ->searchable()
                     ->icon(fn (PolicyDocument $record): ?string => $record->processing ? 'heroicon-o-arrow-path' : null)
-                    ->iconPosition(IconPosition::Before),
+                    ->iconPosition(IconPosition::Before)
+                    ->iconColor('info'),
                 TextColumn::make('language_id')
                     ->label('Language')
                     ->getStateUsing(function (PolicyDocument $record): string {

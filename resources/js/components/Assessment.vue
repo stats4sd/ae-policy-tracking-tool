@@ -82,12 +82,19 @@
                         <h5 class="text-lg font-semibold">
                             Filter by Extract Score
                         </h5>
+                        <a
+                            href="#"
+                            @click="showTypeScoreSidebar = !showTypeScoreSidebar"
+                            class="text-sm hover:underline cursor-pointer"
+                        >
+                            {{ showTypeScoreSidebar ? "Hide" : "Show" }}
+                        </a>
                     </div>
                     <div
                         class="flex flex-col justify-start bg-white items-center"
+                        :class="showTypeScoreSidebar ? '' : 'hidden'"
                     >
                         <div
-                            v-if="showTypeScoreSidebar"
                             class="w-full cursor-pointer mt-2 p-4 hover:bg-[#e8e8e9] bg-gray-50"
                         >
                             <div
@@ -207,7 +214,7 @@
                             currentExtract?.verified ||
                             !currentExtract?.automatic
                                 ? "Save Extract"
-                                : "Confirm Extract"
+                                : "Verify Extract"
                         }}
                     </button>
                     <button
@@ -472,7 +479,7 @@ watch(
     { immediate: true },
 );
 
-const showTypeScoreSidebar = ref<boolean>(true);
+const showTypeScoreSidebar = ref<boolean>(false);
 const selectedTypeScore = ref<number[]>([]); // holds score record IDs (matches Extract.score_id)
 
 // filter extracts by priority action
