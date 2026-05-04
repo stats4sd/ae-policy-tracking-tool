@@ -5,19 +5,21 @@ namespace App\Providers\Filament;
 use App\Filament\App\Clusters\Setup\SetupCluster;
 use App\Filament\App\Pages\AssessmentOverview;
 use App\Filament\App\Pages\RegisterAssessment;
-use App\Filament\App\Pages\Review;
 use App\Filament\App\Pages\Summary;
 use App\Filament\App\Resources\Extracts\ExtractResource;
 use App\Filament\App\Resources\PolicyDocuments\PolicyDocumentResource;
 use App\Models\Assessment;
+use App\Models\PriorityAction;
 use Filament\Actions\Action;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationBuilder;
-use Filament\Pages\Dashboard;
+use Filament\Navigation\NavigationGroup;
+use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\Support\Icons\Heroicon;
 use Filament\Widgets\AccountWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -79,13 +81,28 @@ class AppPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
+                $priorityActionItems = PriorityAction::orderBy('id')
+                    ->get()
+                    ->map(fn (PriorityAction $pa) => NavigationItem::make($pa->code_and_short_name)
+                        ->url(ExtractResource::getUrl('index').'?tab='.$pa->id)
+                        ->isActiveWhen(fn () => request()->routeIs('filament.app.resources.extracts.index')
+                            && request()->query('tab') === $pa->id)
+                    )
+                    ->all();
+
                 return $builder
-                    ->items([
-                        ...SetupCluster::getNavigationItems(),
-                        ...PolicyDocumentResource::getNavigationItems(),
-                        ...ExtractResource::getNavigationItems(),
-                        ...AssessmentOverview::getNavigationItems(),
-                        ...Summary::getNavigationItems(),
+                    ->groups([
+                        NavigationGroup::make()->items([
+                            ...SetupCluster::getNavigationItems(),
+                            ...PolicyDocumentResource::getNavigationItems(),
+                        ]),
+                        NavigationGroup::make('2. Review Extracts')
+                            ->icon(Heroicon::OutlinedCheckBadge)
+                            ->items($priorityActionItems),
+                        NavigationGroup::make()->items([
+                            ...AssessmentOverview::getNavigationItems(),
+                            ...Summary::getNavigationItems(),
+                        ]),
                     ]);
             })
             ->userMenuItems([

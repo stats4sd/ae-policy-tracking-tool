@@ -12,13 +12,12 @@ use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
 use Filament\Actions\DeleteAction;
 use Filament\Facades\Filament;
-use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
-use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Section;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -34,7 +33,7 @@ class ExtractTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->heading(fn ($livewire) => $livewire->activeTab === 'all' ? 'All Extracts' : 'Extracts for Priority Action: '.$livewire->activeTab)
+            ->heading(fn ($livewire) => 'Extracts for Priority Action: '.$livewire->activeTab)
             ->paginationPageOptions([25, 50, 100, 200])
             ->defaultPaginationPageOption(50)
             ->columns([
@@ -91,13 +90,8 @@ class ExtractTable
                 SelectFilter::make('theme_id')
                     ->label('Theme')
                     ->relationship('theme', 'name', function ($query, $livewire) {
-                        $query->where('assessment_id', Filament::getTenant()->id);
-
-                        // if not on the 'all' tab, filter themes to only those linked to the active priority action
-                        if ($livewire->activeTab !== 'all') {
-                            $query->where('priority_action_id', $livewire->activeTab);
-                        }
-
+                        $query->where('assessment_id', Filament::getTenant()->id)
+                            ->where('priority_action_id', $livewire->activeTab);
                     })
                     ->multiple(),
 
@@ -130,81 +124,55 @@ class ExtractTable
             ])
             ->toolbarActions([
                 BulkAction::make('Summarise')
-                    ->fillForm(function (Collection $selectedRecords) {
+                    ->fillForm(fn (Collection $selectedRecords) => [
+                        'selected_extracts' => $selectedRecords->map(fn ($record) => $record->extract)->toArray(),
+                    ])
+                    ->schema(function (Collection $selectedRecords, ListExtracts $livewire) {
+                        $priorityAction = PriorityAction::firstWhere('id', $livewire->activeTab);
+
                         return [
-                            'selected_extracts' => $selectedRecords->map(fn ($record) => $record->extract)->toArray(),
-                            'default_priority_action_id' => $selectedRecords->flatMap->priorityActions->first()->id ?? null,
+                            Shout::make('priority_action_info')
+                                ->content('This summary statement will be assigned to Priority Action: '.($priorityAction?->code_and_short_name ?? $livewire->activeTab).'.')
+                                ->icon('heroicon-o-information-circle'),
+                            Section::make('Selected Extracts ('.$selectedRecords->count().')')
+                                ->collapsible()
+                                ->collapsed()
+                                ->schema([
+                                    Repeater::make('selected_extracts')
+                                        ->reorderable(false)
+                                        ->addable(false)
+                                        ->deletable(false)
+                                        ->simple(Textarea::make('extract')->disabled()->autosize()),
+                                ]),
+                            Select::make('theme_id')
+                                ->relationship('theme', 'name', function ($query) use ($livewire) {
+                                    $query->where('assessment_id', Filament::getTenant()->id)
+                                        ->where('priority_action_id', $livewire->activeTab);
+                                })
+                                ->label('Which theme does this statement relate to?')
+                                ->createOptionForm([
+                                    TextInput::make('name')->required()->label('Enter the new theme'),
+                                ])
+                                ->createOptionUsing(function (array $data, ListExtracts $livewire) {
+                                    $data['assessment_id'] = Filament::getTenant()->id;
+                                    $data['priority_action_id'] = $livewire->activeTab;
+
+                                    $theme = Theme::create($data);
+                                    $livewire->dispatch('refreshTable');
+
+                                    return $theme->id;
+                                })
+                                ->required(),
+                            Textarea::make('name')
+                                ->label('Enter Summary Statement')
+                                ->required()
+                                ->rows(3),
                         ];
                     })
-                    ->schema(fn (Collection $selectedRecords) => [
-                        Shout::make('info')
-                            ->content('Highlighted extracts can be grouped and summarised into a single summary statement. The summary statements can then be included in the final report.')
-                            ->icon('heroicon-o-information-circle'),
-                        Repeater::make('selected_extracts')
-                            ->reorderable(false)
-                            ->addable(false)
-                            ->deletable(false)
-                            ->simple(Textarea::make('extract')->disabled()->autosize()),
-
-                        // If all the extracts are for a single priority action, show a read-only field with that action id
-                        Shout::make('priority_action_info')
-                            ->visible(fn () => $selectedRecords->flatMap->priorityActions->unique('id')->count() === 1)
-                            ->content(fn () => 'All selected extracts are linked to Priority Action: '.$selectedRecords->flatMap->priorityActions->first()->id.'. The summary statement will be assigned to this action.'),
-
-                        // If the extracts are for multiple priority actions, show a select to choose which one to assign the statement to
-                        Select::make('priority_action_id')
-                            ->visible(fn () => $selectedRecords->flatMap->priorityActions->unique('id')->count() > 1)
-                            ->options($selectedRecords->flatMap->priorityActions->unique('id')->pluck('id', 'id')->toArray())
-                            ->label('Assign Priority Action')
-                            ->required(),
-
-                        // If all extracts are for a single priority action, set a hidden field with that action id
-                        Hidden::make('default_priority_action_id'),
-
-                        Select::make('theme_id')
-                            ->relationship('theme', 'name', function ($query) use ($selectedRecords) {
-                                $query->where('assessment_id', Filament::getTenant()->id);
-
-                                if ($selectedRecords->flatMap->priorityActions->isNotEmpty()) {
-                                    $query
-                                        ->where('priority_action_id', $selectedRecords->flatMap->priorityActions->first()->id ?? null);
-                                }
-
-                                return $query;
-                            })
-                            ->label('Which theme does this statement relate to?')
-                            ->createOptionForm([
-                                TextInput::make('name')->required()->label('Enter the new theme'),
-                            ])
-                            ->createOptionUsing(function (array $data, Get $get, ListExtracts $livewire) {
-
-                                $priorityActionId = $get('default_priority_action_id') ?? $get('priority_action_id');
-
-                                $data['assessment_id'] = Filament::getTenant()->id;
-                                $data['priority_action_id'] = $priorityActionId;
-
-                                $theme = Theme::create($data);
-
-                                $livewire->dispatch('refreshTable');
-
-                                return $theme->id;
-
-                            })
-                            ->required(),
-
-                        // Summary statement input
-                        Textarea::make('name')
-                            ->label('Enter Summary Statement')
-                            ->required()
-                            ->rows(3),
-                    ])
                     ->action(function (Collection $selectedRecords, array $data, ListExtracts $livewire) {
-
-                        $priorityActionId = $data['priority_action_id'] ?? $data['default_priority_action_id'];
-
                         $statement = Statement::create([
                             'name' => $data['name'],
-                            'priority_action_id' => $priorityActionId,
+                            'priority_action_id' => $livewire->activeTab,
                             'theme_id' => $data['theme_id'],
                             'assessment_id' => Filament::getTenant()->id,
                         ]);
@@ -212,60 +180,36 @@ class ExtractTable
                         $statement->extracts()->sync($selectedRecords->pluck('id'));
 
                         $livewire->dispatch('refreshTable');
-
                     }),
                 BulkAction::make('Assign to Theme')
-                    ->fillForm(fn (Collection $selectedRecords) => [
-                        'priority_action_ids' => $selectedRecords->flatMap->priorityActions->unique('id')->pluck('id')->toArray(),
-                    ])
-                    ->schema([
-                        Shout::make('info')
-                            ->content('Link the selected extracts to one or more priority actions and a theme. This will help organise highlights and summary statements under relevant themes for reporting.')
-                            ->icon('heroicon-o-information-circle'),
-                        Select::make('priority_action_ids')
-                            ->label('Assign Priority Actions')
-                            ->multiple()
-                            ->options(PriorityAction::all()->pluck('id', 'id')->toArray())
-                            ->live()
-                            ->required(),
-                        Select::make('theme_id')
-                            ->label('Select Theme to Assign')
-                            ->options(function (Get $get) {
-                                $priorityActionIds = $get('priority_action_ids') ?? [];
+                    ->schema(function (ListExtracts $livewire) {
+                        return [
+                            Shout::make('info')
+                                ->content('Link the selected extracts to a theme for Priority Action: '.$livewire->activeTab.'. This will help organise highlights and summary statements under relevant themes for reporting.')
+                                ->icon('heroicon-o-information-circle'),
+                            Select::make('theme_id')
+                                ->label('Select Theme to Assign')
+                                ->options(function (ListExtracts $livewire) {
+                                    return Theme::query()
+                                        ->where('assessment_id', Filament::getTenant()->id)
+                                        ->where('priority_action_id', $livewire->activeTab)
+                                        ->pluck('name', 'id');
+                                })
+                                ->searchable()
+                                ->createOptionForm([
+                                    TextInput::make('name')->required()->label('Theme name'),
+                                ])
+                                ->createOptionUsing(function (array $data, ListExtracts $livewire) {
+                                    $data['assessment_id'] = Filament::getTenant()->id;
+                                    $data['priority_action_id'] = $livewire->activeTab;
 
-                                return Theme::query()
-                                    ->where('assessment_id', Filament::getTenant()->id)
-                                    ->when(
-                                        ! empty($priorityActionIds),
-                                        fn ($query) => $query->whereIn('priority_action_id', $priorityActionIds),
-                                    )
-                                    ->pluck('name', 'id');
-                            })
-                            ->searchable()
-                            ->createOptionForm([
-                                TextInput::make('name')->required()->label('Theme name'),
-                                Select::make('priority_action_id')
-                                    ->label('Priority Action')
-                                    ->options(PriorityAction::all()->pluck('id', 'id'))
-                                    ->required(),
-                            ])
-                            ->createOptionUsing(function (array $data, Get $get) {
-                                $data['assessment_id'] = Filament::getTenant()->id;
-                                $data['priority_action_id'] ??= collect($get('priority_action_ids'))->first();
-
-                                $theme = Theme::create($data);
-
-                                return $theme->id;
-                            }),
-                    ])
+                                    return Theme::create($data)->id;
+                                }),
+                        ];
+                    })
                     ->action(function (Collection $selectedRecords, array $data, ListExtracts $livewire) {
-                        $priorityActionIds = $data['priority_action_ids'] ?? [];
-
                         foreach ($selectedRecords as $extract) {
-                            if (! empty($priorityActionIds)) {
-                                $extract->priorityActions()->syncWithoutDetaching($priorityActionIds);
-                            }
-
+                            $extract->priorityActions()->syncWithoutDetaching([$livewire->activeTab]);
                             $extract->theme_id = $data['theme_id'] ?? null;
                             $extract->save();
                         }
