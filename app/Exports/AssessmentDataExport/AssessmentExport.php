@@ -15,6 +15,7 @@ class AssessmentExport implements WithMultipleSheets
             new AssessmentSummaryExport($this->assessment),
             new PolicyDocumentExport($this->assessment),
             new ExtractExport($this->assessment),
+            new ThemeExport($this->assessment),
             new StatementExport($this->assessment),
             new PriorityActionExport($this->assessment),
         ];

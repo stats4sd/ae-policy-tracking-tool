@@ -4,6 +4,7 @@ namespace App\Exports\AssessmentDataExport;
 
 use App\Exports\ExportStyles;
 use App\Models\Assessment;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -19,11 +20,11 @@ class StatementExport implements FromCollection, ShouldAutoSize, WithHeadings, W
     public function __construct(public Assessment $assessment) {}
 
     /**
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function collection()
     {
-        return $this->assessment->statements;
+        return $this->assessment->statements->load('priorityAction', 'theme');
     }
 
     public function headings(): array
@@ -45,7 +46,6 @@ class StatementExport implements FromCollection, ShouldAutoSize, WithHeadings, W
             $this->assessment->id,
             $this->assessment->title,
             $row->priorityAction->title,
-            $row->type->name,
             $row->theme->name ?? 'N/A',
             $row->name,
             $row->extracts()->count(),
