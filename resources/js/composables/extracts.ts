@@ -108,7 +108,8 @@ export function useExtracts(documentId: Ref<number, number>, contentContainer: R
             priority_actions: extractPriorityActions.value,
             search_terms_list: "",
             search_terms: [],
-            score_id: extractTypeId.value
+            score_id: extractTypeId.value,
+            verified: true,
         };
 
         const newExtractWithId: Extract =

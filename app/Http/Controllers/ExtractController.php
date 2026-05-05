@@ -22,7 +22,12 @@ class ExtractController extends Controller
      */
     public function store(ExtractRequest $request): JsonResponse
     {
+
+        ray($request->all());
+
         $validated = $request->validated();
+
+        ray($validated);
 
         $extract = Extract::create($validated);
 

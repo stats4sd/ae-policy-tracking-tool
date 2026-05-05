@@ -702,7 +702,6 @@ watch(
 );
 
 const saveExtractEdits = async (): Promise<void> => {
-    console.log("hi");
     let success = false;
     if (currentExtract.value) {
         // editing existing extract

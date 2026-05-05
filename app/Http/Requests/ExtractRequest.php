@@ -30,6 +30,7 @@ class ExtractRequest extends FormRequest
             'end_offset' => 'required|integer',
             'color' => 'required|string',
             'score_id' => 'nullable|integer|exists:scores,id',
+            'verified' => 'boolean',
         ];
     }
 }
