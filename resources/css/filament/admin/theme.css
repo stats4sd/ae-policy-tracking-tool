@@ -1,4 +1,5 @@
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
+@import '../dashboard.css';
 
 @source '../../../../app/';
 @source '../../../../resources/views/';

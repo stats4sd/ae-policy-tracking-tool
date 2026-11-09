@@ -6,6 +6,7 @@ use App\Filament\App\Clusters\Setup\SetupCluster;
 use App\Filament\App\Pages\AssessmentOverview;
 use App\Filament\App\Pages\RegisterAssessment;
 use App\Filament\App\Pages\Summary;
+use App\Filament\App\Pages\TeamHome;
 use App\Filament\App\Resources\Extracts\ExtractResource;
 use App\Filament\App\Resources\PolicyDocuments\PolicyDocumentResource;
 use App\Models\Assessment;
@@ -93,6 +94,7 @@ class AppPanelProvider extends PanelProvider
                 return $builder
                     ->groups([
                         NavigationGroup::make()->items([
+                            ...TeamHome::getNavigationItems(),
                             ...SetupCluster::getNavigationItems(),
                             ...PolicyDocumentResource::getNavigationItems(),
                         ]),

@@ -1,0 +1,32 @@
+/* Shared styles for the assessment and platform dashboards (app + admin panels). */
+
+:root {
+    --score-n2: #B23A2B;
+    --score-n1: #EF9A7E;
+    --score-0: #CBD2D6;
+    --score-1: #B9E1C8;
+    --score-2: #63B981;
+    --score-3: #119E83;
+    --score-4: #3A7898;
+    --score-none: #EEF1F3;
+}
+
+.score-bg-n2 { background-color: var(--score-n2); }
+.score-bg-n1 { background-color: var(--score-n1); }
+.score-bg-0 { background-color: var(--score-0); }
+.score-bg-1 { background-color: var(--score-1); }
+.score-bg-2 { background-color: var(--score-2); }
+.score-bg-3 { background-color: var(--score-3); }
+.score-bg-4 { background-color: var(--score-4); }
+.score-bg-none { background-color: var(--score-none); }
+
+.score-text-dark { color: #1f2937; }
+.score-text-light { color: #ffffff; }
+
+.dash-gap-cell {
+    background: repeating-linear-gradient(135deg, var(--score-none) 0 4px, #ffffff 4px 8px);
+}
+
+.dash-section .fi-section-content {
+    padding: 1rem 1.25rem;
+}
